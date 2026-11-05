@@ -1,0 +1,28 @@
+{
+  "schema_version": "uve_training_export_manifest.v1",
+  "export_row_schema": "uve_training_export_row.v1",
+  "training_label_enum": [
+    "verified_success",
+    "verified_failure",
+    "unverified_proposal",
+    "observation_only"
+  ],
+  "rules": {
+    "verified_success": {
+      "require_gate_decision": "approved",
+      "forbid_probe_verdicts": ["not_verified"],
+      "require_all_required_probes_pass": true,
+      "require_identity_stable": true
+    },
+    "verified_failure": {
+      "require_gate_decision": "rejected",
+      "require_gate_rejection_basis": "subject_observed",
+      "require_at_least_one_probe_failed_subject": true,
+      "forbid_probe_verdicts": ["not_verified"],
+      "require_identity_stable": true
+    }
+  },
+  "forbidden": {
+    "verified_labels_when_any_required_probe_not_verified": true
+  }
+}

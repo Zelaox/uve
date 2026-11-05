@@ -1,0 +1,15 @@
+{
+  "schema_version": "task_registry.v1",
+  "verifiers": {
+    "uve_smoke_gate": {
+      "kind": "uve_gate_receipt_ref",
+      "gate_receipt_relpath": "logs/uve/gates/witness_gate.json",
+      "required_decision": "approved"
+    }
+  },
+  "issue_close_required_verifier_ids": [
+    "tests_ok",
+    "invariant_ok"
+  ],
+  "procedural_tasks": []
+}

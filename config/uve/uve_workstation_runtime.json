@@ -1,0 +1,122 @@
+{
+  "schema_version": "uve_workstation_runtime.v1",
+  "profile_ref": "config/uve/profiles/emulator_runtime.json",
+  "poll_interval_seconds": 2,
+  "verification_interval_seconds": 30,
+  "runner_role_id": "uve_runner",
+  "gate_evaluator_ref": "emulator_runtime_witness",
+  "lease_resource_kind": "verification_runtime",
+  "generated_relative": "runtime/profiles",
+  "profile_filename": "profile.json",
+  "status_relative": "runtime/service_status.json",
+  "allowed_adapter_ids": [
+    "engine_meta",
+    "command",
+    "adb"
+  ],
+  "tiers": [
+    {
+      "tier_id": "V1",
+      "probe_ids": [
+        "workstation_structure"
+      ],
+      "gate_id": "emulator_runtime_v1"
+    },
+    {
+      "tier_id": "V2",
+      "probe_ids": [
+        "workstation_transport"
+      ],
+      "gate_id": "emulator_runtime_v2"
+    },
+    {
+      "tier_id": "V3",
+      "probe_ids": [
+        "adb_boot_smoke",
+        "adb_ui_flow"
+      ],
+      "gate_id": "emulator_runtime_v3"
+    }
+  ],
+  "target_templates": [
+    {
+      "binding_id": "adb_probe_ref",
+      "filename": "adb.json",
+      "profile_field": "adb_probe_ref",
+      "document": {
+        "schema_version": "uve_adb_probe.v1",
+        "adb_executable": "{sdk_root}/platform-tools/adb.exe",
+        "adb_serial": "{adb_serial}",
+        "boot_property": "sys.boot_completed",
+        "expected_value": "1",
+        "timeout_seconds": 15
+      }
+    },
+    {
+      "binding_id": "package_ref",
+      "filename": "package.json",
+      "profile_field": "guest_package_ref",
+      "document": {
+        "package_substring": "{guest_package}"
+      }
+    },
+    {
+      "binding_id": "flow_ref",
+      "filename": "ui_flow.json",
+      "profile_field": "ui_flow_ref",
+      "document": {
+        "schema_version": "uve_ui_flow.v1",
+        "steps": [
+          {
+            "step_id": "boot_completed",
+            "kind": "shell_property",
+            "property": "sys.boot_completed",
+            "expected": "1"
+          },
+          {
+            "step_id": "focused_application",
+            "kind": "shell_dump_window",
+            "assertion": "package_present",
+            "package_substring_ref": "{package_ref}"
+          }
+        ]
+      }
+    },
+    {
+      "binding_id": "transport_ref",
+      "filename": "transport.json",
+      "profile_field": "command_probe_refs.workstation_transport",
+      "document": {
+        "schema_version": "uve_command_probe.v1",
+        "argv": [
+          "{{adb_executable}}",
+          "-s",
+          "{{adb_serial}}",
+          "get-state"
+        ],
+        "argument_values_ref": "{adb_probe_ref}",
+        "required_argument_fields": [
+          "adb_executable",
+          "adb_serial"
+        ],
+        "timeout_seconds": 15,
+        "expected_returncode": 0,
+        "expected_stdout": "device"
+      }
+    }
+  ],
+  "status_stale_after_seconds": 600,
+  "application": {
+    "contract_relative": "config/uve/application.json",
+    "execution_binding_profile_id": "application_acceptance",
+    "fault_policy_ref": "config/uve/application_fault_policy.json",
+    "probe_ids": [
+      "application_code",
+      "application_bundle",
+      "application_health",
+      "application_membership_ui_flow"
+    ],
+    "code_gate_id": "application_code_gate",
+    "gate_id": "application_acceptance"
+  }
+}

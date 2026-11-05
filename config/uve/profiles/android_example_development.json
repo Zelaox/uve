@@ -1,0 +1,69 @@
+{
+  "schema_version": "uve_project_profile.v1",
+  "project_id": "android_example",
+  "environment": "development",
+  "project_root_ref": "config/uve/targets/android_example/project_root.json",
+  "workspace_root_relative": ".",
+  "identity": {
+    "watch_globs": [
+      "src/**/*",
+      "app/**/*",
+      "components/**/*",
+      "lib/**/*"
+    ],
+    "ignore_globs": [
+      "**/node_modules/**",
+      "**/.expo/**",
+      "**/dist/**",
+      "**/build/**"
+    ]
+  },
+  "dev_server_port_ref": "config/uve/targets/android_example/metro_port.json",
+  "metro_status_ref": "config/uve/targets/android_example/metro_status.json",
+  "adb_probe_ref": "config/uve/targets/android_example/adb_probe.json",
+  "verification_probe_ids": [
+    "metro_status",
+    "adb_boot_smoke",
+    "adb_ui_flow",
+    "process_health"
+  ],
+  "change_class_rules_ref": "config/uve/uve_change_class_rules.json",
+  "gate_ids": [
+    "android_example_dev_gate"
+  ],
+  "lease_requirements": {
+    "metro_status": {
+      "resource_kind": "dev_server_port",
+      "port_ref": "config/uve/targets/android_example/metro_port.json",
+      "project_id_field": "project_id"
+    },
+    "process_health": {
+      "resource_kind": "dev_server_port",
+      "port_ref": "config/uve/targets/android_example/metro_port.json",
+      "project_id_field": "project_id"
+    },
+    "adb_boot_smoke": {
+      "resource_kind": "emulator_serial",
+      "serial_ref": "config/uve/targets/android_example/adb_probe.json"
+    },
+    "adb_ui_flow": {
+      "resource_kind": "emulator_serial",
+      "serial_ref": "config/uve/targets/android_example/adb_probe.json"
+    },
+    "restart_metro": {
+      "resource_kind": "dev_server_port",
+      "port_ref": "config/uve/targets/android_example/metro_port.json",
+      "project_id_field": "project_id"
+    }
+  },
+  "ui_flow_ref": "config/uve/targets/android_example/ui_flow_smoke.json",
+  "recovery": {
+    "automatic_restart": true,
+    "automatic_code_changes": false,
+    "require_reverification": true
+  },
+  "execution_binding_profile_id": "emulator_workstation_smoke",
+  "recovery_action_refs": {
+    "restart_metro": "config/uve/targets/android_example/restart_metro.json"
+  }
+}

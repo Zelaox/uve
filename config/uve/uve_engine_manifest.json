@@ -1,0 +1,8 @@
+{
+  "schema_version": "uve_engine_manifest.v1",
+  "bundle_ref": "config/uve/uve_manifest_bundle.json",
+  "default_profile_ref": "config/uve/profiles/emulator_workstation_smoke.json",
+  "log_root_ref": "config/uve/uve_log_root.json",
+  "io_policy_ref": "config/uve/uve_io_manifest.json",
+  "runtime_manifest_ref": "config/uve/uve_workstation_runtime.json"
+}

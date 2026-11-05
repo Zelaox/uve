@@ -1,0 +1,28 @@
+{
+  "schema_version": "uve_execution_binding_manifest.v1",
+  "default_profile": {
+    "require_dual_inventory": true,
+    "require_identity_stable_for_pass": true,
+    "snapshot_mode": "optional",
+    "runtime_delivery_binding_probe_ids": [
+      "metro_status"
+    ]
+  },
+  "profiles": {
+    "emulator_workstation_smoke": {
+      "require_dual_inventory": true,
+      "require_identity_stable_for_pass": true,
+      "snapshot_mode": "optional",
+      "runtime_delivery_binding_probe_ids": []
+    },
+    "application_acceptance": {
+      "require_dual_inventory": true,
+      "require_identity_stable_for_pass": true,
+      "snapshot_mode": "optional",
+      "runtime_delivery_binding_probe_ids": [
+        "application_health"
+      ]
+    }
+  },
+  "snapshot_store_relative": "logs/uve/snapshots"
+}

@@ -1,0 +1,25 @@
+{
+  "schema_version": "uve_change_class_rules.v1",
+  "rules": [
+    {
+      "rule_id": "source_tsx",
+      "path_globs": ["**/*.tsx", "**/*.ts", "**/*.jsx", "**/*.js"],
+      "probe_ids": ["dry_echo", "engine_self_check"]
+    },
+    {
+      "rule_id": "python_source",
+      "path_globs": ["**/*.py"],
+      "probe_ids": ["dry_echo", "engine_self_check"]
+    },
+    {
+      "rule_id": "config_json",
+      "path_globs": ["**/*.json"],
+      "probe_ids": ["engine_self_check"]
+    },
+    {
+      "rule_id": "default",
+      "path_globs": ["**/*"],
+      "probe_ids": ["engine_self_check"]
+    }
+  ]
+}

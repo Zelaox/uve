@@ -1,0 +1,9 @@
+{
+  "schema_version": "uve_ai_lab_roots.v1",
+  "ai_lab_root_env": "UVE_AI_LAB_ROOT",
+  "training_quality_gate_manifest_rel": "config/training_quality_gate_manifest.json",
+  "tier_json_env": "UVE_AI_LAB_TIER_JSON",
+  "run_config_env": "UVE_AI_LAB_RUN_JSON",
+  "runner_module": "llm_model_trainer.training_quality.runner",
+  "runner_callable": "run_quality_tiers"
+}

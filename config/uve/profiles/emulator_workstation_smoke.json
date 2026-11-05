@@ -1,0 +1,23 @@
+{
+  "schema_version": "uve_project_profile.v1",
+  "project_id": "emulator_workstation",
+  "environment": "development",
+  "workspace_root_relative": ".",
+  "identity": {
+    "watch_globs": ["agent_training/**/*.py", "config/uve/**/*.json"],
+    "ignore_globs": ["**/__pycache__/**", "**/.pytest_cache/**", "logs/**"]
+  },
+  "targets": [
+    { "type": "source", "adapter_id": "dry" }
+  ],
+  "verification_probe_ids": ["dry_echo", "engine_self_check"],
+  "gate_ids": ["workstation_infra"],
+  "sync_issues_on_failure": true,
+  "change_class_rules_ref": "config/uve/uve_change_class_rules.json",
+  "recovery": {
+    "automatic_restart": false,
+    "automatic_code_changes": false,
+    "require_reverification": true
+  },
+  "execution_binding_profile_id": "emulator_workstation_smoke"
+}

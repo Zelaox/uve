@@ -1,0 +1,8 @@
+{
+  "schema_version": "uve_adb_probe.v1",
+  "adb_executable": "adb",
+  "adb_serial": "",
+  "boot_property": "sys.boot_completed",
+  "expected_value": "1",
+  "timeout_seconds": 15
+}

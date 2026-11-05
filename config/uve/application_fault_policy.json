@@ -1,0 +1,54 @@
+{
+  "schema_version": "uve_application_fault_policy.v1",
+  "ui_rules": [
+    {
+      "id": "react_native_redbox",
+      "attributes": [
+        "text",
+        "content-desc"
+      ],
+      "pattern": "^(Render Error|Console Error|Runtime Error|Uncaught Error|Uncaught \\(in promise\\))$"
+    },
+    {
+      "id": "theme_provider_error",
+      "attributes": [
+        "text",
+        "content-desc"
+      ],
+      "pattern": "useTheme must be used within ThemeProvider"
+    },
+    {
+      "id": "metro_resolution_error",
+      "attributes": [
+        "text",
+        "content-desc"
+      ],
+      "pattern": "UnableToResolveError|Unable to resolve module|development server returned response error code:?"
+    },
+    {
+      "id": "react_native_logbox",
+      "attributes": [
+        "resource-id"
+      ],
+      "pattern": "(?:logbox|redbox).*(?:error|title|message)"
+    },
+    {
+      "id": "application_error_boundary",
+      "attributes": [
+        "text",
+        "content-desc"
+      ],
+      "pattern": "^Something went wrong$"
+    }
+  ],
+  "log_rules": [
+    {
+      "id": "android_fatal_exception",
+      "pattern": "AndroidRuntime.*FATAL EXCEPTION"
+    },
+    {
+      "id": "javascript_fatal",
+      "pattern": "(?:ReactNativeJS|ReactNative).*?(?:ReferenceError:|TypeError:|Invariant Violation:|useTheme must be used within ThemeProvider|UnableToResolveError|ErrorBoundary caught an error:)"
+    }
+  ]
+}

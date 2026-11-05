@@ -1,0 +1,5 @@
+{
+  "schema_version": "uve_project_root.v1",
+  "root_env": "UVE_ANDROID_EXAMPLE_ROOT",
+  "description": "Absolute path to the sample Android project workspace; required for android_example profile inventory"
+}

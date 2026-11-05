@@ -1,0 +1,11 @@
+/logs/
+/config/uve/uve_engine_state.json
+/.venv/
+/.pytest_cache/
+__pycache__/
+*.py[cod]
+*.egg-info/
+/build/
+/dist/
+.env
+.env.*

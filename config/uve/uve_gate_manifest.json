@@ -1,0 +1,108 @@
+{
+  "schema_version": "uve_gate_manifest.v1",
+  "gates": {
+    "smoke_close_issue": {
+      "required_probe_ids": [
+        "dry_echo"
+      ],
+      "require_identity_stable": true,
+      "evaluator_role": "uve_gate"
+    },
+    "workstation_infra": {
+      "required_probe_ids": [
+        "process_health",
+        "engine_self_check"
+      ],
+      "require_identity_stable": true,
+      "evaluator_role": "uve_gate"
+    },
+    "repair_verification": {
+      "required_probe_ids": [
+        "dry_echo"
+      ],
+      "require_identity_stable": true,
+      "evaluator_role": "uve_gate"
+    },
+    "android_example_dev_gate": {
+      "required_probe_ids": [
+        "metro_status",
+        "engine_self_check"
+      ],
+      "require_identity_stable": true,
+      "evaluator_role": "uve_gate"
+    },
+    "ai_lab_checkpoint": {
+      "required_probe_ids": [
+        "ai_lab_tier"
+      ],
+      "require_identity_stable": true,
+      "evaluator_role": "uve_gate",
+      "required_observation_values": {
+        "ai_lab_tier": {
+          "source": "live_runner"
+        }
+      }
+    },
+    "command_check": {
+      "required_probe_ids": [
+        "command_check"
+      ],
+      "require_identity_stable": true,
+      "evaluator_role": "uve_gate"
+    },
+    "android_lifecycle": {
+      "required_probe_ids": [
+        "adb_lifecycle"
+      ],
+      "require_identity_stable": true,
+      "evaluator_role": "uve_gate"
+    },
+    "emulator_runtime_v1": {
+      "required_probe_ids": [
+        "workstation_structure"
+      ],
+      "require_identity_stable": true,
+      "evaluator_role": "uve_gate"
+    },
+    "emulator_runtime_v2": {
+      "required_probe_ids": [
+        "workstation_transport"
+      ],
+      "require_identity_stable": true,
+      "evaluator_role": "uve_gate"
+    },
+    "emulator_runtime_v3": {
+      "required_probe_ids": [
+        "adb_boot_smoke",
+        "adb_ui_flow"
+      ],
+      "require_identity_stable": true,
+      "evaluator_role": "uve_gate"
+    },
+    "application_code_gate": {
+      "required_probe_ids": [
+        "application_code"
+      ],
+      "require_identity_stable": true,
+      "evaluator_role": "uve_gate"
+    },
+    "application_acceptance": {
+      "required_probe_ids": [
+        "application_code",
+        "application_bundle",
+        "application_health",
+        "application_membership_ui_flow"
+      ],
+      "require_identity_stable": true,
+      "evaluator_role": "uve_gate"
+    }
+  },
+  "rejection_basis_enum": [
+    "subject_observed",
+    "engine_fault",
+    "invalid_stale",
+    "insufficient_probes",
+    "manifest_mismatch",
+    "identity_unstable"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "schema_version": "uve_recovery_command.v1",
+  "start_argv": [
+    "npx.cmd",
+    "expo",
+    "start",
+    "--port",
+    "8081"
+  ],
+  "stop_timeout_seconds": 15,
+  "retest_attempts": 20,
+  "retest_interval_seconds": 1,
+  "log_filename": "metro.log"
+}

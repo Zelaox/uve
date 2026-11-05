@@ -1,0 +1,98 @@
+{
+  "schema_version": "uve_probe_catalog.v1",
+  "probes": {
+    "dry_echo": {
+      "level": "L2",
+      "tier": "infra",
+      "adapter_id": "dry",
+      "expectation_ref": "config/uve/expectations/dry_echo.json"
+    },
+    "process_health": {
+      "level": "L1",
+      "tier": "infra",
+      "adapter_id": "process_health",
+      "expectation_ref": "config/uve/expectations/process_health.json"
+    },
+    "metro_status": {
+      "level": "L1",
+      "tier": "infra",
+      "adapter_id": "expo_metro",
+      "expectation_ref": "config/uve/expectations/metro_status.json"
+    },
+    "adb_boot_smoke": {
+      "level": "L4",
+      "tier": "V3",
+      "adapter_id": "adb",
+      "expectation_ref": "config/uve/expectations/adb_boot_smoke.json"
+    },
+    "adb_ui_flow": {
+      "level": "L4",
+      "tier": "V3",
+      "adapter_id": "adb",
+      "expectation_ref": "config/uve/expectations/adb_boot_smoke.json",
+      "ui_flow_ref": "config/uve/targets/android_example/ui_flow_smoke.json",
+      "fault_policy_ref": "config/uve/application_fault_policy.json"
+    },
+    "engine_self_check": {
+      "level": "L1",
+      "tier": "infra",
+      "adapter_id": "engine_meta",
+      "expectation_ref": "config/uve/expectations/engine_self_check.json"
+    },
+    "ai_lab_tier": {
+      "level": "L2",
+      "tier": "V1",
+      "adapter_id": "ai_lab_training_quality",
+      "expectation_ref": "config/uve/expectations/dry_echo.json"
+    },
+    "command_check": {
+      "level": "L2",
+      "tier": "V1",
+      "adapter_id": "command",
+      "expectation_ref": "config/uve/expectations/command_check.json"
+    },
+    "adb_lifecycle": {
+      "level": "L4",
+      "tier": "V3",
+      "adapter_id": "adb_lifecycle",
+      "expectation_ref": "config/uve/expectations/adb_boot_smoke.json"
+    },
+    "workstation_structure": {
+      "level": "L2",
+      "tier": "V1",
+      "adapter_id": "engine_meta",
+      "expectation_ref": "config/uve/expectations/engine_self_check.json"
+    },
+    "workstation_transport": {
+      "level": "L3",
+      "tier": "V2",
+      "adapter_id": "command",
+      "expectation_ref": "config/uve/expectations/command_check.json"
+    },
+    "application_code": {
+      "level": "L2",
+      "tier": "V1",
+      "adapter_id": "command",
+      "expectation_ref": "config/uve/expectations/command_check.json"
+    },
+    "application_bundle": {
+      "level": "L2",
+      "tier": "V2",
+      "adapter_id": "command",
+      "expectation_ref": "config/uve/expectations/command_check.json"
+    },
+    "application_health": {
+      "level": "L4",
+      "tier": "V3",
+      "adapter_id": "application_health",
+      "expectation_ref": "config/uve/expectations/command_check.json"
+    },
+    "application_membership_ui_flow": {
+      "level": "L4",
+      "tier": "V3",
+      "adapter_id": "adb",
+      "expectation_ref": "config/uve/expectations/adb_boot_smoke.json",
+      "fault_policy_ref": "config/uve/application_fault_policy.json"
+    }
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "schema_version": "uve_log_root.v1",
+  "relative_to": "pipeline_root",
+  "log_dir": "logs/uve"
+}

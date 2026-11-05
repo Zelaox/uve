@@ -1,0 +1,41 @@
+{
+  "schema_version": "uve_failure_class_catalog.v1",
+  "classes": {
+    "undefined_property": {
+      "description": "Access on undefined object property"
+    },
+    "assertion_mismatch": {
+      "description": "Expected observation did not match actual"
+    },
+    "process_down": {
+      "description": "Required process not running"
+    },
+    "metro_not_ready": {
+      "description": "Metro packager not running"
+    },
+    "adb_boot_incomplete": {
+      "description": "Guest boot_completed not set"
+    },
+    "identity_unstable": {
+      "description": "Workspace identity changed during probe"
+    },
+    "lease_denied": {
+      "description": "Resource lease not acquired"
+    },
+    "engine_degraded": {
+      "description": "UVE self-check failed"
+    },
+    "adapter_error": {
+      "description": "Adapter execution or evidence capture failed"
+    },
+    "binding_missing": {
+      "description": "Required execution binding missing"
+    },
+    "manifest_mismatch": {
+      "description": "Frozen configuration changed during execution"
+    },
+    "application_runtime_error": {
+      "description": "Visible application error overlay, fallback, or recent fatal process log"
+    }
+  }
+}

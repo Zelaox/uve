@@ -1,0 +1,13 @@
+{
+  "schema_version": "uve_manifest_trust_manifest.v1",
+  "protected_manifest_globs": [
+    "config/uve/uve_probe_catalog.json",
+    "config/uve/uve_gate_manifest.json",
+    "config/uve/uve_adapter_catalog.json",
+    "config/uve/uve_training_export_manifest.json"
+  ],
+  "repair_agent_forbidden_write_globs": [
+    "config/uve/**"
+  ],
+  "gate_trust_root_relative": "config/uve"
+}

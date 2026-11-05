@@ -1,0 +1,41 @@
+{
+  "schema_version": "uve_adapter_catalog.v1",
+  "adapters": {
+    "dry": {
+      "module": "agent_training.uve.adapters.dry",
+      "callable": "run_probe"
+    },
+    "process_health": {
+      "module": "agent_training.uve.adapters.process_health",
+      "callable": "run_probe"
+    },
+    "expo_metro": {
+      "module": "agent_training.uve.adapters.expo_metro",
+      "callable": "run_probe"
+    },
+    "adb": {
+      "module": "agent_training.uve.adapters.adb",
+      "callable": "run_probe"
+    },
+    "engine_meta": {
+      "module": "agent_training.uve.adapters.engine_meta",
+      "callable": "run_probe"
+    },
+    "ai_lab_training_quality": {
+      "module": "agent_training.uve.adapters.ai_lab_bridge",
+      "callable": "run_probe"
+    },
+    "command": {
+      "module": "agent_training.uve.adapters.command",
+      "callable": "run_probe"
+    },
+    "adb_lifecycle": {
+      "module": "agent_training.uve.adapters.adb_lifecycle",
+      "callable": "run_probe"
+    },
+    "application_health": {
+      "module": "agent_training.uve.adapters.application_health",
+      "callable": "run_probe"
+    }
+  }
+}

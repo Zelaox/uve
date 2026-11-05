@@ -1,0 +1,14 @@
+{
+  "schema_version": "uve_regression_manifest.v1",
+  "baseline_store_relative": "logs/uve/baselines",
+  "baselines": {
+    "emulator_workstation_smoke": {
+      "profile_ref": "config/uve/profiles/emulator_workstation_smoke.json",
+      "gate_id": "smoke_close_issue",
+      "probe_ids": [
+        "dry_echo",
+        "engine_self_check"
+      ]
+    }
+  }
+}

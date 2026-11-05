@@ -1,0 +1,11 @@
+{
+  "schema_version": "training_quality_receipt.v1",
+  "tier": "V1",
+  "candidate_identity": {
+    "identity_sha256": "sha256:fixtureidentity000000000000000000000000000000000000000000000000"
+  },
+  "checks": [
+    {"check_id": "smoke_a", "status": "passed"},
+    {"check_id": "smoke_b", "status": "passed"}
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "schema_version": "uve_io_policy.v1",
+  "replace_attempts": 12,
+  "replace_retry_interval_ms": 25
+}

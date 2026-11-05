@@ -1,0 +1,6 @@
+{
+  "schema_version": "uve_metro_status.v1",
+  "status_url": "http://127.0.0.1:8081/status",
+  "required_body_substring": "packager-status:running",
+  "timeout_seconds": 3
+}

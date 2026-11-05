@@ -1,0 +1,33 @@
+{
+  "schema_version": "uve_project_profile.v1",
+  "project_id": "emulator_workstation_runtime",
+  "environment": "development",
+  "workspace_root_relative": ".",
+  "identity": {
+    "watch_globs": [
+      "agent_training/**/*.py",
+      "config/uve/**/*.json"
+    ],
+    "ignore_globs": [
+      "**/__pycache__/**",
+      "logs/**",
+      "**/.pytest_cache/**"
+    ]
+  },
+  "execution_binding_profile_id": "emulator_workstation_smoke",
+  "sync_issues_on_failure": false,
+  "lease_requirements": {
+    "workstation_transport": {
+      "resource_kind": "emulator_serial",
+      "serial_ref": "{adb_probe_ref}"
+    },
+    "adb_boot_smoke": {
+      "resource_kind": "emulator_serial",
+      "serial_ref": "{adb_probe_ref}"
+    },
+    "adb_ui_flow": {
+      "resource_kind": "emulator_serial",
+      "serial_ref": "{adb_probe_ref}"
+    }
+  }
+}

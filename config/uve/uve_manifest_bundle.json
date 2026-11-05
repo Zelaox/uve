@@ -1,0 +1,23 @@
+{
+  "schema_version": "uve_manifest_bundle.v1",
+  "manifest_refs": [
+    "config/uve/uve_probe_catalog.json",
+    "config/uve/uve_adapter_catalog.json",
+    "config/uve/uve_failure_class_catalog.json",
+    "config/uve/uve_gate_manifest.json",
+    "config/uve/uve_subject_identity_manifest.json",
+    "config/uve/uve_execution_binding_manifest.json",
+    "config/uve/uve_manifest_trust_manifest.json",
+    "config/uve/uve_resource_lock_manifest.json",
+    "config/uve/uve_evidence_storage_manifest.json",
+    "config/uve/uve_training_export_manifest.json",
+    "config/uve/uve_secret_placeholder_manifest.json",
+    "config/uve/uve_regression_manifest.json",
+    "config/uve/uve_recovery_manifest.json",
+    "config/uve/uve_witness_manifest.json",
+    "config/uve/uve_change_class_rules.json",
+    "config/uve/uve_issue_bridge_manifest.json",
+    "config/uve/ai_lab_roots.json",
+    "config/uve/uve_engine_manifest.json"
+  ]
+}

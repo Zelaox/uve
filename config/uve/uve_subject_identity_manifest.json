@@ -1,0 +1,25 @@
+{
+  "schema_version": "uve_subject_identity_manifest.v1",
+  "symlink_policy": "record_link_target",
+  "missing_file_policy": "record_absent",
+  "max_scan_depth": 32,
+  "max_file_bytes": 10485760,
+  "max_entry_count": 50000,
+  "file_kind_by_extension": {
+    ".py": "source",
+    ".tsx": "source",
+    ".ts": "source",
+    ".jsx": "source",
+    ".js": "source",
+    ".json": "config",
+    ".md": "doc",
+    ".cpp": "source",
+    ".hpp": "source",
+    ".h": "source"
+  },
+  "default_file_kind": "asset",
+  "identity_ignore_globs": [
+    "config/uve/uve_engine_state.json",
+    "logs/uve/**"
+  ]
+}

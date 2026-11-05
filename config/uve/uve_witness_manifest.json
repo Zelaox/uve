@@ -1,0 +1,25 @@
+{
+  "schema_version": "uve_witness_manifest.v1",
+  "witness_evaluator_ref": "uve_witness_instance",
+  "golden_gate_id": "smoke_close_issue",
+  "golden_probe_ids": [
+    "dry_echo",
+    "engine_self_check"
+  ],
+  "candidate_uve_bundle_ref": "config/uve/uve_manifest_bundle.json",
+  "profile_ref": "config/uve/profiles/emulator_workstation_smoke.json",
+  "candidate_directories": [
+    "agent_training",
+    "config"
+  ],
+  "copy_ignore_patterns": [
+    "__pycache__",
+    "*.pyc"
+  ],
+  "run_store_relative": "witness/runs",
+  "timeout_seconds": 60,
+  "contract_test_refs": [
+    "tests/test_uve_candidate_contract.py",
+    "tests/test_uve_application_guard.py"
+  ]
+}

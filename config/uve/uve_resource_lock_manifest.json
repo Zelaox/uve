@@ -1,0 +1,67 @@
+{
+  "schema_version": "uve_resource_lock_manifest.v1",
+  "lease_ttl_seconds": 600,
+  "acquire_backoff_ms": 250,
+  "lock_store_relative": "logs/uve/leases",
+  "resource_kinds": {
+    "dev_server_port": {
+      "key_fields": [
+        "host",
+        "port"
+      ],
+      "ref_fields": [
+        "port_ref",
+        "key_ref"
+      ]
+    },
+    "emulator_serial": {
+      "key_fields": [
+        "adb_serial"
+      ],
+      "ref_fields": [
+        "serial_ref",
+        "key_ref"
+      ]
+    },
+    "mutation_work_dir": {
+      "key_fields": [
+        "work_dir"
+      ],
+      "ref_fields": [
+        "key_ref"
+      ]
+    },
+    "test_database": {
+      "key_fields": [
+        "host",
+        "port",
+        "namespace"
+      ],
+      "ref_fields": [
+        "key_ref"
+      ]
+    },
+    "witness_instance": {
+      "key_fields": [
+        "instance_id"
+      ],
+      "ref_fields": [
+        "key_ref"
+      ]
+    },
+    "emulator_avd": {
+      "key_fields": [
+        "avd_id"
+      ],
+      "ref_fields": [
+        "key_ref"
+      ]
+    },
+    "verification_runtime": {
+      "key_fields": [
+        "context_path"
+      ],
+      "ref_fields": []
+    }
+  }
+}

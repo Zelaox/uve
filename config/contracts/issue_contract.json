@@ -1,0 +1,22 @@
+{
+  "schema_version": "issue_contract.v1",
+  "required_top_level": [
+    "issue_id",
+    "project_id",
+    "schema_version",
+    "created_at",
+    "updated_at",
+    "observation",
+    "repro_steps",
+    "artifact_hashes",
+    "hypotheses",
+    "attempts",
+    "evidence",
+    "repairs",
+    "verification",
+    "resolution"
+  ],
+  "hypothesis_status_enum": ["open", "confirmed", "rejected", "superseded"],
+  "resolution_status_enum": ["open", "closed", "reopened"],
+  "verification_gate_source_ref": "config/manifests/task_registry.json"
+}
