@@ -11,7 +11,14 @@ flowchart LR
     C --> F[Diagnostics and optional training export]
 ~~~
 
-## Run the demo
+## Install and run the demo
+
+Clone the repository with a GitHub account that has access and open the checkout:
+
+~~~sh
+git clone https://github.com/Zelaox/uve.git
+cd uve
+~~~
 
 From the repository root with Python 3.11 or newer:
 
@@ -20,6 +27,8 @@ python -B -m examples.command_regression
 ~~~
 
 The demo uses the real command adapter against three isolated copies of a toy app. A pre-existing behavior check passes on the original, fails after a one-line logic change, and passes after restoration. It prints the probe IDs so you can inspect the generated JSON under `logs/uve/probes/`. It needs no Android SDK, Node.js, credentials, or network access. A project gate requires an independently assigned evaluator. See the [command example](examples/README.md) for the probe and gate commands.
+
+The [installation and agent setup guide](docs/setup.md) shows how to bind a real project, install the [Codex skill](.agents/skills/uve-verification/SKILL.md), and use the optional Node workflow and error lookup helpers.
 
 ## What it can do
 

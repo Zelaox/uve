@@ -1,0 +1,16 @@
+{
+  "schema_version": "uve_project_profile.v1",
+  "project_id": "sample_project",
+  "environment": "development",
+  "project_root_ref": "examples/project/root.json",
+  "workspace_root_relative": ".",
+  "identity": {
+    "watch_globs": ["**/*.py"],
+    "ignore_globs": [".git/**", ".venv/**", "**/__pycache__/**"]
+  },
+  "command_probe_refs": {
+    "command_check": "examples/project/command.json"
+  },
+  "verification_probe_ids": ["command_check"],
+  "gate_ids": ["command_check"]
+}

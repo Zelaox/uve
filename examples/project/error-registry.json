@@ -1,0 +1,30 @@
+{
+  "entries": [
+    {
+      "probeId": "command_check",
+      "failureClass": "assertion_mismatch",
+      "title": "The project command failed its expected result",
+      "resolutionSteps": [
+        "Read the command receipt's return code, stdout, and stderr.",
+        "Run the declared command in the bound workspace to reproduce the failure.",
+        "Fix the demonstrated cause and run a fresh probe against the final candidate."
+      ]
+    },
+    {
+      "failureClass": "binding_missing",
+      "title": "Required execution evidence is unavailable",
+      "resolutionSteps": [
+        "Read the profile, target manifests, and receipt observation for the missing binding.",
+        "Bind the actual selected workspace, runtime, or application flow and rerun the probe."
+      ]
+    },
+    {
+      "failureClass": "application_runtime_error",
+      "title": "The selected application reported a runtime error",
+      "resolutionSteps": [
+        "Inspect the fault rule and bounded evidence for the selected project.",
+        "Run the affected application probes again after repairing the cause."
+      ]
+    }
+  ]
+}
