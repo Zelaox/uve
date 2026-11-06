@@ -23,7 +23,7 @@ SDK root, selected device serial, project root and application package come from
 
 Android discovery parses exact serial/state fields from `adb devices -l`, matches the selected AVD through its reported id/name, and reconciles missing or reused online serials on subsequent observations. Multiple online transports reporting the same selected AVD identity leave the binding empty with an explicit diagnostic. Known offline/unauthorized transports retain their observed state. The context also includes `device_state` and `device_detail`; a selected AVD can legitimately have no serial while powered off.
 
-The worker also discovers the selected project's `config/uve/application.json` contract. Application acceptance is separate from the engine/ADB/boot tiers and requires `application_code`, `application_bundle` and `application_health`. Missing contracts or unavailable inputs remain `not_verified`. A passing package-focus or Metro status check cannot approve application code. ProTrainer's contract declares whole-app/shared-module static checks, behavior regressions, actual entry/lazy-chunk bundling and positive project UI assertions. See that project's `docs/EMULATOR_APP_VERIFICATION.md` for its acceptance scope.
+The worker also discovers the selected project's `config/uve/application.json` contract. Application acceptance is separate from the engine/ADB/boot tiers and typically requires `application_code`, `application_bundle` and `application_health`. Optional feature UI flows and extra probes are declared in that contract and the host runtime policy. Missing contracts or unavailable inputs remain `not_verified`. A passing package-focus or Metro status check cannot approve application code.
 
 Every real `adb_ui_flow` probe is guarded by `application_fault_policy.json`: React Native error overlays, Metro resolution errors and error-boundary fallback screens fail even if old app content underneath satisfies a positive selector. The application-health adapter additionally reads bounded recent logcat messages for the selected package's actual PIDs; it never clears logs or examines another package's process history. Editable text is excluded from UI fault matching. The passive monitor performs no navigation or writes.
 
@@ -93,9 +93,9 @@ Planning considers added, modified and deleted paths. Baseline capture requires 
 
 ## Android and Metro
 
-Set `UVE_PROTRAINER_ROOT` to the application workspace. Edit targets under `config/uve/targets/protrainer/` for its Metro port, ADB serial, guest package and UI flow.
+Set the profile's workspace binding environment variable (for example `UVE_ANDROID_EXAMPLE_ROOT` for the sample profile). Edit targets under `config/uve/targets/<project_id>/` for Metro port, ADB serial, guest package and UI flow.
 
-`adb_ui_flow` supports `shell_property`, `shell_dump_window`, `assert_element`, `tap_element`, `input_text`, `swipe`, `keyevent` and `assert_activity` steps. Element selectors match Android UI hierarchy attributes such as `text`, `content-desc` and `resource-id`. Activity checks inspect resumed activities; window checks inspect focused windows. Declare state assertions after interactions: a successful tap cannot override a later failed state assertion. Empty flows and interaction-only flows cannot pass. The supplied ProTrainer flow is a boot/focused-package smoke check; application acceptance flows must declare their own navigation and state expectations.
+`adb_ui_flow` supports `shell_property`, `shell_dump_window`, `assert_element`, `tap_element`, `input_text`, `swipe`, `keyevent`, `assert_activity` and optional `navigation_recovery` steps. Element selectors match Android UI hierarchy attributes such as `text`, `content-desc` and `resource-id`. Activity checks inspect resumed activities; window checks inspect focused windows. Declare state assertions after interactions: a successful tap cannot override a later failed state assertion. Empty flows and interaction-only flows cannot pass. The shipped Android example flow is a boot/focused-package smoke check; application acceptance flows must declare their own navigation and state expectations.
 
 Set `screenshot: true` in a flow to capture a supplementary PNG. Artifacts are stored by SHA-256 and referenced from the receipt; a screenshot never determines the verdict.
 
@@ -104,7 +104,7 @@ Set `screenshot: true` in a flow to capture a supplementary PNG. Artifacts are s
 ## Recovery and isolation
 
 ```powershell
-python -m agent_training.uve.cli recovery --profile config/uve/profiles/protrainer_development.json --action restart_metro
+python -m agent_training.uve.cli recovery --profile config/uve/profiles/android_example_development.json --action restart_metro
 ```
 
 Both profile recovery policy and the recovery manifest must allow the action. `recovery_action_refs` points to a command manifest with `start_argv`, optional `environment`, `stop_timeout_seconds`, `retest_attempts`, `retest_interval_seconds` and `log_filename`. Commands start hidden on Windows. UVE terminates only processes it owns in the current recovery process; it does not kill an unrelated pre-existing server. A CLI run can restart a server that has already stopped. Completion requires a nonempty reverification chain with passing final receipts. Recovery does not itself authorize issue closure.

@@ -1,6 +1,0 @@
-{
-  "schema_version": "uve_dev_server_port.v1",
-  "host": "127.0.0.1",
-  "port": 8081,
-  "connect_timeout_seconds": 2
-}

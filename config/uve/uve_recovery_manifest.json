@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "protrainer": {
+    "android_example": {
       "allowed_actions": ["restart_metro"],
       "automatic_restart": true
     }

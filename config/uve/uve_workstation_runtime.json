@@ -113,8 +113,7 @@
     "probe_ids": [
       "application_code",
       "application_bundle",
-      "application_health",
-      "application_membership_ui_flow"
+      "application_health"
     ],
     "code_gate_id": "application_code_gate",
     "gate_id": "application_acceptance"

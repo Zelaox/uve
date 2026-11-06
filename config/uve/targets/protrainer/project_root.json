@@ -1,5 +1,0 @@
-{
-  "schema_version": "uve_project_root.v1",
-  "root_env": "UVE_PROTRAINER_ROOT",
-  "description": "Absolute path to ProTrainer workspace; required for protrainer profile inventory"
-}

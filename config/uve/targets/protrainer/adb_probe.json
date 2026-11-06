@@ -1,8 +1,0 @@
-{
-  "schema_version": "uve_adb_probe.v1",
-  "adb_executable": "adb",
-  "adb_serial": "emulator-5554",
-  "boot_property": "sys.boot_completed",
-  "expected_value": "1",
-  "timeout_seconds": 15
-}

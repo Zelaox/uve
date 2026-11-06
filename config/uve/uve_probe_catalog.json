@@ -30,7 +30,7 @@
       "tier": "V3",
       "adapter_id": "adb",
       "expectation_ref": "config/uve/expectations/adb_boot_smoke.json",
-      "ui_flow_ref": "config/uve/targets/protrainer/ui_flow_smoke.json",
+      "ui_flow_ref": "config/uve/targets/android_example/ui_flow_smoke.json",
       "fault_policy_ref": "config/uve/application_fault_policy.json"
     },
     "engine_self_check": {
