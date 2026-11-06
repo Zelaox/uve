@@ -1,0 +1,53 @@
+{
+  "schema_version": "uve_application_contract.v1",
+  "project_id": "YOUR_PROJECT_ID",
+  "environment": "development",
+  "identity": {
+    "watch_globs": [
+      "src/**/*",
+      "package.json",
+      "config/**/*",
+      "scripts/**/*",
+      "docs/YOUR_APP_VERIFICATION.md"
+    ],
+    "ignore_globs": [
+      "**/node_modules/**",
+      "**/build/**",
+      "**/.git/**"
+    ]
+  },
+  "code_probe": {
+    "schema_version": "uve_command_probe.v1",
+    "argv": ["node", "scripts/verify-app-code.mjs"],
+    "timeout_seconds": 180,
+    "expected_returncode": 0,
+    "expected_stdout": "Application code acceptance passed"
+  },
+  "bundle_probe": {
+    "schema_version": "uve_command_probe.v1",
+    "argv": ["node", "scripts/verify-app-code.mjs", "--bundle"],
+    "timeout_seconds": 240,
+    "expected_returncode": 0,
+    "expected_stdout": "Application bundle acceptance passed"
+  },
+  "health": {
+    "required_selectors": [
+      {
+        "text": "YOUR_DEBUG_OR_RELEASE_MARKER"
+      }
+    ],
+    "failure_selectors": [
+      {
+        "text": "Something went wrong"
+      }
+    ],
+    "logcat_lookback_seconds": 60,
+    "logcat_max_lines": 1000
+  },
+  "feature_ui_flow": {
+    "schema_version": "uve_ui_flow_binding.v1",
+    "probe_id": "application_feature_ui_flow",
+    "generatedFlowRelativePath": "config/uve/targets/YOUR_PROJECT_ID/ui_flow_feature_smoke.json",
+    "sourceManifestRelativePath": "config/uve/feature-smoke-uve.manifest.json"
+  }
+}

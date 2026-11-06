@@ -17,3 +17,14 @@ python -B -m agent_training.uve.cli gate evaluate --profile YOUR_PROFILE --gate 
 ~~~
 
 For a gate with several required probes, repeat `--probe-run-id` for each receipt from the same stable candidate.
+
+## Templates for a real application
+
+After the command demo, copy and adapt the examples in [`examples/project/`](project/):
+
+- `profile.json`, `root.json`, `command.json` — minimal command profile (Phase 1 in the [adoption plan](../docs/plans/project-adoption/plan.MD))
+- `application.contract.example.json` — application acceptance contract for your app repo
+- `agent-app-workflow.manifest.example.json` — agent probe sequence and debug map
+- `uve-error-registry.manifest.example.json` — failure resolution catalog
+
+The adoption plan walks through Workstation binding, user flows, and invariant severity without assuming a particular product.

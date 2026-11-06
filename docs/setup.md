@@ -80,3 +80,18 @@ node scripts/uve-error-registry-lookup.mjs --from-receipt FAILED_PROBE_RUN_ID
 - [`uve-error-registry-lookup.mjs`](../scripts/uve-error-registry-lookup.mjs) reads a probe receipt and matches observed fields against the [sample registry](../examples/project/error-registry.json). Pass `--registry PATH` for a project registry in the same format, or query observed fields with `--probe-id`, `--failure-class`, and `--fault-rule`. A match exits `0`, no match exits `2`, and invalid input exits `1`. Lookup provides diagnostic guidance. The receipt still determines the probe result.
 
 The portable helpers use the checked-out engine and sample registry. Existing app-specific wrappers and registries belong with the projects that own their contracts, selectors, and recovery policies.
+
+## Full adoption checklist (any project)
+
+For command-only projects through Android application acceptance, agent workflows, error registries, and user-flow invariants, use the product-neutral plan:
+
+- [`docs/plans/project-adoption/plan.MD`](plans/project-adoption/plan.MD)
+
+Templates to copy into **your** app repository (edit every `YOUR_*` placeholder):
+
+| File in this checkout | Purpose |
+| --- | --- |
+| [`examples/project/application.contract.example.json`](../examples/project/application.contract.example.json) | `application.json` shape (code, bundle, health, feature flow binding) |
+| [`examples/project/agent-app-workflow.manifest.example.json`](../examples/project/agent-app-workflow.manifest.example.json) | Probe order, debug hints, optional flow manifest paths |
+| [`examples/project/uve-error-registry.manifest.example.json`](../examples/project/uve-error-registry.manifest.example.json) | Resolution entries and gate rejection hints |
+| [`examples/project/error-registry.json`](../examples/project/error-registry.json) | Minimal registry for the command demo only |

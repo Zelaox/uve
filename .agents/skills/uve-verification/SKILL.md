@@ -13,3 +13,5 @@ Locate the UVE checkout and the target project's profile from the project instru
 - Give the required receipts to the host-assigned independent evaluator. Use the current manifest's required set and keep the resulting trust-chain reference. Report `not_verified` when a required check, binding, or evaluator is unavailable.
 
 Distinguish engine self-checks, runtime tiers, and application acceptance. For Android UI changes, verify the intended app state after interaction. A responding dev server, a screenshot, or an approved infrastructure gate supplies evidence only for its declared checks.
+
+When binding a new repository, read the UVE checkout's [project adoption plan](../../../docs/plans/project-adoption/plan.MD) and copy manifests from `examples/project/*.example.json` into the target app's `config/uve/`. User-flow bugs need flow receipts and invariants, not code-probe pass alone.
