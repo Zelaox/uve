@@ -21,9 +21,19 @@ flowchart LR
 
 ---
 
-## Quick start
+## Why this repo exists (real use, not a demo toy)
 
-Clone with a GitHub account that has access:
+I ([Zelaox](https://github.com/Zelaox)) built and **use UVE every day** in real product development—emulator workflows, Metro, Android UI, and agent-driven fixes. Manifests plus immutable receipts replaced “it looks fine on my machine” and stopped coding agents from claiming **verified** without evidence. **It works really well** for that job.
+
+UVE is **not locked to one app or stack**. The same engine fits **other mobile apps, games, backend services, CLIs, web frontends, tools—whatever you ship**. You copy or generate profiles under `config/uve/`, point probes at *your* commands and runtime bindings, and extend gates when you add features. Nothing in the core assumes a particular product name.
+
+**Using it with an AI agent:** clone this repo, open **your** project, and tell the agent something like: *“Use UVE from `https://github.com/Zelaox/uve`. Add or edit manifests for my repo, run the required probes, print `probe_run_id`s, and do not say verified until the gate approves fresh receipts.”* Install the [uve-verification skill](.agents/skills/uve-verification/SKILL.md) into your project (see [docs/setup.md](docs/setup.md)). The agent changes JSON manifests and probe commands—not the engine—so adaptation is mostly configuration.
+
+This repository is **public**. Anyone can clone, fork, and wire it to their own work.
+
+---
+
+## Quick start
 
 ~~~sh
 git clone https://github.com/Zelaox/uve.git
@@ -199,4 +209,4 @@ Generated logs, probes, gates, and local engine state under `logs/uve/` are not 
 - **pytest**, **Node.js** (for JS mutation acceptance tests), loopback HTTP for recovery fixtures — dev/CI only
 - Live Android verification requires host-bound ADB, emulator, and manifests; the engine does not ship a device or app
 
-License and access: private repository; clone with an authorized GitHub account.
+**License and access:** public repository — [github.com/Zelaox/uve](https://github.com/Zelaox/uve). Clone, adapt manifests for your project, and run probes from your checkout.

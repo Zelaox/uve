@@ -2,7 +2,7 @@
 
 ## Start from a checkout
 
-Use Git and Python 3.11 or newer. Clone the private repository with an account that has access.
+Use Git and Python 3.11 or newer. Clone the public repository:
 
 ~~~sh
 git clone https://github.com/Zelaox/uve.git
