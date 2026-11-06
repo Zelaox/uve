@@ -30,8 +30,6 @@ The demo uses the real command adapter against three isolated copies of a toy ap
 
 The [installation and agent setup guide](docs/setup.md) shows how to bind a real project, install the [Codex skill](.agents/skills/uve-verification/SKILL.md), and use the optional Node workflow and error lookup helpers.
 
-**Adopting UVE in your own repository:** follow the phased checklist in [`docs/plans/project-adoption/plan.MD`](docs/plans/project-adoption/plan.MD). Copy the templates under [`examples/project/`](examples/project/) (`application.contract.example.json`, `agent-app-workflow.manifest.example.json`, `uve-error-registry.manifest.example.json`) and replace placeholders — no dependency on a specific product name or device.
-
 ## What it can do
 
 | Use case | Evidence |
