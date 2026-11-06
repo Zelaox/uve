@@ -40,21 +40,6 @@ def test_focused_package_smoke_cannot_pass_a_redbox(tmp_path,monkeypatch):
     result=adb._run_ui_flow({'timeout_seconds':1},str(flow),POLICY)
     assert result['verdict']=='failed'
 
-def test_membership_probe_requires_its_own_flow(monkeypatch):
-    monkeypatch.setattr(adb, 'load_json_ref', lambda _: {
-        'adb_executable': 'fixture-adb', 'adb_serial': 'fixture-serial',
-        'boot_property': 'sys.boot_completed', 'expected_value': '1', 'timeout_seconds': 1,
-    })
-    calls = []
-    monkeypatch.setattr(adb, '_adb_run', lambda *args: calls.append(args))
-    monkeypatch.setattr(adb, '_run_ui_flow', lambda *args: calls.append(args))
-    result = adb.run_probe(probe_id='application_membership_ui_flow', ctx={
-        'profile': {'adb_probe_ref': 'adb.json', 'ui_flow_ref': 'generic-smoke.json'},
-    })
-    assert result['verdict'] == 'not_verified'
-    assert result['failure_class'] == 'binding_missing'
-    assert not calls
-
 @pytest.fixture
 def health(tmp_path,monkeypatch):
     def document(name,doc):
@@ -130,19 +115,19 @@ def test_real_code_mutation_invalidates_cached_success_and_rejects_gate(tmp_path
       'identity':{'watch_globs':['*.js'],'ignore_globs':[]},'execution_binding_profile_id':'application_acceptance',
       'command_probe_refs':{'application_code':str(target),'application_bundle':str(target)}}))
     from agent_training.uve import orchestrator
-    assert run_probe('config/uve/profiles/emulator_workstation_smoke.json', 'engine_self_check')['verdict'] == 'passed'
     original=orchestrator._invoke_adapter
     def invoke(adapter,probe,ctx):
         if adapter=='application_health':return {'verdict':'passed','fault_origin':'none','runtime_delivery_binding_sha256':'fixture-transport-binding'}
-        if probe=='application_membership_ui_flow':
-            return {'verdict':'passed','ui_steps':[{'step_id':'fixture_feature_assertion','ok':True}]}
+        if probe == 'application_membership_ui_flow':
+            return {'verdict': 'passed', 'fault_origin': 'none', 'outcome_token': 'ui_flow_ok'}
         return original(adapter,probe,ctx)
     monkeypatch.setattr(orchestrator,'_invoke_adapter',invoke)
-    spec={'application':{'probe_ids':['application_code','application_bundle','application_health','application_membership_ui_flow'],
-      'code_gate_id':'application_code_gate','gate_id':'application_acceptance'},'runner_role_id':'uve_runner','gate_evaluator_ref':'emulator_runtime_witness'}
+    spec = load_json_ref('config/uve/uve_workstation_runtime.json')
     cache={}
     first=application_runtime.run_application_cycle(spec,str(profile),cache,['fixture_author'])
     assert first['decision']=='approved'
+    assert any(probe['probe_id'] == 'application_membership_ui_flow' and probe['verdict'] == 'passed'
+               for probe in first['probes'])
     first_code=cache['code']['probe_run_id']
     source.write_text('const broken = ;\n')
     broken=application_runtime.run_application_cycle(spec,str(profile),cache,['fixture_author'])

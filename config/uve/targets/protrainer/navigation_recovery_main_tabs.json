@@ -1,0 +1,34 @@
+{
+  "schema_version": "uve_ui_navigation_recovery.v1",
+  "guest_package_profile_field": "guest_package_ref",
+  "guest_package_ref": "config/uve/targets/protrainer/guest_package.json",
+  "runtime_context_profile_field": "runtime_context_ref",
+  "experience_uri_template": "exp://127.0.0.1:{dev_server_port}/",
+  "adb_reverse_before_launch": true,
+  "max_attempts": 14,
+  "settle_ms": 500,
+  "max_back_keyevents_per_attempt": 3,
+  "ready_when_any": [
+    {
+      "resource-id": "mobile-tab-community"
+    }
+  ],
+  "settings_markers_text": [
+    "NOTIFICATIONS",
+    "PUSH NOTIFICATIONS"
+  ],
+  "off_tabs_markers_text": [
+    "Change password",
+    "Language",
+    "Clear cache",
+    "Delete account",
+    "Account status",
+    "View warnings and moderation actions"
+  ],
+  "home_tab_tap_selector": {
+    "text": "Home"
+  },
+  "blocking_overlay_text_contains": [
+    "expo-notifications"
+  ]
+}

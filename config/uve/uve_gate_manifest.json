@@ -23,7 +23,7 @@
       "require_identity_stable": true,
       "evaluator_role": "uve_gate"
     },
-    "android_example_dev_gate": {
+    "protrainer_dev_gate": {
       "required_probe_ids": [
         "metro_status",
         "engine_self_check"

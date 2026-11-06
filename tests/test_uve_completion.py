@@ -332,7 +332,11 @@ def test_screenshot_is_content_addressed_without_overriding_failed_ui(monkeypatc
     def load(ref):
         return spec if ref == "adb" else {"screenshot": True}
     monkeypatch.setattr(adb, "load_json_ref", load)
-    monkeypatch.setattr(adb, "_run_ui_flow", lambda *args: {"verdict": "failed", "fault_origin": "subject_fault"})
+    monkeypatch.setattr(
+        adb,
+        "_run_ui_flow",
+        lambda *args, **kwargs: {"verdict": "failed", "fault_origin": "subject_fault"},
+    )
     png = b"\x89PNG\r\n\x1a\nfixture"
     monkeypatch.setattr(adb.subprocess, "run", lambda *args, **kwargs: subprocess.CompletedProcess([], 0, png, b""))
     result = adb.run_probe(probe_id="adb_ui_flow", ctx={"profile": {"adb_probe_ref": "adb", "ui_flow_ref": "flow"}, "role_id": "uve_runner"})

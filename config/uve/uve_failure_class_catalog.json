@@ -28,6 +28,12 @@
     "adapter_error": {
       "description": "Adapter execution or evidence capture failed"
     },
+    "uiautomator_unavailable": {
+      "description": "UIAutomator hierarchy dump failed after retries; verification infrastructure not the application under test"
+    },
+    "navigation_recovery_exhausted": {
+      "description": "State-aware navigation recovery could not reach the declared ready screen within attempt budget"
+    },
     "binding_missing": {
       "description": "Required execution binding missing"
     },

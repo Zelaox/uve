@@ -28,6 +28,8 @@ Application acceptance has a separate contract at `config/uve/application.json` 
 
 The [Android example profile](../config/uve/profiles/android_example_development.json) shows how to wire a local checkout, an ADB target, a Metro endpoint, and a UI flow. The shipped ADB serial is blank. For a live run, copy the target and profile, set the workspace through `UVE_ANDROID_EXAMPLE_ROOT`, and bind the actual ADB executable, selected serial, foreground package, and expected UI state. The sample flow checks boot and a foreground package. Add app-specific selectors and state assertions for feature acceptance. Screenshots are supplementary evidence.
 
+`adb_ui_flow` steps may include `navigation_recovery` before feature taps. The step loads a project-owned policy manifest (for example `config/uve/targets/<project>/navigation_recovery_main_tabs.json`) and runs the `ui_navigation_recovery` adapter to relaunch the guest package, dismiss blocking overlays, and return to a known tab/stack without blind Back spam. Failures classify as `navigation_recovery_exhausted`; UIAutomator dump failures classify as `uiautomator_unavailable` in the engine failure-class catalog. See [docs/UVE.md](UVE.md) for Workstation integration and application acceptance boundaries.
+
 The AI Lab adapter invokes a separately installed runner through `UVE_AI_LAB_ROOT` and a run manifest. The historical-import path accepts a `training_quality_receipt.v1` document. The checkpoint gate requires the live runner as its evidence source.
 
 ## Evidence handling

@@ -6,7 +6,7 @@ from agent_training.manifest_loader import load_json_ref
 
 
 def test_parallel_lease_blocks_second_holder():
-    profile = load_json_ref("config/uve/profiles/android_example_development.json")
+    profile = load_json_ref("config/uve/profiles/protrainer_development.json")
     first, fail1 = acquire_probe_lease(profile, "metro_status", "holder_a")
     assert first is not None
     assert fail1 is None
@@ -26,11 +26,11 @@ def test_orchestrator_lease_denied_receipt(monkeypatch):
     from agent_training.paths import pipeline_root
     from agent_training.uve.orchestrator import run_probe
 
-    monkeypatch.setenv("UVE_ANDROID_EXAMPLE_ROOT", str(pipeline_root()))
-    profile_ref = "config/uve/profiles/android_example_development.json"
+    monkeypatch.setenv("UVE_PROTRAINER_ROOT", str(pipeline_root()))
+    profile_ref = "config/uve/profiles/protrainer_development.json"
     profile = load_json_ref(profile_ref)
     lm = LeaseManager()
-    port = load_json_ref("config/uve/targets/android_example/metro_port.json")
+    port = load_json_ref("config/uve/targets/protrainer/metro_port.json")
     from agent_training.uve.lease_policy import resources_for_probe
     _, key = resources_for_probe(profile, "metro_status")[0]
     lease_id = lm.acquire("dev_server_port", key, "blocker")

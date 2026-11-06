@@ -35,7 +35,7 @@ The [installation and agent setup guide](docs/setup.md) shows how to bind a real
 | Use case | Evidence |
 | --- | --- |
 | Catch a build or behavior regression | Run a declared command, record its exit and output, and bind the result to the watched files and configuration. |
-| Verify Android runtime and UI | Check ADB transport, boot, foreground package, and app-specific selectors. Assert outcomes after interactions. UI fault policy can reject a visible error overlay even when a healthy selector is also present. |
+| Verify Android runtime and UI | Check ADB transport, boot, foreground package, and app-specific selectors. Assert outcomes after interactions. UI fault policy can reject a visible error overlay even when a healthy selector is also present. Optional `navigation_recovery` steps stabilize tab/stack state before feature flows. |
 | Diagnose and recover a dev server | Detect Metro health failures, lease the endpoint, and run an explicitly allowed recovery with a passing retest chain. |
 | Evaluate a repair | Require the full probe set, recheck identity and receipt hashes, and reject approval by a recorded repair author. |
 | Preserve evidence for later use | Compare regression baselines, link issues to receipts, or generate a training row with configured secret placeholders. |

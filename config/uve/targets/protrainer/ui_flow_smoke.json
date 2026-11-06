@@ -1,0 +1,17 @@
+{
+  "schema_version": "uve_ui_flow.v1",
+  "steps": [
+    {
+      "step_id": "boot_completed",
+      "kind": "shell_property",
+      "property": "sys.boot_completed",
+      "expected": "1"
+    },
+    {
+      "step_id": "foreground_package",
+      "kind": "shell_dump_window",
+      "assertion": "package_present",
+      "package_substring_ref": "config/uve/targets/protrainer/guest_package.json"
+    }
+  ]
+}
