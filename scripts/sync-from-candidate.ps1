@@ -72,14 +72,6 @@ if (-not (Test-Path $fixtureDst)) {
 }
 Copy-Item -LiteralPath (Join-Path $candidate "fixtures\prepare_reference_sources.py") `
     -Destination (Join-Path $fixtureDst "prepare_reference_sources.py") -Force
-@("comment_probe.mjs", "video_probe.mjs") | ForEach-Object {
-    $src = Join-Path $candidate "fixtures\protrainer\$_"
-    if (Test-Path $src) {
-        $dir = Join-Path $fixtureDst "protrainer"
-        New-Item -ItemType Directory -Path $dir -Force | Out-Null
-        Copy-Item -LiteralPath $src -Destination (Join-Path $dir $_) -Force
-    }
-}
 @("build_probe.py", "state_probe.cpp") | ForEach-Object {
     $src = Join-Path $candidate "fixtures\workstation\$_"
     if (Test-Path $src) {
@@ -91,5 +83,24 @@ Copy-Item -LiteralPath (Join-Path $candidate "fixtures\prepare_reference_sources
 
 Copy-Item -LiteralPath (Join-Path $candidate "config\uve\uve_witness_manifest.json") `
     -Destination (Join-Path $github "config\uve\uve_witness_manifest.json") -Force
+
+# Standalone github repo must not ship ProTrainer-specific trees.
+@(
+    "config\uve\targets\protrainer",
+    "config\uve\fixtures\deep_protrainer_comments",
+    "config\uve\fixtures\deep_protrainer_video",
+    "fixtures\protrainer"
+) | ForEach-Object {
+    $path = Join-Path $github $_
+    if (Test-Path $path) { Remove-Item -LiteralPath $path -Recurse -Force }
+}
+@(
+    "config\uve\profiles\protrainer_development.json",
+    "config\uve\profiles\deep_protrainer_comments.json",
+    "config\uve\profiles\deep_protrainer_video.json"
+) | ForEach-Object {
+    $path = Join-Path $github $_
+    if (Test-Path $path) { Remove-Item -LiteralPath $path -Force }
+}
 
 Write-Host "Sync complete: $github"

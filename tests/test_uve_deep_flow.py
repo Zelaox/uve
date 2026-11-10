@@ -125,8 +125,17 @@ def test_incomplete_bindings_and_unsafe_fault_scope_do_not_execute(isolated_prob
     result = run_probe(profile, "deep_flow_v5")
     assert result["verdict"] == "not_verified" and result["failure_class"] == "binding_missing"
     policy = bundle.load_manifest_bundle()["_loaded"]["config/uve/uve_deep_flow_manifest.json"]
+    baseline_only = _json(
+        temp / "baseline_only_flow.json",
+        {
+            "schema_version": "uve_deep_flow.v1",
+            "flow_id": "baseline_only_contract",
+            "bindings": {},
+            "cases": [{"case_id": "only", "kind": "baseline", "steps": [], "invariants": [], "trace_edges": []}],
+        },
+    )
     with pytest.raises(FlowContractError, match="needs a fault scenario"):
-        compile_flow("config/uve/fixtures/deep_protrainer_comments/flow.json", policy, 6)
+        compile_flow(baseline_only, policy, 6)
     external = json.loads(Path(profile).read_text(encoding="utf-8"))
     external.update(deep_flow_ref="config/uve/fixtures/deep_workstation/flow.json", deep_flow_scope="production")
     rejected = run_probe(_json(temp / "production.json", external), "deep_flow_v6")

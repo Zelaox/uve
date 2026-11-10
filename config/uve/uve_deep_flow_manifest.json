@@ -9,11 +9,7 @@
     "workstation_save_initial": {"command_ref": "config/uve/fixtures/deep_workstation/save_initial.json"},
     "workstation_save_update": {"command_ref": "config/uve/fixtures/deep_workstation/save_update.json"},
     "workstation_load": {"command_ref": "config/uve/fixtures/deep_workstation/load.json"},
-    "workstation_commit_then_wait": {"command_ref": "config/uve/fixtures/deep_workstation/commit_then_wait.json"},
-    "video_seed": {"command_ref": "config/uve/fixtures/deep_protrainer_video/seed.json"},
-    "video_run": {"command_ref": "config/uve/fixtures/deep_protrainer_video/run.json"},
-    "video_interrupt": {"command_ref": "config/uve/fixtures/deep_protrainer_video/interrupt.json"},
-    "video_resume": {"command_ref": "config/uve/fixtures/deep_protrainer_video/resume.json"}
+    "workstation_commit_then_wait": {"command_ref": "config/uve/fixtures/deep_workstation/commit_then_wait.json"}
   },
   "adapters": {
     "command": {"kind": "command", "authority": "declared_command"},

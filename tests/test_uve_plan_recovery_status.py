@@ -46,10 +46,21 @@ def test_gate_not_verified_when_engine_degraded():
         write_engine_state(engine_degraded=False, probe_run_id="test-recover")
 
 
-def test_adb_ui_flow_dry_fail():
-    os.environ["UVE_PROTRAINER_ROOT"] = str(pipeline_root())
+def test_adb_ui_flow_dry_fail(monkeypatch):
+    from agent_training.uve.adapters import adb as adb_adapter
+
+    os.environ["UVE_ANDROID_EXAMPLE_ROOT"] = str(pipeline_root())
+    original_load = adb_adapter.load_json_ref
+
+    def load_with_serial(ref: str):
+        doc = original_load(ref)
+        if ref.endswith("adb_probe.json"):
+            return {**doc, "adb_serial": "emulator-5554"}
+        return doc
+
+    monkeypatch.setattr(adb_adapter, "load_json_ref", load_with_serial)
     receipt = run_probe(
-        "config/uve/profiles/protrainer_development.json",
+        "config/uve/profiles/android_example_development.json",
         "adb_ui_flow",
         dry_mode="ui_fail",
     )
