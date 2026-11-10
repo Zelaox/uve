@@ -20,6 +20,7 @@
   "timeout_seconds": 60,
   "contract_test_refs": [
     "tests/test_uve_candidate_contract.py",
-    "tests/test_uve_application_guard.py"
+    "tests/test_uve_application_guard.py",
+    "tests/test_uve_deep_flow.py"
   ]
 }

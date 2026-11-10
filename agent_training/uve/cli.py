@@ -53,6 +53,29 @@ def cmd_recovery(args: argparse.Namespace) -> int:
     return 0 if out["status"] == "complete" else 2
 
 
+def cmd_flow_inspect(args: argparse.Namespace) -> int:
+    from agent_training.uve.flow_replay import compare, replay, triage
+
+    receipt = _load_probe_receipt(args.probe_run_id)
+    if args.flow_action == "replay":
+        result = replay(receipt, "uve_runner")
+    elif args.flow_action == "compare":
+        result = compare(receipt, _load_probe_receipt(args.with_probe_run_id), "uve_runner")
+    else:
+        result = triage(receipt, args.registry_ref)
+    print(json.dumps(result, indent=2))
+    return 0 if result.get("matches_receipt", True) else 2
+
+
+def cmd_flow_status(_args: argparse.Namespace) -> int:
+    from agent_training.uve.bundle import load_manifest_bundle
+    from agent_training.uve.flow_status import collect_deep_status
+
+    bundle = load_manifest_bundle()
+    print(json.dumps(collect_deep_status(bundle["manifest_bundle_sha256"]), indent=2))
+    return 0
+
+
 def cmd_status(_args: argparse.Namespace) -> int:
     from agent_training.uve.status import collect_uve_status
 
@@ -85,6 +108,10 @@ def cmd_gate_evaluate(args: argparse.Namespace) -> int:
         repair_actor_refs=args.repair_actor_ref,
     )
     write_json_atomic(resolve_log_dir() / "gates" / f"{gate['trust_chain_ref']}.json", gate)
+    if any(probe["probe"]["adapter_id"] == "deep_flow" for probe in probes):
+        from agent_training.uve.flow_status import index_gate
+
+        index_gate(gate, probes)
     if gate["decision"] in ("rejected", "not_verified"):
         profile_ref = args.profile if hasattr(args, "profile") and args.profile else None
         if profile_ref:
@@ -133,6 +160,17 @@ def main(argv: list[str] | None = None) -> int:
     pr.set_defaults(func=cmd_probe_run)
 
     p_gate = sub.add_parser("gate")
+    p_flow = sub.add_parser("flow", help="Inspect projected flow evidence without touching its target")
+    flow_commands = p_flow.add_subparsers(dest="flow_action", required=True)
+    flow_commands.add_parser("status").set_defaults(func=cmd_flow_status)
+    for action in ("replay", "triage", "compare"):
+        command = flow_commands.add_parser(action)
+        command.add_argument("--probe-run-id", required=True)
+        if action == "triage":
+            command.add_argument("--registry-ref")
+        if action == "compare":
+            command.add_argument("--with-probe-run-id", required=True)
+        command.set_defaults(func=cmd_flow_inspect)
     p_gate_sub = p_gate.add_subparsers(dest="gate_cmd", required=True)
     ge = p_gate_sub.add_parser("evaluate")
     ge.add_argument("--gate", required=True)

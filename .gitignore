@@ -1,5 +1,7 @@
 /logs/
+/artifacts/
 /config/uve/uve_engine_state.json
+/training_gui_ui/
 /.venv/
 /.pytest_cache/
 __pycache__/

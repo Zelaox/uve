@@ -1,0 +1,50 @@
+{
+  "schema_version": "uve_deep_flow_policy.v1",
+  "fixture_store_ref": "config/uve/targets/deep_flow_fixture_store.json",
+  "status_store_relative": "flow-status",
+  "status_max_profiles": 12,
+  "allow_live_adb": false,
+  "fault_allowed_scopes": ["owned_fixture"],
+  "fault_commands": {
+    "workstation_save_initial": {"command_ref": "config/uve/fixtures/deep_workstation/save_initial.json"},
+    "workstation_save_update": {"command_ref": "config/uve/fixtures/deep_workstation/save_update.json"},
+    "workstation_load": {"command_ref": "config/uve/fixtures/deep_workstation/load.json"},
+    "workstation_commit_then_wait": {"command_ref": "config/uve/fixtures/deep_workstation/commit_then_wait.json"},
+    "video_seed": {"command_ref": "config/uve/fixtures/deep_protrainer_video/seed.json"},
+    "video_run": {"command_ref": "config/uve/fixtures/deep_protrainer_video/run.json"},
+    "video_interrupt": {"command_ref": "config/uve/fixtures/deep_protrainer_video/interrupt.json"},
+    "video_resume": {"command_ref": "config/uve/fixtures/deep_protrainer_video/resume.json"}
+  },
+  "adapters": {
+    "command": {"kind": "command", "authority": "declared_command"},
+    "fixture_file": {"kind": "fixture_file", "authority": "independent_file_read"},
+    "fixture_absent": {"kind": "fixture_absent", "authority": "independent_file_read"},
+    "fixture_fault": {"kind": "fault_file", "authority": "owned_fault_injector", "fault_capable": true},
+    "owned_process_fault": {"kind": "fault_process", "authority": "owned_process_monitor", "fault_capable": true},
+    "adb_ui": {"kind": "adb", "authority": "android_ui", "probe_id": "adb_ui_flow"}
+  },
+  "fault_actions": {
+    "corrupt_primary": {"kind": "replace_fixture_file", "replacement_utf8": "invalid-fixture-state"},
+    "interrupt_after_checkpoint": {"kind": "kill_owned_process", "ack_path": ["saved"]}
+  },
+  "severity": ["critical", "major", "minor"],
+  "budgets": {
+    "flow_seconds": 60,
+    "step_seconds": 20,
+    "process_exit_seconds": 3,
+    "poll_seconds": 0.025,
+    "output_bytes": 262144,
+    "evidence_bytes": 4194304,
+    "case_count": 12,
+    "steps_per_case": 24,
+    "event_count": 256
+  },
+  "triage": {
+    "fixture": {"priority": 10, "rule_id": "fixture_start_unproven", "next_probe": "fixture_setup"},
+    "step": {"priority": 20, "rule_id": "adapter_step_unproven", "next_probe": "step_observation"},
+    "injection": {"priority": 30, "rule_id": "injection_unproven", "next_probe": "injection_boundary"},
+    "invariant": {"priority": 40, "rule_id": "observed_invariant_difference", "next_probe": "invariant_operands"},
+    "trace": {"priority": 50, "rule_id": "causal_evidence_missing", "next_probe": "trace_source"},
+    "cleanup": {"priority": 60, "rule_id": "cleanup_unproven", "next_probe": "fixture_cleanup"}
+  }
+}

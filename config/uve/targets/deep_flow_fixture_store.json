@@ -1,0 +1,4 @@
+{
+  "schema_version": "uve_deep_flow_fixture_store.v1",
+  "work_dir": "{log_root}/flow-fixtures"
+}

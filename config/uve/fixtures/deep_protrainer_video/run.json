@@ -1,0 +1,15 @@
+{
+  "schema_version": "uve_command_probe.v1",
+  "argv": [
+    "node",
+    "--experimental-vm-modules",
+    "fixtures/protrainer/video_probe.mjs",
+    "{fixture_root}",
+    "{operation_id}",
+    "run",
+    "config/uve/fixtures/deep_protrainer_video/recipe.json"
+  ],
+  "recipe_ref": "config/uve/fixtures/deep_protrainer_video/recipe.json",
+  "timeout_seconds": 15,
+  "expected_returncode": 0
+}

@@ -1,0 +1,19 @@
+{
+  "schema_version": "uve_workstation_fixture.v1",
+  "compiler_env": "UVE_FIXTURE_CXX",
+  "source_root_relative": "fixtures/workstation/source",
+  "source_files": [
+    "fixtures/workstation/state_probe.cpp",
+    "fixtures/workstation/source/core/state/app_state_store.cpp"
+  ],
+  "flags": [
+    "-std=c++20",
+    "-O2",
+    "-static"
+  ],
+  "output_relative": "artifacts/workstation_state_probe.exe",
+  "fixture_values": {
+    "initial_revision": 6,
+    "updated_revision": 9
+  }
+}

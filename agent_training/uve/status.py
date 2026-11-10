@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from agent_training.uve.bundle import resolve_log_dir, load_engine_manifest
+from agent_training.uve.bundle import resolve_log_dir, load_engine_manifest, load_manifest_bundle
 from agent_training.manifest_loader import load_json_ref
 from agent_training.uve.engine_state import read_engine_state
 
@@ -28,6 +28,12 @@ def collect_uve_status() -> dict[str, Any]:
             except (OSError, ValueError):
                 runtime = {"state": "not_verified", "reason": "runtime status unavailable"}
     issues_dir = log_dir / "issues"
+    from agent_training.uve.flow_status import collect_deep_status
+
+    try:
+        deep_flows = collect_deep_status(load_manifest_bundle()["manifest_bundle_sha256"])
+    except Exception:
+        deep_flows = []
     issue_count = 0
     if issues_dir.is_dir():
         for path in issues_dir.glob("*.json"):
@@ -42,6 +48,7 @@ def collect_uve_status() -> dict[str, Any]:
         "runtime": runtime,
         "latest_probe": latest_probe,
         "latest_gate": latest_gate,
+        "deep_flows": deep_flows,
         "open_issue_artifacts": issue_count,
         "log_dir": str(log_dir),
     }

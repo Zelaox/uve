@@ -1,0 +1,18 @@
+{
+  "schema_version": "uve_project_profile.v1",
+  "project_id": "deep_reference_sources",
+  "environment": "isolated_fixture",
+  "identity": {
+    "watch_globs": ["agent_training/**/*.py", "config/uve/**/*.json", "fixtures/prepare_reference_sources.py"],
+    "ignore_globs": ["logs/**", "**/__pycache__/**"]
+  },
+  "lease_requirements": {
+    "command_check": {
+      "resource_kind": "mutation_work_dir",
+      "key_ref": "config/uve/targets/deep_flow_fixture_store.json",
+      "path_key_fields": ["work_dir"]
+    }
+  },
+  "command_probe_refs": {"command_check": "config/uve/fixtures/deep_reference_prepare.json"},
+  "sync_issues_on_failure": false
+}

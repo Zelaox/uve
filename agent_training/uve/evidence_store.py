@@ -76,3 +76,15 @@ class EvidenceStore:
 
     def can_read_raw(self, role_id: str) -> bool:
         return "read_raw" in self._roles.get(role_id, frozenset())
+
+    def read_artifact(self, role_id: str, ref: dict[str, Any], *, maximum_bytes: int) -> bytes:
+        self._check(role_id, "read_raw")
+        digest = ref.get("store_ref", "")
+        if (not isinstance(digest, str) or len(digest) != 64 or any(c not in "0123456789abcdef" for c in digest)
+                or ref.get("content_sha256") != f"sha256:{digest}"):
+            raise ManifestError("invalid content-addressed evidence reference")
+        with self._safe_path(digest).open("rb") as stream:
+            data = stream.read(maximum_bytes + 1)
+        if len(data) > maximum_bytes or len(data) != ref.get("bytes") or hashlib.sha256(data).hexdigest() != digest:
+            raise ManifestError("artifact size or digest does not match its receipt")
+        return data

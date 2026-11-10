@@ -1,0 +1,35 @@
+{
+  "schema_version": "uve_project_profile.v1",
+  "project_id": "ai_lab_incident_bridge",
+  "environment": "development",
+  "project_root_ref": "config/uve/targets/ai_lab_bridge/project_root.json",
+  "workspace_root_relative": ".",
+  "identity": {
+    "watch_globs": [
+      "config/lab_uve_*.json",
+      "mcp_server/diagnostics/lab_uve_*.py",
+      "scripts/debug/triage_incident_bundle.py",
+      "scripts/debug/validate_lab_uve_incident_bundle.py"
+    ],
+    "ignore_globs": [
+      "**/__pycache__/**",
+      "**/.pytest_cache/**",
+      "logs/**",
+      "data/**",
+      "venv_wsl/**",
+      "uve-v4-v6-candidate/**",
+      "uve-workstation-audit/**",
+      "uve-binding-work/**",
+      "Binary water fall 2/**",
+      "Hex editor/**",
+      ".staging/**"
+    ]
+  },
+  "command_probe_refs": {
+    "command_check": "config/uve/targets/ai_lab_bridge/bundle_validate_check.json"
+  },
+  "verification_probe_ids": ["command_check"],
+  "gate_ids": ["lab_incident_bundle_gate"],
+  "execution_binding_profile_id": "emulator_workstation_smoke",
+  "sync_issues_on_failure": false
+}

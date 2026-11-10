@@ -1,0 +1,28 @@
+{
+  "schema_version": "uve_project_profile.v1",
+  "project_id": "protrainer_community_core",
+  "environment": "isolated_fixture",
+  "deep_flow_ref": "config/uve/fixtures/deep_protrainer_comments/flow.json",
+  "identity": {
+    "watch_globs": [
+      "agent_training/**/*.py",
+      "config/uve/**/*.json",
+      "fixtures/protrainer/**/*"
+    ],
+    "ignore_globs": [
+      "logs/**",
+      "**/__pycache__/**",
+      ".pytest_cache/**"
+    ]
+  },
+  "verification_probe_ids": [
+    "deep_flow_v4",
+    "deep_flow_v5"
+  ],
+  "gate_ids": [
+    "deep_flow_v4",
+    "deep_flow_v5"
+  ],
+  "change_class_rules_ref": "config/uve/fixtures/deep_protrainer_comments/change_rules.json",
+  "sync_issues_on_failure": false
+}

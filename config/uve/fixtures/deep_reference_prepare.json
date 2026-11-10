@@ -1,0 +1,8 @@
+{
+  "schema_version": "uve_command_probe.v1",
+  "sources_ref": "config/uve/fixtures/deep_reference_sources.json",
+  "argv": ["{python}", "fixtures/prepare_reference_sources.py", "config/uve/fixtures/deep_reference_sources.json"],
+  "timeout_seconds": 60,
+  "expected_returncode": 0,
+  "expected_stdout": "reference_sources_prepared"
+}

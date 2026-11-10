@@ -118,12 +118,16 @@ def test_real_code_mutation_invalidates_cached_success_and_rejects_gate(tmp_path
     original=orchestrator._invoke_adapter
     def invoke(adapter,probe,ctx):
         if adapter=='application_health':return {'verdict':'passed','fault_origin':'none','runtime_delivery_binding_sha256':'fixture-transport-binding'}
+        if probe == 'application_membership_ui_flow':
+            return {'verdict': 'passed', 'fault_origin': 'none', 'outcome_token': 'ui_flow_ok'}
         return original(adapter,probe,ctx)
     monkeypatch.setattr(orchestrator,'_invoke_adapter',invoke)
     spec = load_json_ref('config/uve/uve_workstation_runtime.json')
     cache={}
     first=application_runtime.run_application_cycle(spec,str(profile),cache,['fixture_author'])
     assert first['decision']=='approved'
+    assert any(probe['probe_id'] == 'application_membership_ui_flow' and probe['verdict'] == 'passed'
+               for probe in first['probes'])
     first_code=cache['code']['probe_run_id']
     source.write_text('const broken = ;\n')
     broken=application_runtime.run_application_cycle(spec,str(profile),cache,['fixture_author'])

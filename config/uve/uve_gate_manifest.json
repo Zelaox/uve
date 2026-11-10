@@ -1,6 +1,24 @@
 {
   "schema_version": "uve_gate_manifest.v1",
   "gates": {
+    "deep_flow_v4": {
+      "required_probe_ids": ["deep_flow_v4"],
+      "require_identity_stable": true,
+      "require_flow_replay": true,
+      "evaluator_role": "uve_gate"
+    },
+    "deep_flow_v5": {
+      "required_probe_ids": ["deep_flow_v5"],
+      "require_identity_stable": true,
+      "require_flow_replay": true,
+      "evaluator_role": "uve_gate"
+    },
+    "deep_flow_v6": {
+      "required_probe_ids": ["deep_flow_v6"],
+      "require_identity_stable": true,
+      "require_flow_replay": true,
+      "evaluator_role": "uve_gate"
+    },
     "smoke_close_issue": {
       "required_probe_ids": [
         "dry_echo"
@@ -23,7 +41,7 @@
       "require_identity_stable": true,
       "evaluator_role": "uve_gate"
     },
-    "android_example_dev_gate": {
+    "protrainer_dev_gate": {
       "required_probe_ids": [
         "metro_status",
         "engine_self_check"
@@ -44,6 +62,27 @@
       }
     },
     "command_check": {
+      "required_probe_ids": [
+        "command_check"
+      ],
+      "require_identity_stable": true,
+      "evaluator_role": "uve_gate"
+    },
+    "lab_incident_bundle_gate": {
+      "required_probe_ids": [
+        "command_check"
+      ],
+      "require_identity_stable": true,
+      "evaluator_role": "uve_gate"
+    },
+    "ruined_catacombs_contract_gate": {
+      "required_probe_ids": [
+        "command_check"
+      ],
+      "require_identity_stable": true,
+      "evaluator_role": "uve_gate"
+    },
+    "ailab_engine_contract_gate": {
       "required_probe_ids": [
         "command_check"
       ],

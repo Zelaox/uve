@@ -1,6 +1,7 @@
 {
   "schema_version": "uve_manifest_trust_manifest.v1",
   "protected_manifest_globs": [
+    "config/uve/uve_deep_flow_manifest.json",
     "config/uve/uve_probe_catalog.json",
     "config/uve/uve_gate_manifest.json",
     "config/uve/uve_adapter_catalog.json",

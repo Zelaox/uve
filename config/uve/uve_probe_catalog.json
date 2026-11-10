@@ -1,6 +1,30 @@
 {
   "schema_version": "uve_probe_catalog.v1",
   "probes": {
+    "deep_flow_v4": {
+      "level": "L4",
+      "tier": "V4",
+      "depth": 4,
+      "adapter_id": "deep_flow",
+      "expectation_ref": "config/uve/expectations/deep_flow.json",
+      "deep_flow_policy_ref": "config/uve/uve_deep_flow_manifest.json"
+    },
+    "deep_flow_v5": {
+      "level": "L4",
+      "tier": "V5",
+      "depth": 5,
+      "adapter_id": "deep_flow",
+      "expectation_ref": "config/uve/expectations/deep_flow.json",
+      "deep_flow_policy_ref": "config/uve/uve_deep_flow_manifest.json"
+    },
+    "deep_flow_v6": {
+      "level": "L4",
+      "tier": "V6",
+      "depth": 6,
+      "adapter_id": "deep_flow",
+      "expectation_ref": "config/uve/expectations/deep_flow.json",
+      "deep_flow_policy_ref": "config/uve/uve_deep_flow_manifest.json"
+    },
     "dry_echo": {
       "level": "L2",
       "tier": "infra",
@@ -30,7 +54,7 @@
       "tier": "V3",
       "adapter_id": "adb",
       "expectation_ref": "config/uve/expectations/adb_boot_smoke.json",
-      "ui_flow_ref": "config/uve/targets/android_example/ui_flow_smoke.json",
+      "ui_flow_ref": "config/uve/targets/protrainer/ui_flow_smoke.json",
       "fault_policy_ref": "config/uve/application_fault_policy.json"
     },
     "engine_self_check": {

@@ -1,0 +1,39 @@
+{
+  "schema_version": "uve_project_profile.v1",
+  "project_id": "ailab_engine",
+  "environment": "development",
+  "project_root_ref": "config/uve/targets/ailab_engine/project_root.json",
+  "workspace_root_relative": ".",
+  "identity": {
+    "watch_globs": [
+      "engine/src/**/*",
+      "engine/apps/**/*",
+      "engine/include/**/*",
+      "engine/CMakeLists.txt",
+      "engine/config/**/*",
+      "engine/.cursor/skills/editor-impact-gate/**/*",
+      "config/lab_uve_engine_binding.json",
+      "config/engine_triage_policy.json",
+      "config/engine_runtime_log_policy.json",
+      "config/engine_event_registry.json",
+      "scripts/debug/validate_engine_uve.py",
+      "scripts/debug/triage_engine_session.py",
+      "mcp_server/diagnostics/engine_uve_validate.py"
+    ],
+    "ignore_globs": [
+      "**/__pycache__/**",
+      "**/.pytest_cache/**",
+      "logs/**",
+      "engine/build/**",
+      "**/_deps/**",
+      "venv_wsl/**"
+    ]
+  },
+  "command_probe_refs": {
+    "command_check": "config/uve/targets/ailab_engine/contract_check.json"
+  },
+  "verification_probe_ids": ["command_check"],
+  "gate_ids": ["ailab_engine_contract_gate"],
+  "execution_binding_profile_id": "emulator_workstation_smoke",
+  "sync_issues_on_failure": false
+}

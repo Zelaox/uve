@@ -1,0 +1,28 @@
+{
+  "schema_version": "uve_deep_reference_sources.v1",
+  "fixture_root_relative": "fixtures",
+  "max_source_file_bytes": 4194304,
+  "fixtures": [
+    {
+      "id": "workstation_state",
+      "source_root_env": "UVE_WORKSTATION_ROOT",
+      "destination_relative": "fixtures/workstation/source",
+      "source_globs": ["core/state/app_state_store.cpp", "core/state/app_state_store.hpp"]
+    },
+    {
+      "id": "protrainer_community",
+      "source_root_env": "UVE_PROTRAINER_ROOT",
+      "destination_relative": "fixtures/protrainer/project",
+      "source_globs": [
+        "scripts/lib/community-comment-visibility-diagnostic.mjs",
+        "packages/protrainer-core/*.json",
+        "packages/protrainer-core/src/**/*.js",
+        "packages/protrainer-core/src/**/*.mjs",
+        "config/community-video-jobs.manifest.json",
+        "src/services/communityVideoNativeClient.js",
+        "src/services/communityVideoHeadlessTask.js",
+        "src/services/communityVideoJobPublisher.js"
+      ]
+    }
+  ]
+}

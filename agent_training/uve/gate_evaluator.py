@@ -122,6 +122,18 @@ def evaluate_gate(
             rejection_basis=None,
         )
 
+    if spec.get("require_flow_replay"):
+        from agent_training.uve.flow_replay import replay
+
+        for probe_id in required:
+            if by_probe[probe_id]["verdict"] == "not_verified":
+                continue
+            try:
+                if not replay(by_probe[probe_id], spec["evaluator_role"])["matches_receipt"]:
+                    return reject("invalid_stale")
+            except Exception:
+                return reject("invalid_stale")
+
     for pid, expectations in spec.get("required_observation_values", {}).items():
         if pid not in by_probe or any(by_probe[pid].get("observation", {}).get(key) != value for key, value in expectations.items()):
             return reject("insufficient_probes", "not_verified")

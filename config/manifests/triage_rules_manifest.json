@@ -1,0 +1,44 @@
+{
+  "schema_version": "triage_rules_manifest.v1",
+  "rules": [
+    {
+      "rule_id": "verifier_fail",
+      "match": { "signal_source_ref": "lab.verifier", "verifier_id_present": true },
+      "category_id": "verifier_fail",
+      "severity_id": "warning"
+    },
+    {
+      "rule_id": "governor_tool_cap",
+      "match": { "signal_source_ref": "governor.event", "governor_event": "max_tool_calls" },
+      "category_id": "governor_limit",
+      "severity_id": "warning"
+    },
+    {
+      "rule_id": "governor_thermal",
+      "match": { "signal_source_ref": "governor.event", "governor_event": "thermal_abort" },
+      "category_id": "governor_limit",
+      "severity_id": "error"
+    },
+    {
+      "rule_id": "manifest_hash",
+      "match": { "signal_source_ref": "system.manifest" },
+      "category_id": "manifest_config",
+      "severity_id": "critical"
+    },
+    {
+      "rule_id": "neat_partial",
+      "match": { "signal_source_ref": "neat.orchestrator", "signal_kind": "run_partial" },
+      "category_id": "neat_anomaly",
+      "severity_id": "info"
+    },
+    {
+      "rule_id": "lab_incident_bundle",
+      "match": {
+        "signal_source_ref": "lab.incident_bundle",
+        "bundle_schema": "lab_uve_incident_bundle.v1"
+      },
+      "category_id": "lab_pipeline",
+      "severity_id": "warning"
+    }
+  ]
+}

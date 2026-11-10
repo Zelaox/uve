@@ -1,6 +1,8 @@
 {
   "schema_version": "uve_issue_bridge_manifest.v1",
   "issue_storage_relative": "logs/uve/issues",
+  "flow_fingerprints_relative": "flow-fingerprints",
+  "flow_fingerprint_resource_kind": "flow_issue_fingerprint",
   "contract_ref": "config/contracts/issue_contract.json",
   "open_on_probe_verdicts": ["failed"],
   "open_on_gate_decisions": ["rejected", "not_verified"],

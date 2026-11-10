@@ -1,0 +1,10 @@
+{
+  "schema_version": "uve_command_probe.v1",
+  "argv": [
+    "{python}",
+    "scripts/debug/validate_lab_uve_incident_bundle.py"
+  ],
+  "timeout_seconds": 120,
+  "expected_returncode": 0,
+  "expected_stdout": "BUNDLE_VALID"
+}

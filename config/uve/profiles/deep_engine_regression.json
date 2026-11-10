@@ -1,0 +1,11 @@
+{
+  "schema_version": "uve_project_profile.v1",
+  "project_id": "uve_engine_deep_flows",
+  "environment": "isolated_fixture",
+  "identity": {
+    "watch_globs": ["agent_training/**/*.py", "config/**/*.json", "tests/**/*.py", "fixtures/**/*", "training_gui_ui/**/*"],
+    "ignore_globs": ["logs/**", "**/__pycache__/**", ".pytest_cache/**"]
+  },
+  "command_probe_refs": {"command_check": "config/uve/fixtures/deep_engine_regression.json"},
+  "sync_issues_on_failure": false
+}

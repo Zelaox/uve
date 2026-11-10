@@ -1,6 +1,10 @@
 {
   "schema_version": "uve_adapter_catalog.v1",
   "adapters": {
+    "deep_flow": {
+      "module": "agent_training.uve.adapters.deep_flow",
+      "callable": "run_probe"
+    },
     "dry": {
       "module": "agent_training.uve.adapters.dry",
       "callable": "run_probe"

@@ -1,6 +1,9 @@
 {
   "schema_version": "uve_failure_class_catalog.v1",
   "classes": {
+    "flow_evidence_missing": {
+      "description": "A required flow observation, causal edge, fault acknowledgement, or cleanup proof is missing"
+    },
     "undefined_property": {
       "description": "Access on undefined object property"
     },

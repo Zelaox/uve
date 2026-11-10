@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 
 from agent_training.manifest_loader import pipeline_root
 from agent_training.uve.engine_state import write_engine_state
@@ -45,19 +46,10 @@ def test_gate_not_verified_when_engine_degraded():
         write_engine_state(engine_degraded=False, probe_run_id="test-recover")
 
 
-def test_adb_ui_flow_dry_fail(tmp_path, monkeypatch):
-    from agent_training.uve.bundle import write_json_atomic
-    from agent_training.uve.orchestrator import load_profile
-
-    monkeypatch.setenv("UVE_ANDROID_EXAMPLE_ROOT", str(pipeline_root()))
-    profile = load_profile("config/uve/profiles/android_example_development.json")
-    target = tmp_path / "adb.json"
-    write_json_atomic(target, {"adb_executable": "fixture-adb", "adb_serial": "fixture-serial"})
-    profile["adb_probe_ref"] = str(target)
-    profile_path = tmp_path / "profile.json"
-    write_json_atomic(profile_path, profile)
+def test_adb_ui_flow_dry_fail():
+    os.environ["UVE_PROTRAINER_ROOT"] = str(pipeline_root())
     receipt = run_probe(
-        str(profile_path),
+        "config/uve/profiles/protrainer_development.json",
         "adb_ui_flow",
         dry_mode="ui_fail",
     )
@@ -70,8 +62,10 @@ def test_recovery_denied_for_smoke_profile():
     assert out["status"] == "denied"
 
 
-def test_uve_status_reports_engine_health():
-    assert collect_uve_status()["engine"]["engine_degraded"] is False
+def test_uve_status_collects_engine_block():
+    status = collect_uve_status()
+    assert "engine" in status
+    assert status["engine"]["engine_degraded"] is False
 
 
 def test_probe_failure_syncs_issue_when_profile_enabled():

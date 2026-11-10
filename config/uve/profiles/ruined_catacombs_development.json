@@ -1,0 +1,39 @@
+{
+  "schema_version": "uve_project_profile.v1",
+  "project_id": "ruined_catacombs",
+  "environment": "development",
+  "project_root_ref": "config/uve/targets/ruined_catacombs/project_root.json",
+  "workspace_root_relative": ".",
+  "identity": {
+    "watch_globs": [
+      "The ruined Catacombs/src/**/*",
+      "The ruined Catacombs/assets/config/**/*",
+      "The ruined Catacombs/assets/audio/**/*",
+      "The ruined Catacombs/assets/weapons/**/*",
+      "The ruined Catacombs/assets/scenes/**/*",
+      "The ruined Catacombs/config/**/*",
+      "The ruined Catacombs/CMakeLists.txt",
+      "engine/src/**/*",
+      "engine/apps/world_player/catacombs_*",
+      "engine/include/ailab/world/**/*",
+      "engine/tests/assets/catacombs_*",
+      "config/lab_uve_catacombs_binding.json"
+    ],
+    "ignore_globs": [
+      "**/__pycache__/**",
+      "**/.pytest_cache/**",
+      "logs/**",
+      "The ruined Catacombs/build/**",
+      "engine/build/**",
+      "**/_deps/**",
+      "venv_wsl/**"
+    ]
+  },
+  "command_probe_refs": {
+    "command_check": "config/uve/targets/ruined_catacombs/contract_check.json"
+  },
+  "verification_probe_ids": ["command_check"],
+  "gate_ids": ["ruined_catacombs_contract_gate"],
+  "execution_binding_profile_id": "emulator_workstation_smoke",
+  "sync_issues_on_failure": false
+}

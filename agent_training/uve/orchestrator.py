@@ -77,7 +77,12 @@ def _run_probe(
             receipt = _lease_denied_receipt(
                 lease_probe_run_id, probe_id, probe_spec, profile, bundle, id_start, lease_id, lease_fail
             )
+            receipt["profile_ref"] = profile_ref
             write_json_atomic(resolve_log_dir() / "probes" / f"{lease_probe_run_id}.json", receipt)
+            if probe_spec["adapter_id"] == "deep_flow":
+                from agent_training.uve.flow_status import index_probe
+
+                index_probe(receipt)
             return receipt
     lease_state["lease_id"] = lease_id
 
@@ -93,6 +98,7 @@ def _run_probe(
         "role_id": role_id,
         "manifest_bundle_sha256": bundle["manifest_bundle_sha256"],
         "probe_run_id": probe_run_id,
+        "run_lease_id": lease_id,
         "manifest_bundle": bundle,
     }
     if dry_mode:
@@ -186,6 +192,10 @@ def _run_probe(
     }
     assert_valid_probe(receipt)
     write_json_atomic(resolve_log_dir() / "probes" / f"{probe_run_id}.json", receipt)
+    if probe_spec["adapter_id"] == "deep_flow":
+        from agent_training.uve.flow_status import index_probe
+
+        index_probe(receipt)
     if profile.get("sync_issues_on_failure") and receipt["verdict"] in ("failed", "not_verified"):
         from agent_training.uve.issue_bridge import sync_probe_to_issue
 

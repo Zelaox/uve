@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import uuid
+from pathlib import Path
 from typing import Any
 
 from agent_training.content_hash import canonical_json_bytes
@@ -25,6 +26,15 @@ def resources_for_probe(profile: dict, probe_id: str) -> list[tuple[str, str]]:
                 values.update(load_json_ref(spec[ref_field]))
         values.update(spec.get("key_values", {}))
         fields = spec.get("key_fields", policy["key_fields"])
+        if spec.get("path_key_fields"):
+            from agent_training.uve.bundle import resolve_log_dir
+            from agent_training.uve.workspace import resolve_workspace_root
+
+            for field in spec["path_key_fields"]:
+                if field not in fields or field not in policy.get("path_key_fields", []):
+                    raise ValueError("lease path field is not declared by the resource policy")
+                values[field] = str(Path(values[field].format(log_root=resolve_log_dir(),
+                                                            workspace_root=resolve_workspace_root(profile))).resolve())
         key = canonical_json_bytes({field: values[field] for field in fields}).decode("utf-8")
         result.append((kind, key))
     return sorted(set(result))

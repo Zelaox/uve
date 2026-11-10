@@ -32,6 +32,8 @@ The [Android example profile](../config/uve/profiles/android_example_development
 
 The AI Lab adapter invokes a separately installed runner through `UVE_AI_LAB_ROOT` and a run manifest. The historical-import path accepts a `training_quality_receipt.v1` document. The checkpoint gate requires the live runner as its evidence source.
 
+Shipped Lab-oriented profiles (`ailab_engine_development`, `ruined_catacombs_development`, `lab_incident_bundle_validate`) are manifest templates: they watch configured subtrees and run project-owned `command_check` probes. Bind the correct workspace with `UVE_AI_LAB_ROOT` (and profile-specific env keys). See [triage and lab bridge](triage-and-lab-bridge.md) for flow `triage`/`replay` on receipts and the incident-bundle gate.
+
 ## Evidence handling
 
 Probe and gate JSON, artifacts, snapshots, and logs are written under `logs/uve/`. These can include private paths, command output, or screenshots. Keep that store private. Export applies the configured placeholder rules to training rows. Review exports before sharing them because the rules cover specific patterns.

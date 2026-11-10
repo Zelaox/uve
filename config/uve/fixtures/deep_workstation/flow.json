@@ -1,0 +1,808 @@
+{
+  "schema_version": "uve_deep_flow.v1",
+  "flow_id": "workstation_state_persistence",
+  "bindings": {
+    "initial_revision": {
+      "type": "integer",
+      "value_ref": "config/uve/fixtures/deep_workstation/fixture.json",
+      "path": [
+        "fixture_values",
+        "initial_revision"
+      ]
+    },
+    "updated_revision": {
+      "type": "integer",
+      "value_ref": "config/uve/fixtures/deep_workstation/fixture.json",
+      "path": [
+        "fixture_values",
+        "updated_revision"
+      ]
+    }
+  },
+  "cases": [
+    {
+      "case_id": "save_and_reopen",
+      "kind": "baseline",
+      "steps": [
+        {
+          "step_id": "save_initial",
+          "phase": "setup",
+          "adapter": "command",
+          "command_ref": "config/uve/fixtures/deep_workstation/save_initial.json",
+          "after": [],
+          "fields": {
+            "saved": {
+              "type": "boolean",
+              "path": [
+                "saved"
+              ]
+            }
+          },
+          "trace": {
+            "source": "state_process",
+            "kinds": [
+              "state_saved"
+            ],
+            "observe_kind": "state_saved",
+            "parents_from": []
+          }
+        },
+        {
+          "step_id": "independent_disk_read",
+          "phase": "observe",
+          "adapter": "fixture_file",
+          "fixture_path": "state.json",
+          "operation_path": [
+            "selected_project_id"
+          ],
+          "after": [
+            "save_initial"
+          ],
+          "fields": {
+            "revision": {
+              "type": "integer",
+              "path": [
+                "preferences",
+                "dock_gap"
+              ]
+            }
+          },
+          "trace": {
+            "source": "persisted_state",
+            "kinds": [
+              "state_read"
+            ],
+            "observe_kind": "state_read",
+            "parents_from": [
+              "save_initial"
+            ]
+          }
+        },
+        {
+          "step_id": "reopen",
+          "phase": "observe",
+          "adapter": "command",
+          "command_ref": "config/uve/fixtures/deep_workstation/load.json",
+          "after": [
+            "independent_disk_read"
+          ],
+          "fields": {
+            "revision": {
+              "type": "integer",
+              "path": [
+                "revision"
+              ]
+            },
+            "loaded": {
+              "type": "boolean",
+              "path": [
+                "loaded"
+              ]
+            },
+            "recovered": {
+              "type": "boolean",
+              "path": [
+                "recovered"
+              ]
+            }
+          },
+          "trace": {
+            "source": "state_process",
+            "kinds": [
+              "state_reopened"
+            ],
+            "observe_kind": "state_reopened",
+            "parents_from": [
+              "independent_disk_read"
+            ]
+          }
+        },
+        {
+          "step_id": "temporary_file_absent",
+          "phase": "cleanup",
+          "adapter": "fixture_absent",
+          "fixture_path": "state.json.tmp",
+          "fields": {
+            "absent": {
+              "type": "boolean",
+              "path": [
+                "absent"
+              ]
+            }
+          }
+        }
+      ],
+      "invariants": [
+        {
+          "invariant_id": "save_completed",
+          "operator": "true",
+          "severity": "major",
+          "refs": [
+            {
+              "step": "save_initial",
+              "field": "saved"
+            }
+          ]
+        },
+        {
+          "invariant_id": "revision_round_trip",
+          "operator": "all_eq",
+          "severity": "major",
+          "refs": [
+            {
+              "binding": "initial_revision"
+            },
+            {
+              "step": "independent_disk_read",
+              "field": "revision"
+            },
+            {
+              "step": "reopen",
+              "field": "revision"
+            }
+          ]
+        },
+        {
+          "invariant_id": "load_completed",
+          "operator": "true",
+          "severity": "major",
+          "refs": [
+            {
+              "step": "reopen",
+              "field": "loaded"
+            }
+          ]
+        },
+        {
+          "invariant_id": "no_partial_file",
+          "operator": "true",
+          "severity": "major",
+          "refs": [
+            {
+              "step": "temporary_file_absent",
+              "field": "absent"
+            }
+          ]
+        }
+      ],
+      "trace_edges": [
+        {
+          "edge_id": "saved_to_disk",
+          "from": {
+            "step": "save_initial",
+            "kind": "state_saved"
+          },
+          "to": {
+            "step": "independent_disk_read",
+            "kind": "state_read"
+          },
+          "different_sources": true
+        },
+        {
+          "edge_id": "reopened_in_new_process",
+          "from": {
+            "step": "save_initial",
+            "kind": "state_saved"
+          },
+          "to": {
+            "step": "reopen",
+            "kind": "state_reopened"
+          },
+          "relation": "new_epoch"
+        },
+        {
+          "edge_id": "disk_to_reopen",
+          "from": {
+            "step": "independent_disk_read",
+            "kind": "state_read"
+          },
+          "to": {
+            "step": "reopen",
+            "kind": "state_reopened"
+          },
+          "different_sources": true
+        }
+      ]
+    },
+    {
+      "case_id": "primary_corruption_recovers_backup",
+      "kind": "fault",
+      "steps": [
+        {
+          "step_id": "save_initial",
+          "phase": "setup",
+          "adapter": "command",
+          "command_ref": "config/uve/fixtures/deep_workstation/save_initial.json",
+          "after": [],
+          "fields": {
+            "saved": {
+              "type": "boolean",
+              "path": [
+                "saved"
+              ]
+            }
+          },
+          "trace": {
+            "source": "state_process",
+            "kinds": [
+              "state_saved"
+            ],
+            "observe_kind": "state_saved",
+            "parents_from": []
+          }
+        },
+        {
+          "step_id": "save_update",
+          "phase": "action",
+          "adapter": "command",
+          "command_ref": "config/uve/fixtures/deep_workstation/save_update.json",
+          "after": [
+            "save_initial"
+          ],
+          "fields": {
+            "saved": {
+              "type": "boolean",
+              "path": [
+                "saved"
+              ]
+            }
+          },
+          "trace": {
+            "source": "state_process",
+            "kinds": [
+              "state_saved"
+            ],
+            "observe_kind": "state_saved",
+            "parents_from": [
+              "save_initial"
+            ]
+          }
+        },
+        {
+          "step_id": "read_updated_primary",
+          "phase": "observe",
+          "adapter": "fixture_file",
+          "fixture_path": "state.json",
+          "operation_path": [
+            "selected_project_id"
+          ],
+          "after": [
+            "save_update"
+          ],
+          "fields": {
+            "revision": {
+              "type": "integer",
+              "path": [
+                "preferences",
+                "dock_gap"
+              ]
+            }
+          },
+          "trace": {
+            "source": "persisted_state",
+            "kinds": [
+              "state_read"
+            ],
+            "observe_kind": "state_read",
+            "parents_from": [
+              "save_update"
+            ]
+          }
+        },
+        {
+          "step_id": "inject_corruption",
+          "phase": "fault",
+          "adapter": "fixture_fault",
+          "fault_action": "corrupt_primary",
+          "fixture_path": "state.json",
+          "after": [
+            "read_updated_primary"
+          ],
+          "fields": {
+            "confirmed": {
+              "type": "boolean",
+              "path": [
+                "injection_confirmed"
+              ]
+            }
+          },
+          "trace": {
+            "source": "fault_injector",
+            "kinds": [
+              "primary_corrupted"
+            ],
+            "observe_kind": "primary_corrupted",
+            "parents_from": [
+              "read_updated_primary"
+            ]
+          }
+        },
+        {
+          "step_id": "recover",
+          "phase": "observe",
+          "adapter": "command",
+          "command_ref": "config/uve/fixtures/deep_workstation/load.json",
+          "after": [
+            "inject_corruption"
+          ],
+          "fields": {
+            "revision": {
+              "type": "integer",
+              "path": [
+                "revision"
+              ]
+            },
+            "loaded": {
+              "type": "boolean",
+              "path": [
+                "loaded"
+              ]
+            },
+            "recovered": {
+              "type": "boolean",
+              "path": [
+                "recovered"
+              ]
+            }
+          },
+          "trace": {
+            "source": "state_process",
+            "kinds": [
+              "state_reopened"
+            ],
+            "observe_kind": "state_reopened",
+            "parents_from": [
+              "inject_corruption"
+            ]
+          }
+        },
+        {
+          "step_id": "temporary_file_absent",
+          "phase": "cleanup",
+          "adapter": "fixture_absent",
+          "fixture_path": "state.json.tmp",
+          "fields": {
+            "absent": {
+              "type": "boolean",
+              "path": [
+                "absent"
+              ]
+            }
+          }
+        }
+      ],
+      "invariants": [
+        {
+          "invariant_id": "both_saves_completed",
+          "operator": "true",
+          "severity": "major",
+          "refs": [
+            {
+              "step": "save_initial",
+              "field": "saved"
+            }
+          ]
+        },
+        {
+          "invariant_id": "update_completed",
+          "operator": "true",
+          "severity": "major",
+          "refs": [
+            {
+              "step": "save_update",
+              "field": "saved"
+            }
+          ]
+        },
+        {
+          "invariant_id": "updated_primary_existed",
+          "operator": "eq",
+          "severity": "major",
+          "refs": [
+            {
+              "binding": "updated_revision"
+            },
+            {
+              "step": "read_updated_primary",
+              "field": "revision"
+            }
+          ]
+        },
+        {
+          "invariant_id": "injection_reached",
+          "operator": "true",
+          "severity": "major",
+          "refs": [
+            {
+              "step": "inject_corruption",
+              "field": "confirmed"
+            }
+          ]
+        },
+        {
+          "invariant_id": "backup_was_used",
+          "operator": "true",
+          "severity": "major",
+          "refs": [
+            {
+              "step": "recover",
+              "field": "recovered"
+            }
+          ]
+        },
+        {
+          "invariant_id": "backup_revision_preserved",
+          "operator": "eq",
+          "severity": "major",
+          "refs": [
+            {
+              "binding": "initial_revision"
+            },
+            {
+              "step": "recover",
+              "field": "revision"
+            }
+          ]
+        },
+        {
+          "invariant_id": "no_partial_file",
+          "operator": "true",
+          "severity": "major",
+          "refs": [
+            {
+              "step": "temporary_file_absent",
+              "field": "absent"
+            }
+          ]
+        }
+      ],
+      "trace_edges": [
+        {
+          "edge_id": "updated_state_read",
+          "from": {
+            "step": "save_update",
+            "kind": "state_saved"
+          },
+          "to": {
+            "step": "read_updated_primary",
+            "kind": "state_read"
+          },
+          "different_sources": true
+        },
+        {
+          "edge_id": "observed_fault_boundary",
+          "from": {
+            "step": "read_updated_primary",
+            "kind": "state_read"
+          },
+          "to": {
+            "step": "inject_corruption",
+            "kind": "primary_corrupted"
+          },
+          "different_sources": true
+        },
+        {
+          "edge_id": "fault_to_recovery",
+          "from": {
+            "step": "inject_corruption",
+            "kind": "primary_corrupted"
+          },
+          "to": {
+            "step": "recover",
+            "kind": "state_reopened"
+          },
+          "different_sources": true
+        },
+        {
+          "edge_id": "recovery_new_process",
+          "from": {
+            "step": "save_update",
+            "kind": "state_saved"
+          },
+          "to": {
+            "step": "recover",
+            "kind": "state_reopened"
+          },
+          "relation": "new_epoch"
+        }
+      ]
+    },
+    {
+      "case_id": "owned_process_death_after_commit",
+      "kind": "fault",
+      "steps": [
+        {
+          "step_id": "save_initial",
+          "phase": "setup",
+          "adapter": "command",
+          "command_ref": "config/uve/fixtures/deep_workstation/save_initial.json",
+          "after": [],
+          "fields": {
+            "saved": {
+              "type": "boolean",
+              "path": [
+                "saved"
+              ]
+            }
+          },
+          "trace": {
+            "source": "state_process",
+            "kinds": [
+              "state_saved"
+            ],
+            "observe_kind": "state_saved",
+            "parents_from": []
+          }
+        },
+        {
+          "step_id": "read_initial",
+          "phase": "observe",
+          "adapter": "fixture_file",
+          "fixture_path": "state.json",
+          "operation_path": [
+            "selected_project_id"
+          ],
+          "after": [
+            "save_initial"
+          ],
+          "fields": {
+            "revision": {
+              "type": "integer",
+              "path": [
+                "preferences",
+                "dock_gap"
+              ]
+            }
+          },
+          "trace": {
+            "source": "persisted_state",
+            "kinds": [
+              "state_read"
+            ],
+            "observe_kind": "state_read",
+            "parents_from": [
+              "save_initial"
+            ]
+          }
+        },
+        {
+          "step_id": "interrupt_checkpoint_writer",
+          "phase": "fault",
+          "adapter": "owned_process_fault",
+          "fault_action": "interrupt_after_checkpoint",
+          "command_ref": "config/uve/fixtures/deep_workstation/commit_then_wait.json",
+          "after": [
+            "read_initial"
+          ],
+          "fields": {
+            "confirmed": {
+              "type": "boolean",
+              "path": [
+                "injection_confirmed"
+              ]
+            }
+          },
+          "trace": {
+            "source": "process_monitor",
+            "kinds": [
+              "checkpoint_writer_stopped"
+            ],
+            "observe_kind": "checkpoint_writer_stopped",
+            "parents_from": [
+              "read_initial"
+            ]
+          }
+        },
+        {
+          "step_id": "read_interrupted_commit",
+          "phase": "observe",
+          "adapter": "fixture_file",
+          "fixture_path": "state.json",
+          "operation_path": [
+            "selected_project_id"
+          ],
+          "after": [
+            "interrupt_checkpoint_writer"
+          ],
+          "fields": {
+            "revision": {
+              "type": "integer",
+              "path": [
+                "preferences",
+                "dock_gap"
+              ]
+            }
+          },
+          "trace": {
+            "source": "persisted_state",
+            "kinds": [
+              "state_read"
+            ],
+            "observe_kind": "state_read",
+            "parents_from": [
+              "interrupt_checkpoint_writer"
+            ]
+          }
+        },
+        {
+          "step_id": "reopen_interrupted_state",
+          "phase": "observe",
+          "adapter": "command",
+          "command_ref": "config/uve/fixtures/deep_workstation/load.json",
+          "after": [
+            "read_interrupted_commit"
+          ],
+          "fields": {
+            "revision": {
+              "type": "integer",
+              "path": [
+                "revision"
+              ]
+            },
+            "loaded": {
+              "type": "boolean",
+              "path": [
+                "loaded"
+              ]
+            },
+            "recovered": {
+              "type": "boolean",
+              "path": [
+                "recovered"
+              ]
+            }
+          },
+          "trace": {
+            "source": "state_process",
+            "kinds": [
+              "state_reopened"
+            ],
+            "observe_kind": "state_reopened",
+            "parents_from": [
+              "read_interrupted_commit"
+            ]
+          }
+        },
+        {
+          "step_id": "temporary_file_absent",
+          "phase": "cleanup",
+          "adapter": "fixture_absent",
+          "fixture_path": "state.json.tmp",
+          "fields": {
+            "absent": {
+              "type": "boolean",
+              "path": [
+                "absent"
+              ]
+            }
+          }
+        }
+      ],
+      "invariants": [
+        {
+          "invariant_id": "baseline_saved",
+          "operator": "true",
+          "severity": "major",
+          "refs": [
+            {
+              "step": "save_initial",
+              "field": "saved"
+            }
+          ]
+        },
+        {
+          "invariant_id": "process_stop_observed",
+          "operator": "true",
+          "severity": "major",
+          "refs": [
+            {
+              "step": "interrupt_checkpoint_writer",
+              "field": "confirmed"
+            }
+          ]
+        },
+        {
+          "invariant_id": "committed_revision_survives",
+          "operator": "all_eq",
+          "severity": "major",
+          "refs": [
+            {
+              "binding": "updated_revision"
+            },
+            {
+              "step": "read_interrupted_commit",
+              "field": "revision"
+            },
+            {
+              "step": "reopen_interrupted_state",
+              "field": "revision"
+            }
+          ]
+        },
+        {
+          "invariant_id": "primary_opened",
+          "operator": "true",
+          "severity": "major",
+          "refs": [
+            {
+              "step": "reopen_interrupted_state",
+              "field": "loaded"
+            }
+          ]
+        },
+        {
+          "invariant_id": "no_partial_file",
+          "operator": "true",
+          "severity": "major",
+          "refs": [
+            {
+              "step": "temporary_file_absent",
+              "field": "absent"
+            }
+          ]
+        }
+      ],
+      "trace_edges": [
+        {
+          "edge_id": "checkpoint_source",
+          "from": {
+            "step": "read_initial",
+            "kind": "state_read"
+          },
+          "to": {
+            "step": "interrupt_checkpoint_writer",
+            "kind": "checkpoint_writer_stopped"
+          },
+          "relation": "causal",
+          "different_sources": true
+        },
+        {
+          "edge_id": "observed_persistence_after_process_death",
+          "from": {
+            "step": "interrupt_checkpoint_writer",
+            "kind": "checkpoint_writer_stopped"
+          },
+          "to": {
+            "step": "read_interrupted_commit",
+            "kind": "state_read"
+          },
+          "relation": "causal",
+          "different_sources": true
+        },
+        {
+          "edge_id": "read_in_new_process",
+          "from": {
+            "step": "interrupt_checkpoint_writer",
+            "kind": "checkpoint_writer_stopped"
+          },
+          "to": {
+            "step": "reopen_interrupted_state",
+            "kind": "state_reopened"
+          },
+          "relation": "new_epoch",
+          "different_sources": true
+        }
+      ]
+    }
+  ]
+}

@@ -43,7 +43,7 @@ python -B -m examples.command_regression
 
 That demo runs the real **command** adapter on three isolated toy trees: pass → intentional one-line break → restore. Probe run IDs are printed; receipts live under `logs/uve/probes/`. No Android SDK, Node, or network required.
 
-Install for development and run the contract suite:
+Install for development and run the contract suite. See [docs/setup.md](docs/setup.md) for project binding and the agent skill; [triage and lab bridge](docs/triage-and-lab-bridge.md) covers flow receipt triage and AI Lab incident-bundle profiles.
 
 ~~~sh
 python -m pip install -e ".[dev]"

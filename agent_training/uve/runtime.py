@@ -156,6 +156,7 @@ def serve_runtime(manifest_ref: str, context_path: Path, parent_pid: int, stop_p
                 context_hash = content_hash(json.loads(context_path.read_text(encoding="utf-8")))
                 if context_hash != previous_context or time.monotonic() - last_run >= spec["verification_interval_seconds"]:
                     status.update(state="verifying", summary="App=not_verified - checking", updated_at=time.time(), tiers=[], application={"decision":"not_verified", "reason":"verification in progress"})
+                    status.pop("deep_flows", None)
                     _write_changed(status_path, status)
                     _write_changed(canonical_status, status)
                     profile_ref = materialize_runtime_profile(manifest_ref, context_path, parent_pid)
@@ -182,6 +183,19 @@ def serve_runtime(manifest_ref: str, context_path: Path, parent_pid: int, stop_p
                         last_run = float("-inf")
                 if status.get("state") == "running":
                     status["summary"] = " | ".join([tier["tier_id"] + "=" + tier["gate"]["decision"] for tier in status.get("tiers", [])] + ["App=" + status.get("application", {}).get("decision", "not_verified")])
+                    if spec.get("deep_flow_status_project_ids"):
+                        from agent_training.uve.flow_status import collect_deep_status
+
+                        try:
+                            deep = [item for item in collect_deep_status(load_manifest_bundle()["manifest_bundle_sha256"])
+                                    if item["project_id"] in spec["deep_flow_status_project_ids"]]
+                        except Exception:
+                            deep = []
+                        status["deep_flows"] = deep
+                        for tier_id in sorted({item["tier"] for item in deep}):
+                            decisions = {item["gate_decision"] for item in deep if item["tier"] == tier_id}
+                            decision = "rejected" if "rejected" in decisions else "approved" if decisions == {"approved"} else "not_verified"
+                            status["summary"] += f" | Flow{tier_id}={decision}"
                 else:
                     status["summary"] = "App=not_verified"
                 status["updated_at"] = time.time()

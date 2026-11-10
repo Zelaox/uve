@@ -1,0 +1,5 @@
+{
+  "schema_version": "uve_expectation.v1",
+  "expected_outcome": "passed",
+  "description": "Run the bound flow and verify the observations required at its configured depth."
+}

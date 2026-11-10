@@ -1,0 +1,16 @@
+{
+  "schema_version": "uve_change_class_rules.v1",
+  "rules": [
+    {
+      "rule_id": "default",
+      "path_globs": [
+        "**/*"
+      ],
+      "probe_ids": [
+        "deep_flow_v4",
+        "deep_flow_v5",
+        "deep_flow_v6"
+      ]
+    }
+  ]
+}

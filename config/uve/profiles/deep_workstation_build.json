@@ -1,0 +1,21 @@
+{
+  "schema_version": "uve_project_profile.v1",
+  "project_id": "workstation_state",
+  "environment": "isolated_fixture",
+  "identity": {
+    "watch_globs": [
+      "agent_training/**/*.py",
+      "config/uve/**/*.json",
+      "fixtures/workstation/**/*"
+    ],
+    "ignore_globs": [
+      "logs/**",
+      "**/__pycache__/**",
+      ".pytest_cache/**"
+    ]
+  },
+  "command_probe_refs": {
+    "command_check": "config/uve/fixtures/deep_workstation/build.json"
+  },
+  "sync_issues_on_failure": false
+}
