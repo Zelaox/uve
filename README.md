@@ -29,7 +29,7 @@ UVE is **not locked to one app or stack**. The same engine fits **other mobile a
 
 **Using it with an AI agent:** clone this repo, open **your** project, and tell the agent something like: *“Use UVE from `https://github.com/Zelaox/uve`. Add or edit manifests for my repo, run the required probes, print `probe_run_id`s, and do not say verified until the gate approves fresh receipts.”* Install the [uve-verification skill](.agents/skills/uve-verification/SKILL.md) into your project (see [docs/setup.md](docs/setup.md)). The agent changes JSON manifests and probe commands—not the engine—so adaptation is mostly configuration.
 
-This repository is **public**. Anyone can clone, fork, and wire it to their own work.
+This repository is **public and open source** under the [Apache License 2.0](LICENSE). **Anyone** may **clone, download, use, modify, fork, and contribute** (pull requests and issues welcome). **Vem som helst** kan ladda ner, ändra och samarbeta.
 
 Project profiles are supplied by the operator. `config/uve/profiles/` is intentionally empty apart from `.gitkeep`; profile files are excluded from Git and the source exporter. References in engine, witness and host-binding manifests describe configuration that must be supplied locally. Default-profile checks and the witness are `not_verified` until those bindings exist. Removed project profiles are not relocated elsewhere in this repository.
 
@@ -225,4 +225,10 @@ Generated logs, probes, gates, and local engine state under `logs/uve/` are not 
 - **pytest**, **Node.js** (for JS mutation acceptance tests), loopback HTTP for recovery fixtures — dev/CI only
 - Live Android verification requires host-bound ADB, emulator, and manifests; the engine does not ship a device or app
 
-**License and access:** public repository — [github.com/Zelaox/uve](https://github.com/Zelaox/uve). Clone, adapt manifests for your project, and run probes from your checkout.
+## Open source & collaboration
+
+Licensed under the [Apache License 2.0](LICENSE). Public repository: [github.com/Zelaox/uve](https://github.com/Zelaox/uve).
+
+**English:** Download, modify, distribute, and collaborate freely. Fork the repo, adapt manifests for your project, and send pull requests.
+
+**Svenska:** Öppen källkod — ladda ner, ändra, dela och samarbeta. Fork:a, konfigurera för ditt projekt, och skicka gärna pull requests.

@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Manifest-driven development verification with evidence-bound gates"
 readme = "README.md"
 requires-python = ">=3.11"
+license = "Apache-2.0"
 dependencies = []
 
 [project.optional-dependencies]
