@@ -1,0 +1,16 @@
+{
+  "schema_version": "lab_uve_layer_actions_manifest.v1",
+  "layer_actions": {
+    "L1": "fix_python_resolver",
+    "L2": "repair_cli_shape",
+    "L3": "rerun_food_verify",
+    "L4": "regen_breakdown"
+  },
+  "layer_failures": {
+    "L1": "TOOLCHAIN_RESOLVER_FALSE_NEGATIVE",
+    "L2": "GAMEPLAY_VERIFY_CLI_MISMATCH",
+    "L3": "GAMEPLAY_FAIL_FOOD_NOT_CONSUMED",
+    "L4": "BREAKDOWN_CONTRACT_VIOLATION"
+  },
+  "manifest_ref": "config/lab_uve_layer_actions_manifest.json"
+}

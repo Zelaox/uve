@@ -1,0 +1,69 @@
+{
+  "schema_version": "ailab.uve.test_expansion_strategy_catalog.v1",
+  "strategies": [
+    {
+      "strategy_id": "scene_load_interrupt",
+      "description": "Scene I/O while viewport interaction session is active",
+      "parent_scenario_hints": [
+        "editor_gizmo_contract",
+        "editor_scene_mutation_contract"
+      ],
+      "gap_heuristic": "headless_missing_scene_commit_barrier",
+      "catalog_priority": 0.9,
+      "composable": true,
+      "variants": [
+        {
+          "variant_id": "open_scene",
+          "gap_heuristic_suffix": "open_scene_path"
+        },
+        {
+          "variant_id": "new_scene",
+          "gap_heuristic_suffix": "new_scene_document"
+        }
+      ]
+    },
+    {
+      "strategy_id": "transform_authority_ui",
+      "description": "Transform Tools display matches entity authority after gizmo",
+      "parent_scenario_hints": [
+        "editor_scene_mutation_contract"
+      ],
+      "gap_heuristic": "display_drift_not_in_invariant",
+      "catalog_priority": 0.85,
+      "composable": true
+    },
+    {
+      "strategy_id": "multi_object",
+      "description": "Apply contract checks to all fixture entities, not first only",
+      "parent_scenario_hints": [
+        "editor_gizmo_contract",
+        "physics_collider_raycast"
+      ],
+      "gap_heuristic": "single_entity_loop",
+      "catalog_priority": 0.5,
+      "composable": true
+    },
+    {
+      "strategy_id": "metamorphic_undo",
+      "description": "Mutation plus inverse roundtrip",
+      "parent_scenario_hints": [
+        "editor_scene_mutation_contract",
+        "undo_transform_roundtrip"
+      ],
+      "gap_heuristic": "missing_inverse_path",
+      "catalog_priority": 0.6,
+      "composable": true
+    },
+    {
+      "strategy_id": "lifecycle_reload",
+      "description": "Play/stop/timeline ordering across cycles",
+      "parent_scenario_hints": [
+        "play_mode_physics_multi_cycle",
+        "timeline_transform_scrub"
+      ],
+      "gap_heuristic": "single_cycle_only",
+      "catalog_priority": 0.55,
+      "composable": false
+    }
+  ]
+}

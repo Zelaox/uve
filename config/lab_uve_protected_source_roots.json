@@ -1,0 +1,11 @@
+{
+  "schema_version": "lab_uve_protected_source_roots.v1",
+  "roots_relative": [
+    "data/work_runs",
+    "data/runtime",
+    "mcp_server",
+    "dashboard_app",
+    "docs/plans"
+  ],
+  "description": "Triage reducers must not write under these paths."
+}

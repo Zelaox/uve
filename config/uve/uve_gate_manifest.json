@@ -1,20 +1,40 @@
 {
   "schema_version": "uve_gate_manifest.v1",
   "gates": {
+    "uve_triage_observability_gate": {
+      "required_probe_ids": [
+        "command_check"
+      ],
+      "require_identity_stable": true,
+      "evaluator_role": "uve_gate"
+    },
+    "uve_storage_lifecycle_gate": {
+      "required_probe_ids": [
+        "command_check"
+      ],
+      "require_identity_stable": true,
+      "evaluator_role": "uve_gate"
+    },
     "deep_flow_v4": {
-      "required_probe_ids": ["deep_flow_v4"],
+      "required_probe_ids": [
+        "deep_flow_v4"
+      ],
       "require_identity_stable": true,
       "require_flow_replay": true,
       "evaluator_role": "uve_gate"
     },
     "deep_flow_v5": {
-      "required_probe_ids": ["deep_flow_v5"],
+      "required_probe_ids": [
+        "deep_flow_v5"
+      ],
       "require_identity_stable": true,
       "require_flow_replay": true,
       "evaluator_role": "uve_gate"
     },
     "deep_flow_v6": {
-      "required_probe_ids": ["deep_flow_v6"],
+      "required_probe_ids": [
+        "deep_flow_v6"
+      ],
       "require_identity_stable": true,
       "require_flow_replay": true,
       "evaluator_role": "uve_gate"
@@ -37,14 +57,6 @@
     "repair_verification": {
       "required_probe_ids": [
         "dry_echo"
-      ],
-      "require_identity_stable": true,
-      "evaluator_role": "uve_gate"
-    },
-    "android_example_dev_gate": {
-      "required_probe_ids": [
-        "metro_status",
-        "engine_self_check"
       ],
       "require_identity_stable": true,
       "evaluator_role": "uve_gate"
@@ -129,7 +141,16 @@
       "required_probe_ids": [
         "application_code",
         "application_bundle",
-        "application_health"
+        "application_health",
+        "application_membership_ui_flow"
+      ],
+      "require_identity_stable": true,
+      "evaluator_role": "uve_gate"
+    },
+    "android_example_dev_gate": {
+      "required_probe_ids": [
+        "metro_status",
+        "engine_self_check"
       ],
       "require_identity_stable": true,
       "evaluator_role": "uve_gate"

@@ -65,6 +65,14 @@ Optional entry point after editable install: `uve` (same as `python -B -m agent_
 - **Gates** — required probe set, identity stability, repair-author separation (`config/uve/uve_gate_manifest.json`).
 - **Evidence** — JSON receipts, optional snapshots, content-addressed artifacts (e.g. UI PNGs), gates under `logs/uve/`.
 
+### TRIAGE history and evidence
+
+The repository also includes the standalone TRIAGE index and incident bridge under `mcp_server/diagnostics/`: manifest-selected ingestion, SQLite migrations, run summaries, fingerprint timelines, comparisons, receipt hash checks, independent gate links, and storage lifecycle policies. Original reports and receipts remain authoritative. `not_observed` in a comparison does not mean a defect was repaired; resolution needs its configured fingerprint-bound gate evidence.
+
+Run the index from this checkout; its default configuration binds the engine to the same repository. [TRIAGE observability](docs/triage-observability.md) explains ingestion, read-only queries, conservative summary states, and optional external AI Lab bindings.
+
+The [unified UVE/TRIAGE/RE skill](.agents/skills/lab-uve-triage-bridge/SKILL.md) adds Learning DB reuse before reverse engineering, byte-bound analysis, and scoped forensic acquisition. Hex Editor and its Learning DB are external tools. UVE's generic command adapter can verify frozen evidence assertions; the engine does not ship a physical-disk imaging or disk-health certification adapter.
+
 ### Verification tiers (Emulator Workstation worker)
 
 When embedded in a host that ships `uve_workstation_runtime.json`, the worker exposes infrastructure tiers separate from **application** acceptance:
@@ -86,9 +94,9 @@ A bound application repo may declare `config/uve/application.json`. The host wor
 | `application_code` | Declared static/scenario commands in the workspace |
 | `application_bundle` | Live bundle/dev-server compile checks |
 | `application_health` | Foreground UI + bounded logcat; **fault policy** rejects ErrorBoundary/LogBox overlays even when a “healthy” selector is visible |
-| `application_membership_ui_flow` | Optional feature UI flow when the contract binds a generated flow file |
+| `application_membership_ui_flow` | Contract-bound feature UI flow, selected by the shipped application policy |
 
-Default shipped **application** gate requires code, bundle, and health only. Extra feature probes and gate requirements are defined per project contract and host policy. Application contracts and app-specific UI flows stay in **your application repository**, not in this engine repo.
+The shipped **application** gate currently requires code, bundle, health, and `application_membership_ui_flow`. The contract must supply the generated flow referenced by `membership_ui_flow.generatedFlowRelativePath` when that policy is selected; unavailable required evidence remains `not_verified`. Other applications declare their required feature probes and gate requirements through their own contract and host policy. Application contracts and app-specific UI flows stay in **your application repository**.
 
 ### Android UI flows and navigation recovery
 
@@ -185,6 +193,8 @@ Project-owned error registries (resolution steps for `failure_class` / fault rul
 | [docs/engine.md](docs/engine.md) | Profiles, tiers, application contracts, navigation recovery |
 | [docs/UVE.md](docs/UVE.md) | Workstation worker, context/status, diagnose, recovery, leases (host integration) |
 | [docs/case-studies.md](docs/case-studies.md) | Sanitized historical runs |
+| [docs/triage-observability.md](docs/triage-observability.md) | TRIAGE index, ingestion, comparisons and original receipt evidence |
+| [docs/triage-and-lab-bridge.md](docs/triage-and-lab-bridge.md) | Flow triage, standalone bundles and external Lab contracts |
 | [examples/README.md](examples/README.md) | Command regression demo |
 
 Configuration lives under [`config/uve/`](config/uve/) (probe catalog, gates, fault policy, workstation runtime policy, expectations, example targets).
@@ -196,6 +206,8 @@ Configuration lives under [`config/uve/`](config/uve/) (probe catalog, gates, fa
 | In **this** repo | Separate projects |
 | --- | --- |
 | Python engine, adapters, manifests, tests, witness contract | Emulator Workstation host binary and its install layout |
+| Standalone TRIAGE index, incident bundles and storage lifecycle policies | AI Lab dashboard, product-specific reducers and training runner |
+| UVE/TRIAGE/RE skills and read-only Learning DB lookup helper | Hex Editor implementation and private Learning DB contents |
 | Generic `android_example` targets | Your mobile/web app source and `application.json` |
 | Command regression example | AI Lab runner checkout (optional adapter) |
 

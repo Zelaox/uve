@@ -1,0 +1,4 @@
+{
+  "schema_version": "lab_uve_bundle_replace_policy.v1",
+  "same_epoch_replace_allowed": false
+}

@@ -53,12 +53,12 @@ For a Workstation-managed app, use the installed worker's actual pipeline and se
 
 ## Connect Codex or another coding agent
 
-Copy the [uve-verification skill](../.agents/skills/uve-verification/SKILL.md) into the **target project's** `.agents/skills/uve-verification/` folder. For example, from the UVE checkout in PowerShell, with `$uveTarget` set to the target project path:
+Copy both the [uve-verification entrypoint](../.agents/skills/uve-verification/SKILL.md) and [unified bridge skill](../.agents/skills/lab-uve-triage-bridge/SKILL.md), including its references and lookup helper, into the **target project's** `.agents/skills/` folder. For example, from the UVE checkout in PowerShell, with `$uveTarget` set to the target project path:
 
 ~~~powershell
-$uveSkillDir = Join-Path $uveTarget '.agents/skills/uve-verification'
+$uveSkillDir = Join-Path $uveTarget '.agents/skills'
 New-Item -ItemType Directory -Path $uveSkillDir -Force | Out-Null
-Copy-Item -LiteralPath '.agents/skills/uve-verification/SKILL.md' -Destination $uveSkillDir
+Copy-Item -LiteralPath '.agents/skills/uve-verification', '.agents/skills/lab-uve-triage-bridge' -Destination $uveSkillDir -Recurse
 ~~~
 
 Open the target project in Codex. In the CLI or IDE extension, invoke `$uve-verification`. You can also ask Codex to read the skill by path. If an existing project has a skill of the same name, review its instructions before replacing it. See the [official Codex skill docs](https://learn.chatgpt.com/docs/build-skills).

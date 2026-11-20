@@ -1,6 +1,12 @@
 # Universal Development Verification Engine (UVE)
 
-UVE runs manifest-defined probes, records immutable results, evaluates independent gates, and exports training rows in `training_pipeline/`. The implementation plan and acceptance record are in [the UVE plan](plans/universal_development_verification_engine_20261028/plan.MD).
+UVE runs manifest-defined probes, records immutable results, evaluates independent gates, and exports evidence rows. This guide also describes Emulator Workstation host integration, where the same engine is installed under `training_pipeline/`. That host application and its private acceptance history are separate from this standalone checkout.
+
+## Read a receipt
+
+Every new probe and gate receipt includes an `explanation` with a summary, what was checked, how it ran, why it reached its outcome, and what that evidence covers. Probe explanations can include the adapter's original verdict, elapsed time, the failing step, and expected and observed values. Gate explanations identify the decision rule, missing or blocking probes, and the original receipt references. Deep-flow explanations link to the primary finding and the underlying case evidence.
+
+The explanation uses the [receipt explanation policy](../config/uve/uve_receipt_explanation_manifest.json). It projects bounded fields from the receipt and links to the source observations and artifacts. Command stdout, stderr, UI dumps and screenshots stay in their original evidence fields or artifacts. Gate approval still comes from the gate evaluator and its declared requirements. Earlier receipts keep their original bytes and remain readable. `uve diagnose` includes the recorded explanation for runtime receipts that carry it.
 
 ## Workstation startup
 
@@ -23,7 +29,7 @@ SDK root, selected device serial, project root and application package come from
 
 Android discovery parses exact serial/state fields from `adb devices -l`, matches the selected AVD through its reported id/name, and reconciles missing or reused online serials on subsequent observations. Multiple online transports reporting the same selected AVD identity leave the binding empty with an explicit diagnostic. Known offline/unauthorized transports retain their observed state. The context also includes `device_state` and `device_detail`; a selected AVD can legitimately have no serial while powered off.
 
-The worker also discovers the selected project's `config/uve/application.json` contract. Application acceptance is separate from the engine/ADB/boot tiers and typically requires `application_code`, `application_bundle` and `application_health`. Optional feature UI flows and extra probes are declared in that contract and the host runtime policy. Missing contracts or unavailable inputs remain `not_verified`. A passing package-focus or Metro status check cannot approve application code.
+The worker also discovers the selected project's `config/uve/application.json` contract. Application acceptance is separate from the engine/ADB/boot tiers. The shipped policy requires `application_code`, `application_bundle`, `application_health`, and the contract-bound `application_membership_ui_flow`. Missing contracts, required generated flows or unavailable inputs remain `not_verified`. A passing package-focus or Metro status check cannot approve application code. Product-specific contract coverage belongs to that application's repository.
 
 Every real `adb_ui_flow` probe is guarded by `application_fault_policy.json`: React Native error overlays, Metro resolution errors and error-boundary fallback screens fail even if old app content underneath satisfies a positive selector. The application-health adapter additionally reads bounded recent logcat messages for the selected package's actual PIDs; it never clears logs or examines another package's process history. Editable text is excluded from UI fault matching. The passive monitor performs no navigation or writes.
 
@@ -47,9 +53,67 @@ python -B -m agent_training.uve.cli diagnose --status-path <status.json> --conte
 
 The default status location comes from `uve_workstation_runtime.json`; `--runtime-manifest` selects another configuration. The command reads gate/probe receipts from that pipeline's configured log root and reports detailed observations, receipt links, hash/id/subject consistency and whether the supplied context matches the status hash. It works with older status files that only contain probe summaries. Exit `2` means missing/inconsistent evidence or a changed supplied context; exit `0` means those diagnostic checks completed consistently, even if a gate is `not_verified`. An omitted context is reported as an unknown match. This command does not run ADB, restart services, evaluate gates or certify current source/delivery freshness. A running worker and a matching receipt chain alone do not establish application acceptance.
 
-The [runtime binding and diagnostics plan](plans/uve_runtime_binding_and_diagnostics/plan.MD) tracks implementation, runtime acceptance and the separate Coach acceptance roadmap.
+The runtime binding and diagnostics plan (in the host repository) tracks implementation, runtime acceptance and the separate Coach acceptance roadmap.
 
 ## Run and verify
+
+### Opt-in deep flows
+
+Deep flows use normal `probe run` and `gate evaluate` receipts. V4 executes a
+typed fixture contract and compares observed results. V5 additionally checks
+required causal edges across sources. V6 runs the same baseline plus isolated
+fault scenarios and requires a confirmed injection and cleanup for each case.
+The existing Workstation runtime tiers and application gate retain their scope.
+
+The `deep_flow_ref` in a profile selects a contract. Each contract has fixture
+bindings, ordered steps with dependencies, projected fields, invariants and,
+for V5/V6, required trace edges. Bind changing inputs through `value_ref` and a
+typed field path. UVE hashes these references with the probe configuration.
+Adapter capabilities, execution budgets, allowed fault commands and triage rules
+are owned by `config/uve/uve_deep_flow_manifest.json`. A V6 profile also needs a
+held mutation-directory lease on the fixture store. It may only use the trusted
+fixture commands. File replacement stays inside the created fixture directory.
+Process termination applies to the runner's own subprocess handle after the
+declared acknowledgement arrives.
+
+The public reference profiles are `deep_engine_regression.json` and
+`deep_workstation_state.json` under `config/uve/profiles/`. The Workstation
+fixture requires a separate host source checkout and compiles its real state
+store with the compiler selected by the fixture build manifest. Its cases verify
+a round trip, backup recovery and state after an owned process is stopped.
+Application-specific deep flows remain in the application repository. Live UI,
+Android scheduling and external delivery have their own acceptance requirements.
+
+Set the selected source roots using the environment keys in
+`config/uve/fixtures/deep_reference_sources.json` and run the prepare profile.
+Run the build profile when testing native state. The flow profiles watch the
+resulting source snapshots and driver together with the engine and policies.
+
+```powershell
+python -B -m agent_training.uve.cli probe run --profile config/uve/profiles/deep_reference_prepare.json --probe command_check --repair-actor-ref <actor>
+python -B -m agent_training.uve.cli probe run --profile config/uve/profiles/deep_workstation_build.json --probe command_check --repair-actor-ref <actor>
+python -B -m agent_training.uve.cli probe run --profile config/uve/profiles/deep_workstation_state.json --probe deep_flow_v6 --repair-actor-ref <actor>
+python -B -m agent_training.uve.cli flow triage --probe-run-id <probe-id>
+python -B -m agent_training.uve.cli flow replay --probe-run-id <probe-id>
+python -B -m agent_training.uve.cli flow compare --probe-run-id <probe-id> --with-probe-run-id <other-probe-id>
+python -B -m agent_training.uve.cli flow status
+```
+
+Set the compiler variable named by the fixture recipe before building. `flow
+triage` can use a declared project error registry or an explicit `--registry-ref`.
+It lists evidence gaps separately from observed invariants. `flow replay` reads
+the projected artifact, validates its digest and reruns its evaluation against
+the bound policy. `flow compare` requires matching candidate and recipe identities
+and compares results rather than generated trace IDs. Only projected values are
+stored. Raw command output is discarded with the temporary fixture directory.
+
+The optional Workstation runtime setting `deep_flow_status_project_ids` selects
+which project IDs appear in the title. The Training GUI shows indexed results
+and whether the receipts are fresh. A probe that passed has its own status.
+Approval requires an independent evaluator and the configured deep gate, which
+replays the required evidence. Android steps are disabled in the default deep
+policy. A live rollout must configure the real device, runtime delivery and shared
+resource locks through the host's approved configuration.
 
 From `training_pipeline/`, with Python 3.11+ and pytest installed:
 
@@ -61,7 +125,7 @@ python -m agent_training.uve.cli status
 
 Probe exit codes are `0` for passed, `1` for failed and `2` for not verified. Gate exit codes use the same mapping for approved, rejected and not verified. `dry_echo` checks engine plumbing; it does not establish application correctness.
 
-From the repository root, `./scripts/run-uve-smoke.ps1` runs the UVE/GUI tests and the independent witness. It stops on any failed command. Add `-InstallDependencies` to install the editable package and development dependencies first. Live local HTTP tests require loopback-network access.
+From this repository root, run `python -B -m pytest -q` and `python -B -m agent_training.uve.cli witness run` for the standalone suite and witness contract. The Workstation host supplies its separate GUI/native smoke runner. Live local HTTP tests require loopback-network access.
 
 The scoped `workstation_binding_acceptance.json` profile also covers native sources, tests, build/configuration and the runtime diagnostics documentation. From the source repository root, set `UVE_WORKSTATION_ROOT` to that root for the process, then run `probe run --profile config/uve/profiles/workstation_binding_acceptance.json --probe command_check --repair-actor-ref <actual-repair-actor>` from `training_pipeline/`. Its declared command configures/builds with CMake, runs CTest and runs the UVE/Training GUI regression selection. The configured build directory uses its existing CMake cache, or CMake's environment/toolchain selection on first configuration. A passed command receipt requires a separately assigned independent gate evaluator before claiming application acceptance.
 
@@ -93,9 +157,9 @@ Planning considers added, modified and deleted paths. Baseline capture requires 
 
 ## Android and Metro
 
-Set the profile's workspace binding environment variable (for example `UVE_ANDROID_EXAMPLE_ROOT` for the sample profile). Edit targets under `config/uve/targets/<project_id>/` for Metro port, ADB serial, guest package and UI flow.
+Set `UVE_ANDROID_EXAMPLE_ROOT` to the application workspace. Copy and edit targets under `config/uve/targets/android_example/` for its Metro port, ADB serial, guest package and UI flow.
 
-`adb_ui_flow` supports `shell_property`, `shell_dump_window`, `assert_element`, `tap_element`, `input_text`, `swipe`, `keyevent`, `assert_activity` and optional `navigation_recovery` steps. Element selectors match Android UI hierarchy attributes such as `text`, `content-desc` and `resource-id`. Activity checks inspect resumed activities; window checks inspect focused windows. Declare state assertions after interactions: a successful tap cannot override a later failed state assertion. Empty flows and interaction-only flows cannot pass. The shipped Android example flow is a boot/focused-package smoke check; application acceptance flows must declare their own navigation and state expectations.
+`adb_ui_flow` supports `shell_property`, `shell_dump_window`, `assert_element`, `tap_element`, `input_text`, `swipe`, `keyevent` and `assert_activity` steps. Element selectors match Android UI hierarchy attributes such as `text`, `content-desc` and `resource-id`. Activity checks inspect resumed activities; window checks inspect focused windows. Declare state assertions after interactions: a successful tap cannot override a later failed state assertion. Empty flows and interaction-only flows cannot pass. The supplied example flow is a boot/focused-package smoke check; application acceptance flows must declare their own navigation and state expectations.
 
 Set `screenshot: true` in a flow to capture a supplementary PNG. Artifacts are stored by SHA-256 and referenced from the receipt; a screenshot never determines the verdict.
 
@@ -131,6 +195,8 @@ The adapter invokes AI Lab's existing `llm_model_trainer.training_quality.runner
 
 Paths are relative to the declared AI Lab root and cannot escape it. The live runner performs its normal AI Lab receipt/telemetry and published-training-binding writes; it does not promote the checkpoint through UVE. Use a checkpoint workspace profile watching its actual input files; `uve_checkpoint_identity_manifest.json` allows larger artifacts. Candidate identity and the original check results are retained in the UVE receipt.
 
+For inspection of a saved run, set `inspection_only` to `true` and use a non-promotion receipt scope. The runner writes tier receipts to the configured inspection directory and skips dataset republishing, run binding updates, reference calibration sealing, and live training feedback. Use `ai_lab_tier`, `ai_lab_tier_v2`, or `ai_lab_tier_v3` with a run document requesting the corresponding tier.
+
 For historical import, set `UVE_AI_LAB_TIER_JSON` to a `training_quality_receipt.v1` file. Historical import checks the evidence digest when present, preserves candidate identity and treats skipped/incomplete required checks as `not_verified`. It does not rerun the checkpoint and should not be used to claim fresh checkpoint promotion.
 
 ## Gates, issues and training export
@@ -151,4 +217,16 @@ Verified exports require matching probe hashes, identity and gate references. Mi
 
 The Training GUI shows engine health, latest probe/gate receipts and open verification issue counts. It polls `uve_status` even before training starts and reports unavailable status explicitly.
 
-Acceptance artifacts are under `training_pipeline/logs/uve/acceptance/`; the checked-in [verification record](plans/universal_development_verification_engine_20261028/verification.md) records commands, outcomes and remaining host limitations. A blocked or unrun acceptance check remains `not_verified`.
+Acceptance artifacts are under `training_pipeline/logs/uve/acceptance/`; the checked-in verification record (in the host repository) records commands, outcomes and remaining host limitations. A blocked or unrun acceptance check remains `not_verified`.
+
+## Observability DB vs evidence store
+
+The AI Lab index stores summaries, finding occurrences and persisted comparisons with hashes
+and pointers to source evidence. Its [operator runbook](triage-observability.md)
+describes ingestion, trace queries and reconciliation. Gate decisions remain UVE receipts.
+
+## Lab storage lifecycle
+
+`uve storage` audits bounded inventories, leases, quarantine, and purge decisions in
+the Lab index. The [Windows runbook](storage-windows-scheduler.md)
+covers dry-run scheduling and the independent purge gate.

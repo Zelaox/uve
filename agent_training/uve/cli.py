@@ -22,6 +22,10 @@ def _load_probe_receipt(probe_run_id: str) -> dict:
 
 def cmd_probe_run(args: argparse.Namespace) -> int:
     receipt = run_probe(args.profile, args.probe, dry_mode=args.dry_mode, repair_actor_refs=args.repair_actor_ref)
+    if getattr(args, "index", False):
+        from agent_training.uve.observability_index import index_receipts
+
+        index_receipts([receipt])
     print(json.dumps(receipt, indent=2))
     if receipt["verdict"] == "passed":
         return 0
@@ -108,6 +112,10 @@ def cmd_gate_evaluate(args: argparse.Namespace) -> int:
         repair_actor_refs=args.repair_actor_ref,
     )
     write_json_atomic(resolve_log_dir() / "gates" / f"{gate['trust_chain_ref']}.json", gate)
+    if getattr(args, "index", False):
+        from agent_training.uve.observability_index import index_receipts
+
+        index_receipts(probes, gate)
     if any(probe["probe"]["adapter_id"] == "deep_flow" for probe in probes):
         from agent_training.uve.flow_status import index_gate
 
@@ -150,6 +158,12 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="uve")
     sub = parser.add_subparsers(dest="command", required=True)
 
+    from agent_training.uve.storage_lifecycle import dispatch as storage_dispatch
+
+    storage = sub.add_parser("storage", help="Inventory and govern the AI Lab storage corpus")
+    storage.add_argument("storage_argv", nargs=argparse.REMAINDER)
+    storage.set_defaults(func=storage_dispatch)
+
     p_probe = sub.add_parser("probe")
     p_probe_sub = p_probe.add_subparsers(dest="probe_cmd", required=True)
     pr = p_probe_sub.add_parser("run")
@@ -157,6 +171,7 @@ def main(argv: list[str] | None = None) -> int:
     pr.add_argument("--probe", required=True)
     pr.add_argument("--dry-mode", default=None)
     pr.add_argument("--repair-actor-ref", action="append", default=[])
+    pr.add_argument("--index", action="store_true", help="Index the saved receipt through the bound Lab sidecar")
     pr.set_defaults(func=cmd_probe_run)
 
     p_gate = sub.add_parser("gate")
@@ -174,6 +189,7 @@ def main(argv: list[str] | None = None) -> int:
     p_gate_sub = p_gate.add_subparsers(dest="gate_cmd", required=True)
     ge = p_gate_sub.add_parser("evaluate")
     ge.add_argument("--gate", required=True)
+    ge.add_argument("--index", action="store_true", help="Index the saved gate and its linked probes")
     ge.add_argument("--probe-run-id", action="append", required=True, dest="probe_run_id")
     ge.add_argument("--evaluator-ref", default="uve_gate_cli")
     ge.add_argument("--repair-actor-ref", action="append", default=[])

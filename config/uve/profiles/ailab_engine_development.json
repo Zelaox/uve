@@ -32,8 +32,12 @@
   "command_probe_refs": {
     "command_check": "config/uve/targets/ailab_engine/contract_check.json"
   },
-  "verification_probe_ids": ["command_check"],
-  "gate_ids": ["ailab_engine_contract_gate"],
+  "verification_probe_ids": [
+    "command_check"
+  ],
+  "gate_ids": [
+    "ailab_engine_contract_gate"
+  ],
   "execution_binding_profile_id": "emulator_workstation_smoke",
   "sync_issues_on_failure": false
 }

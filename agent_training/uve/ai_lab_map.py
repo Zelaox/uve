@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 from agent_training.content_hash import content_hash
 from agent_training.manifest_loader import ManifestError
+from agent_training.uve.receipt_explanation import explain_probe
 
 
 def tier_json_to_probe_receipt(tier_doc: dict[str, Any], *, probe_id: str = "ai_lab_tier") -> dict[str, Any]:
@@ -21,7 +22,7 @@ def tier_json_to_probe_receipt(tier_doc: dict[str, Any], *, probe_id: str = "ai_
     fo = "none" if verdict == "passed" else "subject_fault" if verdict == "failed" else "engine_fault"
     identity = tier_doc.get("candidate_identity", {})
     identity_sha = identity.get("identity_sha256", tier_doc.get("identity_sha256", ""))
-    return {
+    receipt = {
         "schema_version": "uve_probe_receipt.v1",
         "probe_run_id": tier_doc.get("probe_run_id", tier_doc.get("tier", "tier")),
         "subject_identity": {"identity_sha256": identity_sha, "candidate_identity": identity},
@@ -44,6 +45,9 @@ def tier_json_to_probe_receipt(tier_doc: dict[str, Any], *, probe_id: str = "ai_
             "identity_stable": True,
         },
     }
+
+    receipt["explanation"] = explain_probe(receipt, mode="quality_projection")
+    return receipt
 
 
 def load_tier_json(path: Path) -> dict[str, Any]:

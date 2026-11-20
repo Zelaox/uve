@@ -1,0 +1,8 @@
+{
+  "schema_version": "uve_storage_return_reconciliation.v1",
+  "long_absence_tier_ref": "lab_idle_full_pause",
+  "reconciliation_kind": "post_return",
+  "approval_expiry_seconds": 86400,
+  "require_approval_modes": ["quarantine", "purge"],
+  "inventory_valid_seconds": 86400
+}

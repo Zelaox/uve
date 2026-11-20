@@ -6,22 +6,42 @@
   "workspace_root_relative": ".",
   "identity": {
     "watch_globs": [
-      "CMakeLists.txt", "apps/**/*", "core/**/*", "platforms/**/*", "gui/**/*",
-      "inference/**/*", "gpu/**/*", "cmake/**/*", "config/**/*", "tests/**/*",
-      "scripts/check-uve-runtime-binding.py", "training_pipeline/agent_training/**/*.py",
-      "training_pipeline/config/**/*.json", "training_pipeline/tests/**/*.py",
+      "CMakeLists.txt",
+      "apps/**/*",
+      "core/**/*",
+      "platforms/**/*",
+      "gui/**/*",
+      "inference/**/*",
+      "gpu/**/*",
+      "cmake/**/*",
+      "config/**/*",
+      "tests/**/*",
+      "scripts/check-uve-runtime-binding.py",
+      "training_pipeline/agent_training/**/*.py",
+      "training_pipeline/config/**/*.json",
+      "training_pipeline/tests/**/*.py",
       "training_pipeline/training_gui_ui/**/*",
-      "training_pipeline/pyproject.toml", "training_pipeline/pytest.ini",
-      "docs/UVE.md", "docs/plans/uve_runtime_binding_and_diagnostics/plan.MD"
+      "training_pipeline/pyproject.toml",
+      "training_pipeline/pytest.ini",
+      "docs/UVE.md",
+      "docs/plans/uve_runtime_binding_and_diagnostics/plan.MD"
     ],
-    "ignore_globs": ["**/__pycache__/**", "**/.pytest_cache/**", "**/logs/**",
-                     "training_pipeline/config/uve/uve_engine_state.json"]
+    "ignore_globs": [
+      "**/__pycache__/**",
+      "**/.pytest_cache/**",
+      "**/logs/**",
+      "training_pipeline/config/uve/uve_engine_state.json"
+    ]
   },
   "command_probe_refs": {
     "command_check": "config/uve/targets/workstation_binding/check.json"
   },
-  "verification_probe_ids": ["command_check"],
-  "gate_ids": ["command_check"],
+  "verification_probe_ids": [
+    "command_check"
+  ],
+  "gate_ids": [
+    "command_check"
+  ],
   "execution_binding_profile_id": "emulator_workstation_smoke",
   "sync_issues_on_failure": false
 }

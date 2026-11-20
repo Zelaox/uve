@@ -1,0 +1,18 @@
+{
+  "schema_version": "uve_storage_activity.v1",
+  "kinds": {
+    "operator.storage.ack": ["operator"],
+    "lab.triage.session": ["operator", "agent"],
+    "uve.probe.completed": ["operator", "agent", "uve_probe"],
+    "lab.agent.turn": ["agent"],
+    "lab.ingest.batch": ["operator", "agent", "uve_probe", "scheduler_maintenance"],
+    "storage.scheduled.scan": ["scheduler_maintenance"],
+    "storage.scheduled.health": ["scheduler_maintenance"]
+  },
+  "eligible_actor_classes": ["operator", "agent", "uve_probe"],
+  "operator_ack_kind": "operator.storage.ack",
+  "ingest_kind": "lab.ingest.batch",
+  "scheduled_scan_kind": "storage.scheduled.scan",
+  "scheduled_health_kind": "storage.scheduled.health",
+  "maintenance_actor_class": "scheduler_maintenance"
+}

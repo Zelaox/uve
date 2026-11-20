@@ -7,8 +7,8 @@ from typing import Any
 from agent_training.manifest_loader import ManifestError, load_json_ref
 
 
-def apply_secret_placeholders(text: str, placeholder_ref: str) -> str:
-    manifest = load_json_ref(placeholder_ref)
+def apply_secret_placeholders(text: str, placeholder_ref: str | dict[str, Any]) -> str:
+    manifest = load_json_ref(placeholder_ref) if isinstance(placeholder_ref, str) else placeholder_ref
     counters: dict[str, int] = {}
     instances: dict[tuple[str, str], int] = {}
     out = text

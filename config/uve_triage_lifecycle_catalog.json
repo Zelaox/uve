@@ -1,0 +1,19 @@
+{
+  "schema_version": "uve_triage_lifecycle_catalog.v1",
+  "states": [
+    "new",
+    "investigating",
+    "resolved",
+    "not_observed",
+    "regressed"
+  ],
+  "resolution_required_gate": true,
+  "comparison_categories": [
+    "new",
+    "recurring",
+    "resolved",
+    "not_observed",
+    "increased",
+    "regressed"
+  ]
+}

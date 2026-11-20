@@ -1,0 +1,62 @@
+{
+  "schema_version": "lab_uve_next_step_catalog.v1",
+  "steps": [
+    {
+      "step_id": "triage_debug_first",
+      "kind": "lab_reducer",
+      "reducer_id": "triage_debug_first_session",
+      "advisory_only": true
+    },
+    {
+      "step_id": "triage_plan_contract_poison",
+      "kind": "lab_reducer",
+      "reducer_id": "triage_plan_contract_poison_session",
+      "advisory_only": true
+    },
+    {
+      "step_id": "triage_breakdown_regen",
+      "kind": "lab_reducer",
+      "reducer_id": "triage_breakdown_regen_exhausted_session",
+      "advisory_only": true
+    },
+    {
+      "step_id": "triage_codegen_stall",
+      "kind": "lab_reducer",
+      "reducer_id": "triage_codegen_stall_session",
+      "advisory_only": true
+    },
+    {
+      "step_id": "uve_bundle_validate",
+      "kind": "uve_probe",
+      "profile_env_key": "LAB_UVE_VALIDATE_PROFILE_REL",
+      "probe_id": "command_check",
+      "advisory_only": false
+    },
+    {
+      "step_id": "triage_ruined_catacombs",
+      "kind": "lab_reducer",
+      "reducer_id": "triage_ruined_catacombs_session",
+      "advisory_only": true
+    },
+    {
+      "step_id": "uve_ruined_catacombs_validate",
+      "kind": "uve_probe",
+      "profile_env_key": "LAB_UVE_CATACOMBS_PROFILE_REL",
+      "probe_id": "command_check",
+      "advisory_only": false
+    },
+    {
+      "step_id": "triage_ailab_engine",
+      "kind": "lab_reducer",
+      "reducer_id": "triage_engine_session",
+      "advisory_only": true
+    },
+    {
+      "step_id": "uve_ailab_engine_validate",
+      "kind": "uve_probe",
+      "profile_env_key": "LAB_UVE_ENGINE_PROFILE_REL",
+      "probe_id": "command_check",
+      "advisory_only": false
+    }
+  ]
+}

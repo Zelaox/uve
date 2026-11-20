@@ -1,0 +1,14 @@
+{
+  "schema_version": "lab_uve_incident_identity_manifest.v1",
+  "logical_fingerprint_fields": [
+    "turn_id",
+    "plan_slug",
+    "primary_finding_code"
+  ],
+  "occurrence_fields": [
+    "logical_incident_id",
+    "evidence_epoch",
+    "bundle_build_id"
+  ],
+  "default_primary_finding_code": "UNCLASSIFIED"
+}

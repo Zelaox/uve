@@ -1,0 +1,20 @@
+{
+  "schema_version": "ailab.uve.test_expansion_evolution_policy.v1",
+  "generation_limit_per_run": 1,
+  "fitness_history_window": 64,
+  "exploration_slot_fraction": 0.25,
+  "exploration_boost_untried": 0.15,
+  "cross_project_exploration_floor": 3,
+  "fitness_weights": {
+    "defect_discovery_w": 0.65,
+    "preventive_coverage_w": 0.35
+  },
+  "signal_weights": {
+    "unique_defect_caught": 1.0,
+    "misleading_pass_prevented": 1.2,
+    "true_false_positive": -1.0,
+    "critical_guard_cycles_green": 0.4,
+    "cost_ms": -0.001
+  },
+  "mutation_enabled": true
+}

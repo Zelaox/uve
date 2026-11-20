@@ -1,1 +1,4 @@
-{"schema_version":"uve_expectation.v1","outcome_token":"engine_ok"}
+{
+  "schema_version": "uve_expectation.v1",
+  "outcome_token": "engine_ok"
+}

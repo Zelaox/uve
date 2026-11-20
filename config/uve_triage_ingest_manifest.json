@@ -1,0 +1,142 @@
+{
+  "schema_version": "uve_triage_ingest.v1",
+  "projection_revision": 3,
+  "advisor_generation_summary_fields": ["generation", "strategy_count", "fitness_row_count", "evaluation_ids", "top_strategies", "updated_at"],
+  "advisor_evaluation_projection_fields": ["variant_id", "scenario_id", "proposal_outcome", "probe_run_id", "gate_ref", "gate_sha256", "probe_sha256", "runner_sha256", "requirement_ids"],
+  "hold_failure_statuses": ["failed", "fail", "TRIAGE_FAIL", "error", "rejected", "blocked"],
+  "max_source_bytes": 67108864,
+  "inventory_output_ref": "config/lab_uve_report_output_root.json",
+  "excluded_project_ids": [
+    "protrainer"
+  ],
+  "excluded_path_parts": [
+    "protrainer"
+  ],
+  "actor_classes": [
+    "operator",
+    "agent",
+    "uve_probe",
+    "scheduler_maintenance"
+  ],
+  "default_actor_class": "operator",
+  "run_kind_catalog_ref": "config/uve_triage_run_kind_catalog.json",
+  "bridge_ref": "config/lab_uve_triage_bridge_manifest.json",
+  "engine_binding_ref": "config/lab_uve_engine_binding.json",
+  "engine_triage_policy_ref": "config/engine_triage_policy.json",
+  "engine_diagnostic_rule_groups": ["rules", "runtime_signal_rules"],
+  "engine_diagnostic_additional_codes": ["build.stale_artifact"],
+  "engine_diagnostic_prefixes": ["schema."],
+  "uve_log_root_ref_in_pipeline": "config/uve/uve_log_root.json",
+  "advisor_policy_ref_in_pipeline": "config/uve/uve_test_expansion_advisor_policy.json",
+  "advisor_storage_ref_in_pipeline": "config/uve/uve_evolution_storage_policy.json",
+  "max_records_per_source": 50000,
+  "post_ingest_pipeline": [
+    "normalize",
+    "dedupe",
+    "summarize",
+    "error_rollup",
+    "auto_compare",
+    "integrity"
+  ],
+  "routes": [
+    {
+      "source_type": "lab_triage_session_json",
+      "root_kind": "lab",
+      "glob": "logs/debug/triage_*.json",
+      "normalizer": "session",
+      "run_kind": "triage_session",
+      "project_id": "ai_lab",
+      "tier": "derived"
+    },
+    {
+      "source_type": "engine_triage_session_report",
+      "root_kind": "lab",
+      "root_binding": "bridge_report",
+      "glob": "triage_engine_*.json",
+      "normalizer": "session",
+      "run_kind": "triage_engine",
+      "project_binding": "engine",
+      "tier": "derived"
+    },
+    {
+      "source_type": "lab_incident_bundle",
+      "root_kind": "lab",
+      "root_binding": "bridge_report",
+      "glob": "**/bundle.json",
+      "normalizer": "bundle",
+      "run_kind": "bundle_build",
+      "project_id": "ai_lab",
+      "tier": "derived"
+    },
+    {
+      "source_type": "engine_runtime_triage",
+      "root_kind": "lab",
+      "root_binding": "engine_report",
+      "glob": "*.json",
+      "normalizer": "runtime",
+      "enforce_engine_diagnostic_catalog": true,
+      "run_kind": "engine_runtime",
+      "project_binding": "engine",
+      "tier": "derived"
+    },
+    {
+      "source_type": "uve_probe_receipt",
+      "root_kind": "pipeline",
+      "root_binding": "uve_log",
+      "glob": "probes/*.json",
+      "normalizer": "probe",
+      "run_kind": "uve_probe",
+      "project_id": "uve",
+      "tier": "derived"
+    },
+    {
+      "source_type": "uve_gate_receipt",
+      "root_kind": "pipeline",
+      "root_binding": "uve_log",
+      "glob": "gates/*.json",
+      "normalizer": "gate",
+      "run_kind": "uve_gate",
+      "project_id": "uve",
+      "tier": "derived"
+    },
+    {
+      "source_type": "uve_triage_items_jsonl",
+      "root_kind": "pipeline",
+      "glob": "logs/**/triage_items.jsonl",
+      "normalizer": "jsonl",
+      "run_kind": "training_observability",
+      "project_id": "uve",
+      "tier": "derived"
+    },
+    {
+      "source_type": "uve_flow_triage_projection",
+      "root_kind": "pipeline",
+      "root_binding": "uve_log",
+      "glob": "flow-triage/*.json",
+      "normalizer": "session",
+      "run_kind": "flow_triage",
+      "project_id": "uve",
+      "tier": "derived"
+    },
+    {
+      "source_type": "expansion_store_sqlite",
+      "root_kind": "lab",
+      "root_binding": "advisor_store",
+      "glob": "",
+      "normalizer": "advisor_sqlite",
+      "run_kind": "advisor",
+      "project_binding": "engine",
+      "tier": "derived"
+    },
+    {
+      "source_type": "advisor_jsonl",
+      "root_kind": "lab",
+      "root_binding": "advisor_jsonl",
+      "glob": "",
+      "normalizer": "advisor_jsonl",
+      "run_kind": "advisor",
+      "project_binding": "engine",
+      "tier": "derived"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "schema_version": "uve_storage_inactivity_tiers.v1",
+  "no_activity_tier": "lab_idle_full_pause",
+  "tiers": [
+    {"tier_ref": "lab_active", "minimum_days": 0, "modes": ["dry_run", "quarantine", "purge", "compact_sqlite"]},
+    {"tier_ref": "lab_idle_inventory", "minimum_days": 30, "modes": ["dry_run"]},
+    {"tier_ref": "lab_idle_full_pause", "minimum_days": 90, "modes": ["dry_run"]}
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "schema_version": "lab_uve_uve_binding.v1",
+  "training_pipeline_relative_from_repo": ".",
+  "lab_root_env_key": "UVE_AI_LAB_ROOT",
+  "bundle_validate_env_key": "LAB_UVE_INCIDENT_BUNDLE_PATH",
+  "validate_profile_relative_in_pipeline": "config/uve/profiles/lab_incident_bundle_validate.json",
+  "validate_gate_id": "lab_incident_bundle_gate",
+  "default_repair_actor_ref": "lab-bridge-reducer",
+  "default_gate_evaluator_ref": "independent-contract",
+  "catacombs_binding_ref": "config/lab_uve_catacombs_binding.json",
+  "engine_binding_ref": "config/lab_uve_engine_binding.json",
+  "training_inspection": {
+    "project_id": "ai_lab_training",
+    "output_dir_relative_from_lab": "logs/uve/training-inspection",
+    "identity_manifest_relative_in_pipeline": "config/uve/uve_checkpoint_identity_manifest.json",
+    "receipt_scope": "checkpoint_inspection"
+  }
+}

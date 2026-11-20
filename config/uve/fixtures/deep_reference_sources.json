@@ -7,7 +7,10 @@
       "id": "workstation_state",
       "source_root_env": "UVE_WORKSTATION_ROOT",
       "destination_relative": "fixtures/workstation/source",
-      "source_globs": ["core/state/app_state_store.cpp", "core/state/app_state_store.hpp"]
+      "source_globs": [
+        "core/state/app_state_store.cpp",
+        "core/state/app_state_store.hpp"
+      ]
     }
   ]
 }

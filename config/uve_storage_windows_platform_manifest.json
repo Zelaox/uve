@@ -1,0 +1,9 @@
+{
+  "schema_version": "uve_storage_windows_platform.v1",
+  "scheduler_kind": "windows_task_scheduler",
+  "storage_sense_authority": false,
+  "storage_sense_policy_ref": "docs/runbooks/uve_storage_windows_scheduler.md",
+  "windows_idle_is_lab_activity": false,
+  "run_level": "LeastPrivilege",
+  "logon_type": "InteractiveToken"
+}

@@ -1,9 +1,11 @@
 ---
 name: uve-verification
-description: Run UVE probes and inspect receipts when a development task requires UVE verification, an existing UVE profile, or diagnosis of a failed UVE gate.
+description: Run UVE probes and gates, investigate TRIAGE history, and bind reverse-engineering or forensic evidence to scoped verification. Use when a project or user requests UVE/TRIAGE or evidence-bound analysis.
 ---
 
 # UVE verification
+
+For combined TRIAGE/UVE work, follow [the unified bridge skill](../lab-uve-triage-bridge/SKILL.md). It includes indexed incident history, the Hex Editor Learning DB workflow for reverse engineering, and acquisition limits for live forensics. Read the relevant reference before beginning that mode.
 
 Locate the UVE checkout and the target project's profile from the project instructions or the user's configuration. Read the profile, its command or runtime targets, and the gate's required probe list. Resolve the interpreter, workspace, and any live device or delivery bindings before running checks. For Workstation-managed apps, use the active worker's pipeline and generated application profile.
 

@@ -43,6 +43,8 @@ def diagnose_runtime(status_path: Path, context_path: Path | None = None) -> dic
             result = {"tier_id": tier["tier_id"], "decision": gate["decision"],
                       "rejection_basis": gate.get("rejection_basis"),
                       "gate_receipt_path": str(gate_path), "probes": []}
+            if "explanation" in gate:
+                result["explanation"] = gate["explanation"]
             report["tiers"].append(result)
             for ref in gate["probe_receipt_refs"]:
                 path = _receipt_path(root, "probes", ref["probe_run_id"])
@@ -52,10 +54,13 @@ def diagnose_runtime(status_path: Path, context_path: Path | None = None) -> dic
                     errors.append(f"probe hash or id mismatch: {path}")
                 if probe["subject_identity"]["identity_sha256"] != gate["subject_identity_sha256"]:
                     errors.append(f"probe subject mismatch: {path}")
-                result["probes"].append({"probe_id": probe["probe"]["probe_id"],
+                probe_result = {"probe_id": probe["probe"]["probe_id"],
                     "probe_run_id": probe["probe_run_id"], "verdict": probe["verdict"],
                     "fault_origin": probe["fault_origin"], "failure_class": probe.get("failure_class"),
-                    "observation": probe["observation"], "receipt_path": str(path)})
+                    "observation": probe["observation"], "receipt_path": str(path)}
+                if "explanation" in probe:
+                    probe_result["explanation"] = probe["explanation"]
+                result["probes"].append(probe_result)
     except (OSError, ValueError, KeyError, TypeError) as exc:
         errors.append(f"{type(exc).__name__}: {exc}")
     report["evidence_consistent"] = not errors

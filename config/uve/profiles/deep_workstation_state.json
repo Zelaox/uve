@@ -7,7 +7,9 @@
     "deep_flow_v6": {
       "resource_kind": "mutation_work_dir",
       "key_ref": "config/uve/targets/deep_flow_fixture_store.json",
-      "path_key_fields": ["work_dir"]
+      "path_key_fields": [
+        "work_dir"
+      ]
     }
   },
   "deep_flow_ref": "config/uve/fixtures/deep_workstation/flow.json",

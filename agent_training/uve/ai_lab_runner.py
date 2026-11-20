@@ -20,6 +20,9 @@ def run_training_quality(profile: dict[str, Any]) -> dict[str, Any]:
     if not config_ref:
         raise ManifestError("AI Lab runner requires ai_lab_run_ref or run config environment")
     spec = load_json_ref(config_ref)
+    inspection_only = spec.get("inspection_only", False)
+    if not isinstance(inspection_only, bool):
+        raise ManifestError("AI Lab inspection_only must be a boolean")
 
     def within(relative: str) -> Path:
         path = (lab / relative).resolve()
@@ -35,6 +38,8 @@ def run_training_quality(profile: dict[str, Any]) -> dict[str, Any]:
         "export_profile": spec.get("export_profile", ""),
         "receipt_scope": spec["receipt_scope"],
     }
+    if inspection_only:
+        kwargs["inspection_only"] = True
     with _import_lock:
         sys.path.insert(0, str(lab))
         try:

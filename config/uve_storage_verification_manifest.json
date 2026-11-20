@@ -1,0 +1,10 @@
+{
+  "schema_version": "uve_storage_verification.v1",
+  "gate_id": "uve_storage_lifecycle_gate",
+  "probe_id": "command_check",
+  "profile_ref_in_pipeline": "config/uve/profiles/uve_storage_purge_validate.json",
+  "request_env": "UVE_STORAGE_PURGE_REQUEST",
+  "request_output_relative": "logs/uve/storage-requests",
+  "outcome_token": "STORAGE_PURGE_VALID",
+  "plan_hash_output_token": "STORAGE_PURGE_SHA256"
+}

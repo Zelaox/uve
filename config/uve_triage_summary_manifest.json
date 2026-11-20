@@ -1,0 +1,48 @@
+{
+  "schema_version": "uve_triage_summary.v1",
+  "template_ref": "config/uve_triage_run_summary.txt",
+  "generator_ref": "uve_triage_summary.v1",
+  "severity_buckets": {
+    "error": [
+      "error",
+      "critical",
+      "fatal"
+    ],
+    "warning": [
+      "warning",
+      "warn"
+    ],
+    "info": [
+      "info",
+      "notice"
+    ]
+  },
+  "rollup": {
+    "failed": "TRIAGE_FAIL",
+    "warning": "TRIAGE_WARN",
+    "ok": "TRIAGE_OK",
+    "not_verified": "UVE_NOT_VERIFIED"
+  },
+  "failure_statuses": [
+    "failed",
+    "fail",
+    "TRIAGE_FAIL",
+    "error",
+    "rejected"
+  ],
+  "unverified_statuses": [
+    "not_verified",
+    "UVE_NOT_VERIFIED"
+  ],
+  "hypothesis_label": "hypothesis",
+  "severity_by_code": {
+    "ENGINE_CONTRACT_FAIL": "error",
+    "ENGINE_RUNTIME_TRIAGE_FAIL": "error",
+    "ENGINE_RUNTIME_SCHEMA_FAIL": "error"
+  },
+  "classification_ref": "config/lab_uve_classification_map.json",
+  "schema_code_prefixes": [
+    "schema.",
+    "ENGINE_RUNTIME_SCHEMA"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "schema_version": "uve_triage_retention.v1",
+  "retain_comparisons": true,
+  "row_pruning": false,
+  "checkpoint_mode": "PASSIVE",
+  "require_no_active_holds": true
+}

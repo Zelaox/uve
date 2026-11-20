@@ -29,7 +29,10 @@ def run_probe(*, probe_id: str, ctx: dict[str, Any]) -> dict[str, Any]:
     except (UnicodeError, LookupError):
         return {"verdict": "not_verified", "fault_origin": "engine_fault", "failure_class": "adapter_error",
                 "reason": "command output does not match its declared encoding", "encoding": encoding}
-    passed = proc.returncode == spec["expected_returncode"] and spec.get("expected_stdout", "") in stdout
+    expected_stdout = spec.get("expected_stdout")
+    stdout_matched = expected_stdout in stdout if expected_stdout is not None else None
+    passed = proc.returncode == spec["expected_returncode"] and stdout_matched is not False
     return {"verdict": "passed" if passed else "failed", "fault_origin": "none" if passed else "subject_fault",
             "failure_class": None if passed else "assertion_mismatch", "returncode": proc.returncode,
+            "expected_returncode": spec["expected_returncode"], "expected_stdout_matched": stdout_matched,
             "stdout": stdout, "stderr": stderr}

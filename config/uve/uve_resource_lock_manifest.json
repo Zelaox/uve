@@ -4,8 +4,19 @@
   "acquire_backoff_ms": 250,
   "lock_store_relative": "logs/uve/leases",
   "resource_kinds": {
+    "storage_active_work": {
+      "path_key_fields": [
+        "work_root"
+      ],
+      "key_fields": [
+        "work_root"
+      ],
+      "ref_fields": []
+    },
     "flow_issue_fingerprint": {
-      "key_fields": ["fingerprint"],
+      "key_fields": [
+        "fingerprint"
+      ],
       "ref_fields": []
     },
     "dev_server_port": {
@@ -28,7 +39,9 @@
       ]
     },
     "mutation_work_dir": {
-      "path_key_fields": ["work_dir"],
+      "path_key_fields": [
+        "work_dir"
+      ],
       "key_fields": [
         "work_dir"
       ],

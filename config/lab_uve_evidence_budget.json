@@ -1,0 +1,6 @@
+{
+  "schema_version": "lab_uve_evidence_budget.v1",
+  "max_evidence_refs": 64,
+  "max_file_read_bytes": 4194304,
+  "max_bundle_json_bytes": 1048576
+}

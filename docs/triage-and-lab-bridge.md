@@ -30,7 +30,15 @@ python scripts/debug/validate_lab_uve_incident_bundle.py
 
 inside the project bound by `UVE_AI_LAB_ROOT`. The probe succeeds when the validator prints `BUNDLE_VALID`. Gate id: `lab_incident_bundle_gate`.
 
-This checkout ships the profile and gate definitions only. The validator script and live bundle bytes live in the AI Lab repository, not here. Set `UVE_AI_LAB_ROOT` to that checkout before running the probe.
+This checkout ships the standalone validator, bundle reducer, manifests and TRIAGE index as well as the profile and gate. Set `UVE_AI_LAB_ROOT` to this checkout to use its configured report catalog and pipeline binding, or to an external AI Lab checkout with its own bindings and source reports. The two roots need not share runtime data.
+
+```powershell
+python -B scripts/debug/triage_incident_bundle.py --probe-run-id ACTUAL_PROBE_ID --write-bundle
+```
+
+Use the returned bundle path with the environment key declared in `config/lab_uve_uve_binding.json`. The native validator checks its implemented structure/mode/repair contract; approval is not a semantic proof of the incident's root cause. The standalone reducer catalog includes turn correlation and incident bundles. Dashboard/codegen/native-product reducers require the AI Lab or application checkout that owns them.
+
+For history queries, ingestion and comparisons, see [TRIAGE observability](triage-observability.md). For binary and live forensic investigations, use the [unified skill](../.agents/skills/lab-uve-triage-bridge/SKILL.md) and its mode-specific references. Retain raw acquisitions and unsupported capabilities as explicit gaps.
 
 Related rule metadata: `config/manifests/triage_rules_manifest.json` (`lab_incident_bundle` category for training-pipeline observability in AI Lab).
 

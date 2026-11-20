@@ -1,0 +1,20 @@
+{
+  "schema_version": "uve_triage_adapter.v1",
+  "engine_index_opt_in": true,
+  "mirror_advisor_writes": true,
+  "advisor_source_types": ["expansion_store_sqlite", "advisor_jsonl"],
+  "engine_session_source_type": "engine_triage_session_report",
+  "uve_receipt_sidecar_enabled": true,
+  "uve_receipt_project_ids": ["ai_lab_incident_bridge", "ailab_engine", "ruined_catacombs", "ai_lab_storage_lifecycle", "ai_lab_training", "ai_lab_evidence_dataset"],
+  "uve_probe_source_type": "uve_probe_receipt",
+  "uve_gate_source_type": "uve_gate_receipt",
+  "uve_receipt_actor_class": "uve_probe",
+  "index_timeout_seconds": 120,
+  "dual_write_minimum_days": 7,
+  "read_primary": false,
+  "mcp_query_enabled": true,
+  "mcp_query_tool_name": "uve_triage_observability_read",
+  "mcp_query_commands": ["run-summary", "fingerprint-timeline", "trace-finding", "project-health"],
+  "max_query_rows": 100,
+  "phase": "dual_write_validation"
+}

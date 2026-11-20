@@ -1,0 +1,12 @@
+{
+  "schema_version": "ailab.engine.triage_session_report.v1",
+  "include_on_write_report": {
+    "expansion_advisory": true,
+    "expansion_evolution_snapshot": true,
+    "runtime_triage_counters": true
+  },
+  "include_on_preflight": {
+    "uve_validate_summary": true,
+    "expansion_self_test_when_validate_flags_set": true
+  }
+}

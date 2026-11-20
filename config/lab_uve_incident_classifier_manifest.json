@@ -1,0 +1,33 @@
+{
+  "schema_version": "lab_uve_incident_classifier_manifest.v1",
+  "rules": [
+    {
+      "finding_code": "DISPATCH_INTENT_CONTRADICTION",
+      "certainty": "fact",
+      "detail_template": "Image generation was selected before a code/work-mode override.",
+      "match": {
+        "requires_stages_any": ["cip_intent_classification"],
+        "intent_image": true,
+        "requires_stages_any_after": ["cip_work_mode_override"]
+      }
+    },
+    {
+      "finding_code": "DUPLICATE_OPERATION_PROJECTION",
+      "certainty": "fact",
+      "detail_template": "Duplicate operation projection detected.",
+      "match": { "duplicate_operation": true }
+    },
+    {
+      "finding_code": "OBSERVABILITY_EVIDENCE_GAP",
+      "certainty": "unknown",
+      "detail_template": "Events exist, but no terminal turn event was found.",
+      "match": { "events_without_terminal": true }
+    },
+    {
+      "finding_code": "CONTRACT_CREATION_MISSING",
+      "certainty": "fact",
+      "detail_template": "Image intent exists without a correlated execution contract.",
+      "match": { "image_without_contract": true }
+    }
+  ]
+}

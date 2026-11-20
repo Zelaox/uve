@@ -1,0 +1,8 @@
+{
+  "schema_version": "uve_triage_comparison.v1",
+  "projection_revision": 3,
+  "auto_compare": true,
+  "compare_same_run_kind": true,
+  "increased_delta": 0,
+  "catalog_ref": "config/uve_triage_lifecycle_catalog.json"
+}

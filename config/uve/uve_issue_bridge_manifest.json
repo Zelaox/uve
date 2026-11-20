@@ -4,8 +4,13 @@
   "flow_fingerprints_relative": "flow-fingerprints",
   "flow_fingerprint_resource_kind": "flow_issue_fingerprint",
   "contract_ref": "config/contracts/issue_contract.json",
-  "open_on_probe_verdicts": ["failed"],
-  "open_on_gate_decisions": ["rejected", "not_verified"],
+  "open_on_probe_verdicts": [
+    "failed"
+  ],
+  "open_on_gate_decisions": [
+    "rejected",
+    "not_verified"
+  ],
   "evidence_type_probe": "uve_probe_receipt",
   "evidence_type_gate": "uve_gate_receipt"
 }

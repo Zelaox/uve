@@ -1,0 +1,14 @@
+{
+  "schema_version": "uve_triage_run_kind_catalog.v1",
+  "kinds": [
+    "triage_session",
+    "triage_engine",
+    "bundle_build",
+    "engine_runtime",
+    "uve_probe",
+    "uve_gate",
+    "training_observability",
+    "flow_triage",
+    "advisor"
+  ]
+}

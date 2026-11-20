@@ -1,0 +1,21 @@
+{
+  "schema_version": "lab_uve_evidence_trust_catalog.v1",
+  "allowed_read_roots_relative": [
+    "data",
+    "logs",
+    "config"
+  ],
+  "authoritative_roots_relative": [
+    "data/work_runs",
+    "data/runtime",
+    "logs/debug"
+  ],
+  "trust_tiers": {
+    "authoritative": "Path under authoritative_roots and file exists",
+    "derived": "Path under allowed_read_roots",
+    "historical": "Envelope freshness historical",
+    "external_untrusted": "Outside allowed roots",
+    "unrecoverable": "Missing file or unknown ref"
+  },
+  "default_authority_ref": "lab_uve_evidence_trust_catalog.v1"
+}

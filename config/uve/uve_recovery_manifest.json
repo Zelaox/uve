@@ -4,12 +4,16 @@
     "restart_metro": {
       "adapter_id": "expo_metro",
       "action_token": "restart",
-      "requires_reverification_probe_ids": ["metro_status"]
+      "requires_reverification_probe_ids": [
+        "metro_status"
+      ]
     }
   },
   "profiles": {
     "android_example": {
-      "allowed_actions": ["restart_metro"],
+      "allowed_actions": [
+        "restart_metro"
+      ],
       "automatic_restart": true
     }
   }

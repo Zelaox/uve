@@ -11,6 +11,7 @@ from agent_training.manifest_loader import load_json_ref, pipeline_root
 from agent_training.uve.bundle import load_manifest_bundle, write_json_atomic, resolve_log_dir
 from agent_training.uve.gate_evaluator import evaluate_gate
 from agent_training.uve.orchestrator import run_probe
+from agent_training.uve.receipt_explanation import explain_gate
 
 
 def run_witness_bundle(candidate_root: Path | None = None) -> dict:
@@ -56,6 +57,11 @@ def run_witness_bundle(candidate_root: Path | None = None) -> dict:
     if not candidate_passed:
         gate["decision"] = "rejected"
         gate["rejection_basis"] = "engine_fault"
+        gate["explanation"] = explain_gate(
+            gate, probes, reason_code="witness_contract_failed",
+            spec=bundle["_loaded"]["config/uve/uve_gate_manifest.json"]["gates"][gate["gate_id"]],
+            details={"candidate_returncode": execution.get("returncode")},
+        )
     result = {
         "witness_evaluator_ref": witness["witness_evaluator_ref"],
         "gate": gate,

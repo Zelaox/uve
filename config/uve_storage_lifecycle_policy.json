@@ -1,0 +1,23 @@
+{
+  "schema_version": "uve_storage_lifecycle_policy.v1",
+  "durations_days": {
+    "temp_ephemeral": 7,
+    "uve_pass_run_scratch": 14,
+    "debug_logs": 30,
+    "failed_test_artifacts": 90,
+    "stale_build_outputs": 30,
+    "quarantine_hold": 14
+  },
+  "age_decisions": {
+    "temp_ephemeral": "quarantine",
+    "uve_pass_run_scratch": "quarantine",
+    "debug_logs": "archive",
+    "failed_test_artifacts": "keep",
+    "stale_build_outputs": "quarantine",
+    "sqlite_observability_history": "protect",
+    "uve_verification_evidence": "protect",
+    "models_checkpoints_source": "protect"
+  },
+  "evolution_storage_ref_in_pipeline": "config/uve/uve_evolution_storage_policy.json",
+  "evolution_hold_ref_in_pipeline": "config/uve/uve_evolution_evidence_hold_policy.json"
+}

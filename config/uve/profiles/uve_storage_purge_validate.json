@@ -1,0 +1,34 @@
+{
+  "schema_version": "uve_project_profile.v1",
+  "project_id": "ai_lab_storage_lifecycle",
+  "environment": "development",
+  "project_root_ref": "config/uve/targets/ai_lab_bridge/project_root.json",
+  "identity": {
+    "watch_globs": [
+      "config/uve_storage*.json",
+      "config/uve_triage*.json",
+      "config/lab_uve_*.json",
+      "config/uve/uve_triage_migrations/*.sql",
+      "mcp_server/diagnostics/uve_triage_storage*.py",
+      "mcp_server/diagnostics/uve_triage_proof.py",
+      "mcp_server/diagnostics/uve_triage_store.py",
+      "scripts/uve/validate_storage_purge.py"
+    ],
+    "ignore_globs": [
+      "**/__pycache__/**",
+      "logs/**",
+      "data/**"
+    ],
+    "prune_unwatched_dirs": true
+  },
+  "command_probe_refs": {
+    "command_check": "config/uve/targets/ai_lab_bridge/storage_purge_check.json"
+  },
+  "verification_probe_ids": [
+    "command_check"
+  ],
+  "gate_ids": [
+    "uve_storage_lifecycle_gate"
+  ],
+  "sync_issues_on_failure": false
+}

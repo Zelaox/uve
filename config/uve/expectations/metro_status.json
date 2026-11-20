@@ -1,1 +1,4 @@
-{"schema_version":"uve_expectation.v1","outcome_token":"packager-status:running"}
+{
+  "schema_version": "uve_expectation.v1",
+  "outcome_token": "packager-status:running"
+}

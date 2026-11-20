@@ -5,19 +5,30 @@
   "roles": [
     {
       "role_id": "uve_runner",
-      "capabilities": ["read_raw", "write_raw"]
+      "capabilities": [
+        "read_raw",
+        "write_raw"
+      ]
     },
     {
       "role_id": "uve_gate",
-      "capabilities": ["read_raw"]
+      "capabilities": [
+        "read_raw"
+      ]
     },
     {
       "role_id": "export_service",
-      "capabilities": ["read_raw", "run_export_transform"]
+      "capabilities": [
+        "read_raw",
+        "run_export_transform"
+      ]
     },
     {
       "role_id": "operator",
-      "capabilities": ["read_raw", "write_raw"]
+      "capabilities": [
+        "read_raw",
+        "write_raw"
+      ]
     },
     {
       "role_id": "repair_agent",

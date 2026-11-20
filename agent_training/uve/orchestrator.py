@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib
 import uuid
+from time import perf_counter
 from typing import Any
 
 from agent_training.manifest_loader import ManifestError, load_json_ref
@@ -9,6 +10,7 @@ from agent_training.uve.bundle import configuration_hash, load_manifest_bundle, 
 from agent_training.content_hash import content_hash
 from agent_training.uve.identity import build_subject_identity
 from agent_training.uve.lease_policy import acquire_probe_lease, release_probe_lease, owns_probe_lease
+from agent_training.uve.receipt_explanation import explain_probe
 from agent_training.uve.receipts import assert_valid_probe
 from agent_training.uve.workspace import resolve_workspace_root
 
@@ -52,6 +54,7 @@ def _run_probe(
     repair_actor_refs: list[str] | None = None,
     lease_state: dict[str, Any],
 ) -> dict[str, Any]:
+    started = perf_counter()
     bundle = load_manifest_bundle()
     profile = load_profile(profile_ref)
     probe_catalog = bundle["_loaded"]["config/uve/uve_probe_catalog.json"]
@@ -78,6 +81,11 @@ def _run_probe(
                 lease_probe_run_id, probe_id, probe_spec, profile, bundle, id_start, lease_id, lease_fail
             )
             receipt["profile_ref"] = profile_ref
+            receipt["repair_actor_refs"] = list(repair_actor_refs or [])
+            receipt["explanation"] = explain_probe(
+                receipt, profile=profile, mode="lease_denied",
+                elapsed_ms=round((perf_counter() - started) * 1000), reason_code="lease_denied",
+            )
             write_json_atomic(resolve_log_dir() / "probes" / f"{lease_probe_run_id}.json", receipt)
             if probe_spec["adapter_id"] == "deep_flow":
                 from agent_training.uve.flow_status import index_probe
@@ -142,19 +150,21 @@ def _run_probe(
         observation["end_identity_error"] = end_error
 
     observation = dict(observation)
-    verdict = observation.pop("verdict", "not_verified")
+    adapter_verdict = verdict = observation.pop("verdict", "not_verified")
+    reason_code = None
     fault_origin = observation.pop("fault_origin", "unknown")
     if not identity_stable:
         verdict = "not_verified"
         fault_origin = "engine_fault"
         observation["identity_drift"] = True
+        reason_code = "identity_unstable"
     if not bundle_stable:
         verdict, fault_origin = "not_verified", "engine_fault"
-        observation["failure_class"] = "manifest_mismatch"
+        observation["failure_class"] = reason_code = "manifest_mismatch"
     if verdict == "passed" and probe_id in bind.get("runtime_delivery_binding_probe_ids", []):
         if not observation.get("runtime_delivery_binding_sha256"):
             verdict, fault_origin = "not_verified", "engine_fault"
-            observation["failure_class"] = "binding_missing"
+            observation["failure_class"] = reason_code = "binding_missing"
 
     if bind.get("require_identity_stable_for_pass") and verdict == "passed" and not identity_stable:
         verdict = "not_verified"
@@ -191,6 +201,11 @@ def _run_probe(
         },
     }
     assert_valid_probe(receipt)
+    receipt["explanation"] = explain_probe(
+        receipt, profile=profile, mode="fixture" if dry_mode else "adapter",
+        elapsed_ms=round((perf_counter() - started) * 1000), adapter_verdict=adapter_verdict,
+        reason_code=reason_code,
+    )
     write_json_atomic(resolve_log_dir() / "probes" / f"{probe_run_id}.json", receipt)
     if probe_spec["adapter_id"] == "deep_flow":
         from agent_training.uve.flow_status import index_probe

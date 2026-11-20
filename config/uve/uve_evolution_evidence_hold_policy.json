@@ -1,0 +1,14 @@
+{
+  "schema_version": "ailab.uve.evolution_evidence_hold_policy.v1",
+  "pin_outcomes": [
+    "verified_caught_regression",
+    "verified_preventive_guard"
+  ],
+  "open_incident_status_values": [
+    "open",
+    "investigating"
+  ],
+  "pinned_retention_tier": "long",
+  "evaluation_detail_retention_generations": 20,
+  "orphan_bundle_grace_generations": 5
+}

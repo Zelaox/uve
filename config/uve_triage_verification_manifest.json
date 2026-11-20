@@ -1,0 +1,20 @@
+{
+  "schema_version": "uve_triage_verification.v1",
+  "binding_ref": "config/lab_uve_uve_binding.json",
+  "pipeline_identity_manifest_ref": "config/uve/uve_subject_identity_manifest.json",
+  "project_root_ref": "config/uve/targets/ai_lab_bridge/project_root.json",
+  "ledger_relative": "logs/uve/observability-verification",
+  "test_relative": "tests/debug/test_uve_triage_observability.py",
+  "additional_test_paths": ["tests/debug/test_uve_expansion_advisor.py"],
+  "program_fixture_root_relative": ".",
+  "probe_id": "command_check",
+  "timeout_seconds": 150,
+  "actor_ref": "codex",
+  "watch_globs": ["config/uve_triage*", "config/uve_storage*", "config/uve/uve_triage*", "config/lab_uve_*.json", "mcp_server/diagnostics/uve_triage*", "mcp_server/diagnostics/uve_evolution_store.py", "scripts/debug/triage_engine_session.py", "scripts/debug/inventory_uve_triage_sources.py", "scripts/uve/*storage*", "scripts/uve/verify_observability.py", "tests/debug/test_uve_triage_observability.py", "uve-v4-v6-candidate/agent_training/uve/**/*.py", "uve-v4-v6-candidate/config/uve/**/*.json"],
+  "additional_watch_globs": ["config/uve/uve_triage_migrations/*.sql", "mcp_server/diagnostics/lab_uve_bundle_validate.py", "mcp_server/diagnostics/uve_test_expansion_*.py", "mcp_server/diagnostics/uve_expansion_*.py", "scripts/uve/expansion_proposal_lifecycle.py", "tests/debug/test_uve_expansion_advisor.py", "mcp_server/planning/codegen_write_pipeline.py", "mcp_server/server.py", ".cursor/skills/lab-uve-triage-bridge/SKILL.md", "engine/.cursor/skills/ailab-engine-uve-triage/SKILL.md", "uve-v4-v6-candidate/docs/UVE.md", "docs/runbooks/uve_triage_observability.md", "docs/runbooks/uve_storage_windows_scheduler.md"],
+  "ignore_globs": ["**/__pycache__/**", "**/.pytest_cache/**", "logs/**", "data/**", "uve-v4-v6-candidate/logs/**", "uve-v4-v6-candidate/artifacts/**", "venv_wsl/**", "**/node_modules/**", "**/build/**", ".staging/**"],
+  "program_acceptance_id": "ALL",
+  "program_gate_id": "uve_triage_observability_gate",
+  "gate_evaluator_ref": "independent-contract",
+  "slices": ["S0", "S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S10", "S11", "S12", "S13", "ALL"]
+}

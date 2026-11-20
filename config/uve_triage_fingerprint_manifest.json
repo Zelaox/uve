@@ -1,0 +1,9 @@
+{
+  "schema_version": "uve_triage_fingerprint.v1",
+  "default_fields": [
+    "project_id",
+    "diagnostic_code",
+    "entity_ref"
+  ],
+  "identity_ref": "config/lab_uve_incident_identity_manifest.json"
+}

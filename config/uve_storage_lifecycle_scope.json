@@ -1,0 +1,18 @@
+{
+  "schema_version": "uve_storage_lifecycle_scope.v1",
+  "roots": [
+    {"relative": "logs/uve/storage-scratch", "data_class_ref": "temp_ephemeral", "file_globs": ["*.tmp", "*.scratch"]},
+    {"relative": "logs/uve/expansion_regression_probe", "data_class_ref": "uve_pass_run_scratch", "file_globs": ["*.tmp", "*.scratch"]}
+  ],
+  "excluded_path_parts": ["protrainer"],
+  "reference_manifest_routes": [
+    {"root_kind": "lab", "glob": "config/*.json"},
+    {"root_kind": "lab", "glob": "engine/config/**/*.json"},
+    {"root_kind": "pipeline", "glob": "config/uve/**/*.json"}
+  ],
+  "reference_field_suffixes": ["_ref", "_refs", "_path", "_paths", "_file", "_files", "_relative_from_lab", "_relative_in_pipeline"],
+  "reference_manifest_max_bytes": 1048576,
+  "permanent_root_prefixes": ["engine", "mcp_server", "dashboard_app", "config", "docs", ".git", ".cursor", "data/runtime", "data/work_runs", "models", "checkpoints", "logs/debug", "logs/uve/observability-verification", "uve-v4-v6-candidate"],
+  "permanent_suffixes": [".sqlite", ".sqlite3", ".db", "-wal", "-shm", "-journal", ".safetensors", ".ckpt", ".gguf", ".pt", ".pth", ".onnx", ".bin", ".exe", ".dll", ".py", ".cpp", ".c", ".h", ".qml", ".js", ".ts", ".ps1", ".md"],
+  "permanent_names": ["bundle.json", "receipt.json"]
+}

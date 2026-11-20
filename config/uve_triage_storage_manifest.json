@@ -1,0 +1,28 @@
+{
+  "schema_version": "uve_triage_storage.v1",
+  "database_relative_from_lab": "logs/uve/uve_triage.sqlite",
+  "wal_mode": true,
+  "busy_timeout_ms": 5000,
+  "schema_sql_ref": "config/uve/uve_triage_storage_schema.sql",
+  "migration_dir_ref": "config/uve/uve_triage_migrations",
+  "migration_glob": "*.sql",
+  "lab_binding_ref": "config/lab_uve_uve_binding.json",
+  "db_manifest_override_env": "UVE_TRIAGE_DB_MANIFEST",
+  "ingest_ref": "config/uve_triage_ingest_manifest.json",
+  "summary_ref": "config/uve_triage_summary_manifest.json",
+  "fingerprint_ref": "config/uve_triage_fingerprint_manifest.json",
+  "retention_ref": "config/uve_triage_retention_manifest.json",
+  "adapter_ref": "config/uve_triage_adapter_manifest.json",
+  "lifecycle_catalog_ref": "config/uve_triage_lifecycle_catalog.json",
+  "comparison_ref": "config/uve_triage_comparison_manifest.json",
+  "proof_ref": "config/uve_triage_proof_manifest.json",
+  "storage_lifecycle_ref": "config/uve_storage_lifecycle_manifest.json",
+  "run_kind_catalog_ref": "config/uve_triage_run_kind_catalog.json",
+  "decisions_json": {
+    "advisor": "read-only snapshot import during dual-write; existing advisor remains writer until reconciliation",
+    "evidence": "root_kind plus relative URI",
+    "mcp": "manifest-gated read-only query",
+    "locale": "en",
+    "storage_sense": "documentation only"
+  }
+}

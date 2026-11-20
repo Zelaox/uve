@@ -1,0 +1,19 @@
+{
+  "schema_version": "uve_storage_lifecycle.v1",
+  "enabled": false,
+  "default_mode": "dry_run",
+  "scope_ref": "config/uve_storage_lifecycle_scope.json",
+  "policy_ref": "config/uve_storage_lifecycle_policy.json",
+  "active_work_ref": "config/uve_storage_active_work_manifest.json",
+  "activity_ref": "config/uve_storage_activity_manifest.json",
+  "inactivity_tiers_ref": "config/uve_storage_inactivity_tiers.json",
+  "return_reconciliation_ref": "config/uve_storage_return_reconciliation_manifest.json",
+  "verification_ref": "config/uve_storage_verification_manifest.json",
+  "scheduler_ref": "config/uve_storage_scheduler_manifest.json",
+  "windows_platform_ref": "config/uve_storage_windows_platform_manifest.json",
+  "protected_source_roots_ref": "config/lab_uve_protected_source_roots.json",
+  "quarantine_relative": "logs/uve/storage-quarantine",
+  "state_id": "lab",
+  "scan_limit": 10000,
+  "hash_chunk_bytes": 1048576
+}

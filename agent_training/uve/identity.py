@@ -44,16 +44,21 @@ def _iter_watched_files(
     watch_globs: list[str],
     ignore_globs: list[str],
     identity_manifest: dict[str, Any],
+    *,
+    prune_unwatched_dirs: bool = False,
 ) -> list[Path]:
     max_depth = int(identity_manifest["max_scan_depth"])
     max_bytes = int(identity_manifest["max_file_bytes"])
     max_entries = int(identity_manifest["max_entry_count"])
     entries: list[Path] = []
+    prefixes = [tuple(part for part in _fixed_prefix(pattern)) for pattern in watch_globs] if prune_unwatched_dirs else []
     for root, dirs, files in os.walk(workspace_root):
         for directory in list(dirs):
             candidate = Path(root) / directory
             rel_dir = candidate.relative_to(workspace_root).as_posix()
             if any(matches_glob(rel_dir + "/", ig) for ig in ignore_globs):
+                dirs.remove(directory)
+            elif prefixes and not any(_may_contain_watch(tuple(rel_dir.split("/")), prefix) for prefix in prefixes):
                 dirs.remove(directory)
             elif candidate.is_symlink() or (hasattr(candidate, "is_junction") and candidate.is_junction()):
                 # Directory links cannot silently remove watched inputs.
@@ -80,6 +85,18 @@ def _iter_watched_files(
     return sorted(entries, key=lambda p: _normalize_relative(p, workspace_root))
 
 
+def _fixed_prefix(pattern: str):
+    for part in pattern.split("/")[:-1]:
+        if any(mark in part for mark in "*?["):
+            break
+        yield part
+
+
+def _may_contain_watch(directory: tuple[str, ...], prefix: tuple[str, ...]) -> bool:
+    shared = min(len(directory), len(prefix))
+    return directory[:shared] == prefix[:shared]
+
+
 def build_inventory_records(
     workspace_root: Path,
     profile: dict[str, Any],
@@ -94,7 +111,8 @@ def build_inventory_records(
     symlink_policy = identity_manifest["symlink_policy"]
     missing_policy = identity_manifest["missing_file_policy"]
     records: list[dict[str, Any]] = []
-    for path in _iter_watched_files(workspace_root, watch, ignore, identity_manifest):
+    for path in _iter_watched_files(workspace_root, watch, ignore, identity_manifest,
+                                    prune_unwatched_dirs=profile["identity"].get("prune_unwatched_dirs", False)):
         rel = _normalize_relative(path, workspace_root)
         kind = _file_kind(path, identity_manifest)
         if path.is_symlink():

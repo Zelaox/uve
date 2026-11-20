@@ -1,0 +1,192 @@
+{
+  "schema_version": "uve_receipt_explanation_policy.v1",
+  "explanation_schema_version": "uve_receipt_explanation.v1",
+  "failure_catalog_ref": "config/uve/uve_failure_class_catalog.json",
+  "secret_policy_ref": "config/uve/uve_secret_placeholder_manifest.json",
+  "limits": {
+    "text_characters": 320,
+    "items": 32
+  },
+  "defaults": {
+    "method": "The configured adapter evaluated its declared expectation against the bound subject.",
+    "scope": "The recorded expectation and subject identity bound to this probe.",
+    "limit": "Other behaviors, environments and future runs need their own evidence."
+  },
+  "adapters": {
+    "dry": {
+      "method": "The dry adapter emitted a controlled outcome to check UVE plumbing.",
+      "scope": "Receipt generation and evaluation for the controlled outcome.",
+      "limit": "This probe exercised a fixture and provides no live application or device evidence."
+    },
+    "command": {
+      "method": "The command adapter ran the declared command in the bound workspace and compared the exit code and any required stdout marker.",
+      "scope": "The checks actually performed by the declared command.",
+      "target_fields": [
+        "command_probe_refs"
+      ]
+    },
+    "adb": {
+      "method": "The ADB adapter read the bound device property or executed the declared UI flow and recorded its assertions.",
+      "scope": "The device property or UI steps listed in the observation.",
+      "limit": "A focused package or visible element alone does not establish persistence, backend success or coverage of other screens.",
+      "target_fields": [
+        "adb_probe_ref",
+        "ui_flow_ref",
+        "membership_ui_flow_ref",
+        "guest_package_ref"
+      ]
+    },
+    "adb_lifecycle": {
+      "method": "The lifecycle adapter observed the leased emulator as it started and recorded its state transitions.",
+      "scope": "The lifecycle steps observed for the bound emulator fixture.",
+      "target_fields": [
+        "adb_lifecycle_ref"
+      ]
+    },
+    "application_health": {
+      "method": "The application health adapter checked the bound app and the configured UI and runtime health signals.",
+      "scope": "The configured health signals observed for the bound app.",
+      "target_fields": [
+        "adb_probe_ref",
+        "application_health_ref",
+        "guest_package_ref"
+      ]
+    },
+    "expo_metro": {
+      "method": "The Metro adapter requested the configured status endpoint and compared the returned status marker.",
+      "scope": "The response from the configured development server status endpoint.",
+      "limit": "A Metro status response alone does not establish that the intended bundle or screen loaded.",
+      "target_fields": [
+        "metro_status_ref"
+      ]
+    },
+    "process_health": {
+      "method": "The process health adapter attempted a TCP connection to the configured endpoint.",
+      "scope": "Listener reachability at the configured host and port.",
+      "target_fields": [
+        "dev_server_port_ref"
+      ]
+    },
+    "engine_meta": {
+      "method": "The engine adapter ran the declared UVE self-check.",
+      "scope": "The UVE engine contract exercised by that self-check."
+    },
+    "deep_flow": {
+      "method": "The deep-flow adapter executed the declared fixture plan and evaluated the recorded cases and invariants for its configured depth.",
+      "scope": "The recorded cases, trace edges and cleanup assertions defined by the bound flow.",
+      "target_fields": [
+        "deep_flow_ref"
+      ]
+    },
+    "ai_lab_training_quality": {
+      "method": "UVE projected the required checks from the AI Lab quality receipt.",
+      "scope": "The checks and training candidate recorded in the source quality receipt."
+    }
+  },
+  "probe_outcomes": {
+    "passed": "The recorded evidence satisfied the declared probe expectation.",
+    "failed": "The probe recorded a failed check for the bound subject.",
+    "not_verified": "The probe did not establish a result for the declared expectation."
+  },
+  "probe_reasons": {
+    "lease_denied": "The required resource lease was unavailable, so the adapter did not execute.",
+    "identity_unstable": "The bound identity changed or could not be confirmed during the probe.",
+    "manifest_mismatch": "The engine could not confirm that the frozen verification configuration remained stable.",
+    "binding_missing": "The probe lacked a required binding for its evidence.",
+    "adapter_error": "The adapter could not complete its declared execution or capture usable evidence."
+  },
+  "gate_outcomes": {
+    "approved": "The supplied receipts satisfied the gate policy for the recorded subject.",
+    "rejected": "The gate policy rejected the supplied evidence for this decision.",
+    "not_verified": "The supplied evidence was insufficient to establish the gate decision."
+  },
+  "gate_reasons": {
+    "requirements_met": "Every required probe passed and the evidence satisfied the gate checks.",
+    "engine_degraded": "The gate could not run while UVE reported a degraded engine.",
+    "gate_manifest_unavailable": "UVE could not load the gate policy.",
+    "evaluator_not_independent": "The evaluator was missing or was also recorded as a repair actor.",
+    "bundle_unavailable": "UVE could not load the trusted manifest bundle.",
+    "bundle_mismatch": "The supplied bundle hash differs from the trusted bundle.",
+    "gate_policy_mismatch": "The selected gate policy differs from the policy in the trusted bundle.",
+    "invalid_probe_receipt": "A supplied receipt failed UVE receipt validation.",
+    "probe_bundle_mismatch": "A supplied probe was recorded under a different manifest bundle.",
+    "probe_configuration_changed": "A supplied probe's recorded configuration differs from the current configuration.",
+    "probe_identity_changed": "A supplied probe's recorded subject differs from the current subject.",
+    "probe_binding_unavailable": "UVE could not revalidate a supplied probe against its current profile.",
+    "snapshot_proof_missing": "A passing probe omitted its required snapshot proof.",
+    "delivery_proof_missing": "A passing probe omitted its required runtime delivery proof.",
+    "duplicate_probe": "The supplied set contains more than one receipt for a probe.",
+    "required_probes_missing": "The gate did not receive every required probe receipt.",
+    "flow_replay_mismatch": "The recorded flow could not be reproduced from its linked evidence under the current policy.",
+    "required_observation_mismatch": "A required observation value was missing or differed from the gate policy.",
+    "subject_identity_mismatch": "The supplied probes are bound to different subject identities.",
+    "required_probe_not_verified": "At least one required probe returned not_verified.",
+    "required_probe_identity_unstable": "At least one required probe recorded unstable subject identity.",
+    "subject_assertion_failed": "At least one required probe recorded a subject assertion failure.",
+    "probe_execution_failed": "A required probe did not pass and the supplied evidence did not establish a subject assertion failure.",
+    "witness_contract_failed": "The independent witness could not pass the candidate contract tests."
+  },
+  "blocked_method": "UVE stopped before adapter execution because it could not obtain a required lease.",
+  "fixture_limit": "This outcome was produced in an explicit fixture mode and supplies no live application or device evidence.",
+  "gate_method": "UVE evaluated the supplied receipts against the gate policy and checked their subject, bindings and evaluator where applicable.",
+  "gate_limit": "The decision covers only the declared gate requirements for the linked subject and receipts.",
+  "observation_fields": [
+    "outcome_token",
+    "failed_step",
+    "fault_rule",
+    "expected",
+    "observed",
+    "returncode",
+    "expected_returncode",
+    "expected_stdout_matched",
+    "missing_fields",
+    "source",
+    "flow_id",
+    "depth",
+    "device_state",
+    "resource_kind",
+    "status_code",
+    "expected_status",
+    "cleanup_verified",
+    "injection_confirmed",
+    "expected_package",
+    "observed_packages"
+  ],
+  "check_fields": [
+    "step_id",
+    "check_id",
+    "case_id",
+    "id",
+    "kind",
+    "property",
+    "ok",
+    "status",
+    "verdict",
+    "state",
+    "reason",
+    "expected",
+    "observed",
+    "needle",
+    "observed_packages",
+    "returncode",
+    "required_for_stage",
+    "cleanup_verified",
+    "matched",
+    "matched_edges"
+  ],
+  "check_collections": [
+    "ui_steps",
+    "lifecycle_steps",
+    "checks",
+    "cases"
+  ],
+  "finding_fields": [
+    "case_id",
+    "category",
+    "subject",
+    "state",
+    "certainty",
+    "rule_id",
+    "next_probe"
+  ]
+}

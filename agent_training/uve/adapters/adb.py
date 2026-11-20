@@ -13,6 +13,10 @@ from agent_training.manifest_loader import load_json_ref
 _ui_dump_locks: dict[str, threading.Lock] = {}
 
 
+def _focused_packages(focus: str) -> list[str]:
+    return list(dict.fromkeys(re.findall(r"\b([A-Za-z_][A-Za-z0-9_.]*)/", focus)))
+
+
 def _adb_run(spec: dict[str, Any], args: list[str], timeout: float) -> subprocess.CompletedProcess[str]:
     if not spec.get("adb_executable") or not spec.get("adb_serial"):
         raise ValueError("ADB probe requires an explicitly selected executable and serial")
@@ -101,7 +105,9 @@ def _run_ui_flow(
             proc = _adb_run(spec, ["shell", "getprop", step["property"]], timeout)
             value = (proc.stdout or "").strip()
             ok = proc.returncode == 0 and value == step["expected"]
-            step_results.append({"step_id": step["step_id"], "ok": ok, "observed": value})
+            step_results.append({"step_id": step["step_id"], "kind": kind, "property": step["property"],
+                                 "expected": step["expected"], "observed": value,
+                                 "returncode": proc.returncode, "ok": ok})
             if not ok:
                 return {
                     "verdict": "failed",
@@ -118,7 +124,9 @@ def _run_ui_flow(
             proc = _adb_run(spec, ["shell", "dumpsys", "window"], timeout)
             body = "\n".join(line for line in (proc.stdout or "").splitlines() if "mCurrentFocus" in line or "mFocusedApp" in line)
             ok = proc.returncode == 0 and needle in body
-            step_results.append({"step_id": step["step_id"], "ok": ok, "needle": needle})
+            packages = _focused_packages(body)
+            step_results.append({"step_id": step["step_id"], "kind": kind, "ok": ok, "needle": needle,
+                                 "observed_packages": packages, "returncode": proc.returncode})
             if not ok:
                 return {
                     "verdict": "failed",
@@ -286,7 +294,8 @@ def run_probe(*, probe_id: str, ctx: dict[str, Any]) -> dict[str, Any]:
     if proc.returncode != 0:
         return {"verdict": "not_verified", "fault_origin": "engine_fault", "error": proc.stderr}
     if value == expected:
-        return {"outcome_token": f"{prop}={value}", "verdict": "passed"}
+        return {"outcome_token": f"{prop}={value}", "verdict": "passed",
+                "observed": value, "expected": expected}
     return {
         "verdict": "failed",
         "fault_origin": "subject_fault",

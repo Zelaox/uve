@@ -1,0 +1,16 @@
+{
+  "schema_version": "ailab.uve.evolution_storage_policy.v1",
+  "database_relative_from_lab": "logs/uve/expansion_store.sqlite",
+  "schema_sql_ref": "config/uve/uve_evolution_storage_schema.sql",
+  "evidence_hold_policy_ref": "config/uve/uve_evolution_evidence_hold_policy.json",
+  "wal_mode": true,
+  "busy_timeout_ms": 30000,
+  "evaluation_detail_retention_generations": 20,
+  "max_db_bytes_regression": 52428800,
+  "max_new_files_per_regression": 8,
+  "storage_probe_relative_from_lab": "logs/uve/expansion_regression_probe",
+  "compaction_after_advisor_run": false,
+  "abort_on_hold_conflict": true,
+  "backup_before_compact": false,
+  "jsonl_export_max_bytes": 1048576
+}

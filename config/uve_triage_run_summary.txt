@@ -1,0 +1,1 @@
+{rollup} | {project_id} | {error} errors, {warning} warnings, {info} informational | evidence {evidence_count}

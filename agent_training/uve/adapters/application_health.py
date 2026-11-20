@@ -3,7 +3,7 @@ import hashlib
 import re
 from agent_training.manifest_loader import load_json_ref
 from agent_training.content_hash import content_hash
-from agent_training.uve.adapters.adb import _adb_run, _read_ui_hierarchy
+from agent_training.uve.adapters.adb import _adb_run, _focused_packages, _read_ui_hierarchy
 from agent_training.uve.adapters.ui_faults import ui_fault_result
 
 
@@ -20,7 +20,9 @@ def run_probe(*, probe_id, ctx):
     focused = _adb_run(spec, ['shell', 'dumpsys', 'window'], timeout)
     focus = '\n'.join(line for line in focused.stdout.splitlines() if 'mCurrentFocus' in line or 'mFocusedApp' in line)
     if focused.returncode or not re.search(r'(?<![\w.])' + re.escape(package) + r'/', focus):
-        return {'verdict': 'not_verified', 'fault_origin': 'unknown', 'reason': 'selected application is not focused'}
+        packages = _focused_packages(focus)
+        return {'verdict': 'not_verified', 'fault_origin': 'unknown', 'reason': 'selected application is not focused',
+                'expected_package': package, 'observed_packages': packages, 'returncode': focused.returncode}
     tree = _read_ui_hierarchy(spec, timeout)
     error = ui_fault_result(tree, health['fault_policy_ref'])
     if error:

@@ -1,0 +1,17 @@
+# Lab ↔ UVE incident bundle
+
+logical_incident_id: {logical_incident_id}
+occurrence_id: {occurrence_id}
+schema: {schema_version}
+
+## Correlation
+{correlation_block}
+
+## Primary finding
+{primary_finding}
+
+## Recommended next (advisory)
+{recommended_next_block}
+
+## Gaps
+{gaps_block}

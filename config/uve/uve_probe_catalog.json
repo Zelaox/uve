@@ -69,6 +69,18 @@
       "adapter_id": "ai_lab_training_quality",
       "expectation_ref": "config/uve/expectations/dry_echo.json"
     },
+    "ai_lab_tier_v2": {
+      "level": "L2",
+      "tier": "V2",
+      "adapter_id": "ai_lab_training_quality",
+      "expectation_ref": "config/uve/expectations/dry_echo.json"
+    },
+    "ai_lab_tier_v3": {
+      "level": "L2",
+      "tier": "V3",
+      "adapter_id": "ai_lab_training_quality",
+      "expectation_ref": "config/uve/expectations/dry_echo.json"
+    },
     "command_check": {
       "level": "L2",
       "tier": "V1",

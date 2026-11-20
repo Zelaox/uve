@@ -1,0 +1,13 @@
+{
+  "schema_version": "uve_storage_active_work.v1",
+  "resource_kind_ref": "storage_active_work",
+  "resource_lock_ref_in_pipeline": "config/uve/uve_resource_lock_manifest.json",
+  "heartbeat_interval_seconds": 30,
+  "lease_ttl_seconds": 600,
+  "post_expiry_grace_seconds": 300,
+  "liveness_policy": "process_create_time",
+  "writer_actor_refs": {"agent": "codex", "codegen": "lab-codegen", "uve_probe": "uve-probe", "indexer": "lab-indexer"},
+  "writer_scope_kinds": {"agent": "cleanup", "codegen": "cleanup", "uve_probe": "lease", "indexer": "lease"},
+  "lease_root_prefixes": ["logs/uve", "logs/debug", "data/work_runs", "uve-v4-v6-candidate/logs/uve"],
+  "actor_refs": ["codex", "cursor", "lab-codegen", "lab-indexer", "uve-probe", "engine-test-runner"]
+}

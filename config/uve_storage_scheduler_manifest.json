@@ -1,0 +1,11 @@
+{
+  "schema_version": "uve_storage_scheduler.v1",
+  "task_name": "AI Lab UVE Storage Inventory",
+  "runner_ref": "scripts/uve/run_storage_lifecycle_task.ps1",
+  "shell_command": "powershell.exe",
+  "python_command": "python.exe",
+  "trigger": {"type": "Daily", "at_local": "03:15", "start_date_local": "2026-11-11"},
+  "conditions": {"run_only_if_idle": false, "start_when_available": true, "run_on_battery": false},
+  "action": {"operation": "scan", "mode": "dry_run"},
+  "scheduler_actor_ref": "scheduler_maintenance"
+}

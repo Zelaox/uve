@@ -1,0 +1,20 @@
+{
+  "schema_version": "ailab.uve.strategy_fitness.v1",
+  "required_fields": [
+    "strategy_id",
+    "generation",
+    "proposal_outcome",
+    "defect_discovery_fitness",
+    "preventive_coverage_value",
+    "fitness_components"
+  ],
+  "proposal_outcome_enum": [
+    "verified_caught_regression",
+    "verified_no_defect_found",
+    "verified_preventive_guard",
+    "rejected_duplicate_coverage",
+    "rejected_too_costly",
+    "rejected_deprioritized",
+    "rejected_true_false_alarm"
+  ]
+}

@@ -10,7 +10,9 @@
   "rules": {
     "verified_success": {
       "require_gate_decision": "approved",
-      "forbid_probe_verdicts": ["not_verified"],
+      "forbid_probe_verdicts": [
+        "not_verified"
+      ],
       "require_all_required_probes_pass": true,
       "require_identity_stable": true
     },
@@ -18,7 +20,9 @@
       "require_gate_decision": "rejected",
       "require_gate_rejection_basis": "subject_observed",
       "require_at_least_one_probe_failed_subject": true,
-      "forbid_probe_verdicts": ["not_verified"],
+      "forbid_probe_verdicts": [
+        "not_verified"
+      ],
       "require_identity_stable": true
     }
   },

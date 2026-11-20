@@ -1,0 +1,21 @@
+{
+  "schema_version": "ailab.uve.test_expansion_advisor_policy.v1",
+  "project_id": "ailab_engine",
+  "proposals_per_scenario_min": 2,
+  "proposals_per_scenario_max": 3,
+  "advisor_seed": 1,
+  "max_scenarios_per_run": 0,
+  "exploration_slot_fraction": 0.25,
+  "min_untried_strategies_per_run": 1,
+  "ranking_weights": {
+    "observed_gap_boost": 0.35,
+    "suspected_gap_boost": 0.1,
+    "strategy_catalog_priority": 0.25
+  },
+  "observed_evidence_min_refs": 1,
+  "write_jsonl_export": true,
+  "jsonl_relative_from_lab": "logs/uve/test_expansion_proposals.jsonl",
+  "storage_policy_ref": "config/uve/uve_evolution_storage_policy.json",
+  "strategy_catalog_ref": "config/uve/uve_test_expansion_strategy_catalog.json",
+  "proposal_schema_ref": "config/uve/uve_test_expansion_proposal_schema.json"
+}

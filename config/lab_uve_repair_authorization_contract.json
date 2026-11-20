@@ -1,0 +1,14 @@
+{
+  "schema_version": "lab_uve_repair_authorization_contract.v1",
+  "triage_may_execute_repair": false,
+  "bundle_reducer_may_execute_repair": false,
+  "required_repair_fields": [
+    "repair_actor_ref",
+    "parent_occurrence_id",
+    "authorization_contract_ref"
+  ],
+  "repair_tools_outside_triage": [
+    "scripts/debug/triage_*_session.py --apply-safe",
+    "scripts/debug/triage_*_session.py --apply-recovery"
+  ]
+}

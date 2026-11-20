@@ -5,6 +5,7 @@ from typing import Any
 
 from agent_training.content_hash import content_hash
 from agent_training.manifest_loader import load_json_ref
+from agent_training.uve.receipt_explanation import explain_gate, probe_identifier
 from agent_training.uve.receipts import assert_valid_gate, validate_probe_receipt
 
 
@@ -43,84 +44,85 @@ def evaluate_gate(
 ) -> dict[str, Any]:
     from agent_training.uve.engine_state import read_engine_state
 
-    if read_engine_state().get("engine_degraded"):
-        return _gate_receipt(
-            gate_id,
-            gate_evaluator_ref,
-            probe_receipts,
-            manifest_bundle_sha256,
-            decision="not_verified",
-            rejection_basis="engine_fault",
+    spec: dict[str, Any] | None = None
+
+    def result(reason: str, basis: str | None = None, decision: str = "rejected",
+               *, probes: list[str] | None = None, details: dict | None = None) -> dict[str, Any]:
+        receipt = _gate_receipt(gate_id, gate_evaluator_ref, probe_receipts,
+                                manifest_bundle_sha256, decision=decision, rejection_basis=basis)
+        receipt["explanation"] = explain_gate(
+            receipt, probe_receipts, reason_code=reason, spec=spec,
+            blocking_probe_ids=probes, details=details,
         )
+        return receipt
+
+    if read_engine_state().get("engine_degraded"):
+        return result("engine_degraded", "engine_fault", "not_verified")
     try:
         gate_manifest = load_json_ref(gate_manifest_ref)
     except Exception:
-        return _gate_receipt(gate_id, gate_evaluator_ref, probe_receipts, manifest_bundle_sha256,
-                             decision="not_verified", rejection_basis="engine_fault")
+        return result("gate_manifest_unavailable", "engine_fault", "not_verified")
     spec = gate_manifest["gates"].get(gate_id)
     if not spec:
         raise KeyError(gate_id)
-
-    def reject(basis: str, decision: str = "rejected") -> dict[str, Any]:
-        return _gate_receipt(gate_id, gate_evaluator_ref, probe_receipts,
-                             manifest_bundle_sha256, decision=decision, rejection_basis=basis)
 
     actors = set(repair_actor_refs or [])
     for receipt in probe_receipts:
         actors.update(receipt.get("repair_actor_refs", []))
     if not gate_evaluator_ref or gate_evaluator_ref in actors:
-        return reject("engine_fault", "not_verified")
+        return result("evaluator_not_independent", "engine_fault", "not_verified")
     from agent_training.uve.bundle import load_manifest_bundle, configuration_hash
     try:
         trusted_bundle = load_manifest_bundle()
     except Exception:
-        return reject("engine_fault", "not_verified")
+        return result("bundle_unavailable", "engine_fault", "not_verified")
     if trusted_bundle["manifest_bundle_sha256"] != manifest_bundle_sha256:
-        return reject("manifest_mismatch")
+        return result("bundle_mismatch", "manifest_mismatch")
     if gate_manifest["_content_hash"] != trusted_bundle["_loaded"]["config/uve/uve_gate_manifest.json"]["_content_hash"]:
-        return reject("manifest_mismatch")
+        return result("gate_policy_mismatch", "manifest_mismatch")
     for receipt in probe_receipts:
-        if validate_probe_receipt(receipt):
-            return reject("invalid_stale")
+        probe_id = probe_identifier(receipt)
+        blocked = [probe_id] if probe_id else []
+        errors = validate_probe_receipt(receipt)
+        if errors:
+            return result("invalid_probe_receipt", "invalid_stale", probes=blocked,
+                          details={"validation_error_count": len(errors), "validation_errors": errors})
         plan = receipt["probe_plan_ref"]
         recorded_bundle = plan.get("manifest_bundle_sha256") if isinstance(plan, dict) else plan
         if recorded_bundle != manifest_bundle_sha256:
-            return reject("manifest_mismatch")
+            return result("probe_bundle_mismatch", "manifest_mismatch", probes=blocked)
         if receipt.get("profile_ref"):
             try:
                 if configuration_hash(receipt["profile_ref"]) != receipt["subject_identity"].get("configuration_sha256"):
-                    return reject("manifest_mismatch")
+                    return result("probe_configuration_changed", "manifest_mismatch", probes=blocked)
                 from agent_training.uve.identity import build_subject_identity
                 from agent_training.uve.workspace import resolve_workspace_root
                 profile = load_json_ref(receipt["profile_ref"])
                 current = build_subject_identity(resolve_workspace_root(profile), profile, manifest_bundle_sha256)
                 recorded = receipt["subject_identity"]
                 if any(current.get(key) != recorded.get(key) for key in current if key != "identity_sha256"):
-                    return reject("invalid_stale")
+                    return result("probe_identity_changed", "invalid_stale", probes=blocked)
             except Exception:
-                return reject("invalid_stale")
+                return result("probe_binding_unavailable", "invalid_stale", probes=blocked)
         binding = receipt.get("execution_binding", {})
         if receipt["verdict"] == "passed":
             if binding.get("snapshot_mode") == "required" and not receipt["toctou"].get("snapshot_binding_sha256"):
-                return reject("invalid_stale")
+                return result("snapshot_proof_missing", "invalid_stale", probes=blocked)
             if receipt["probe"]["probe_id"] in binding.get("runtime_delivery_binding_probe_ids", []):
                 if not receipt["toctou"].get("runtime_delivery_binding_sha256"):
-                    return reject("invalid_stale")
+                    return result("delivery_proof_missing", "invalid_stale", probes=blocked)
 
     required = spec["required_probe_ids"]
     by_probe = {p["probe"]["probe_id"]: p for p in probe_receipts}
     if len(by_probe) != len(probe_receipts):
-        return reject("invalid_stale")
+        from collections import Counter
+
+        duplicate_ids = [pid for pid, count in Counter(p["probe"]["probe_id"] for p in probe_receipts).items()
+                         if count > 1]
+        return result("duplicate_probe", "invalid_stale", probes=duplicate_ids)
     missing = [pid for pid in required if pid not in by_probe]
     if missing:
-        return _gate_receipt(
-            gate_id,
-            gate_evaluator_ref,
-            probe_receipts,
-            manifest_bundle_sha256,
-            decision="not_verified",
-            rejection_basis=None,
-        )
+        return result("required_probes_missing", decision="not_verified", probes=missing)
 
     if spec.get("require_flow_replay"):
         from agent_training.uve.flow_replay import replay
@@ -130,94 +132,41 @@ def evaluate_gate(
                 continue
             try:
                 if not replay(by_probe[probe_id], spec["evaluator_role"])["matches_receipt"]:
-                    return reject("invalid_stale")
+                    return result("flow_replay_mismatch", "invalid_stale", probes=[probe_id])
             except Exception:
-                return reject("invalid_stale")
+                return result("flow_replay_mismatch", "invalid_stale", probes=[probe_id])
 
     for pid, expectations in spec.get("required_observation_values", {}).items():
-        if pid not in by_probe or any(by_probe[pid].get("observation", {}).get(key) != value for key, value in expectations.items()):
-            return reject("insufficient_probes", "not_verified")
+        observed = by_probe.get(pid, {}).get("observation", {})
+        mismatched = [key for key, value in expectations.items() if observed.get(key) != value]
+        if pid not in by_probe or mismatched:
+            return result("required_observation_mismatch", "insufficient_probes", "not_verified",
+                          probes=[pid], details={"observation_fields": mismatched})
 
     identity_sha = probe_receipts[0]["subject_identity"]["identity_sha256"]
     for pr in probe_receipts:
         if pr["subject_identity"]["identity_sha256"] != identity_sha:
-            return _gate_receipt(
-                gate_id,
-                gate_evaluator_ref,
-                probe_receipts,
-                manifest_bundle_sha256,
-                decision="rejected",
-                rejection_basis="invalid_stale",
-            )
+            return result("subject_identity_mismatch", "invalid_stale", probes=[pr["probe"]["probe_id"]])
 
-    any_not_verified = any(p["verdict"] == "not_verified" for p in probe_receipts if p["probe"]["probe_id"] in required)
-    if any_not_verified:
-        return _gate_receipt(
-            gate_id,
-            gate_evaluator_ref,
-            probe_receipts,
-            manifest_bundle_sha256,
-            decision="not_verified",
-            rejection_basis="insufficient_probes",
-        )
+    unverified = [pid for pid in required if by_probe[pid]["verdict"] == "not_verified"]
+    if unverified:
+        return result("required_probe_not_verified", "insufficient_probes", "not_verified", probes=unverified)
 
     if spec.get("require_identity_stable"):
-        unstable = any(
-            not p.get("toctou", {}).get("identity_stable", True)
-            for p in probe_receipts
-            if p["probe"]["probe_id"] in required
-        )
+        unstable = [pid for pid in required if not by_probe[pid].get("toctou", {}).get("identity_stable", True)]
         if unstable:
-            return _gate_receipt(
-                gate_id,
-                gate_evaluator_ref,
-                probe_receipts,
-                manifest_bundle_sha256,
-                decision="rejected",
-                rejection_basis="identity_unstable",
-            )
+            return result("required_probe_identity_unstable", "identity_unstable", probes=unstable)
 
-    failed_subject = [
-        p
-        for p in probe_receipts
-        if p["probe"]["probe_id"] in required
-        and p["verdict"] == "failed"
-        and p.get("fault_origin") == "subject_fault"
-    ]
-    all_pass = all(
-        p["verdict"] == "passed"
-        for p in probe_receipts
-        if p["probe"]["probe_id"] in required
-    )
+    if all(by_probe[pid]["verdict"] == "passed" for pid in required):
+        return result("requirements_met", decision="approved")
 
-    if all_pass:
-        return _gate_receipt(
-            gate_id,
-            gate_evaluator_ref,
-            probe_receipts,
-            manifest_bundle_sha256,
-            decision="approved",
-            rejection_basis=None,
-        )
-
+    failed_subject = [pid for pid in required if by_probe[pid]["verdict"] == "failed"
+                      and by_probe[pid].get("fault_origin") == "subject_fault"]
     if failed_subject:
-        return _gate_receipt(
-            gate_id,
-            gate_evaluator_ref,
-            probe_receipts,
-            manifest_bundle_sha256,
-            decision="rejected",
-            rejection_basis="subject_observed",
-        )
+        return result("subject_assertion_failed", "subject_observed", probes=failed_subject)
 
-    return _gate_receipt(
-        gate_id,
-        gate_evaluator_ref,
-        probe_receipts,
-        manifest_bundle_sha256,
-        decision="rejected",
-        rejection_basis="engine_fault",
-    )
+    failed = [pid for pid in required if by_probe[pid]["verdict"] != "passed"]
+    return result("probe_execution_failed", "engine_fault", probes=failed)
 
 
 def _gate_receipt(

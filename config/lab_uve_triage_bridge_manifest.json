@@ -1,0 +1,18 @@
+{
+  "schema_version": "lab_uve_triage_bridge_manifest.v1",
+  "bundle_schema_version": "lab_uve_incident_bundle.v1",
+  "bridge_manifest_path_relative": "config/lab_uve_triage_bridge_manifest.json",
+  "report_output_root_ref": "config/lab_uve_report_output_root.json",
+  "protected_source_roots_ref": "config/lab_uve_protected_source_roots.json",
+  "incident_identity_manifest_ref": "config/lab_uve_incident_identity_manifest.json",
+  "bundle_replace_policy_ref": "config/lab_uve_bundle_replace_policy.json",
+  "evidence_trust_catalog_ref": "config/lab_uve_evidence_trust_catalog.json",
+  "evidence_budget_ref": "config/lab_uve_evidence_budget.json",
+  "repair_authorization_contract_ref": "config/lab_uve_repair_authorization_contract.json",
+  "lab_reducer_catalog_ref": "config/lab_uve_reducer_catalog.json",
+  "classification_map_ref": "config/lab_uve_classification_map.json",
+  "next_step_catalog_ref": "config/lab_uve_next_step_catalog.json",
+  "incident_classifier_manifest_ref": "config/lab_uve_incident_classifier_manifest.json",
+  "uve_binding_ref": "config/lab_uve_uve_binding.json",
+  "summary_template_relative": "config/lab_uve_incident_summary_template.txt"
+}

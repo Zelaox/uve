@@ -1,6 +1,9 @@
 {
   "schema_version": "uve_command_probe.v1",
-  "argv": ["{python}", "scripts/debug/validate_engine_uve.py"],
+  "argv": [
+    "{python}",
+    "scripts/debug/validate_engine_uve.py"
+  ],
   "timeout_seconds": 3600,
   "expected_returncode": 0,
   "expected_stdout": "ENGINE_UVE_VALID"

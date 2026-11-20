@@ -1,0 +1,8 @@
+{
+  "schema_version": "uve_triage_proof.v1",
+  "allowed_evaluator_refs": ["independent-contract", "uve_witness_instance"],
+  "gate_manifest_ref_in_pipeline": "config/uve/uve_gate_manifest.json",
+  "bundle_hash_output_token": "BUNDLE_SHA256",
+  "timeout_seconds": 120,
+  "resolution_contracts": []
+}

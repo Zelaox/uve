@@ -1,0 +1,78 @@
+{
+  "policy_version": 1,
+  "report_dir": "logs/engine/triage",
+  "world_settings_refs": {
+    "WorldSettings.import_oversized_extent_m": 50.0,
+    "WorldSettings.import_tiny_extent_m": 0.01
+  },
+  "rules": [
+    {
+      "diagnostic_code": "assets.import.extreme_extent",
+      "severity": "warning",
+      "match": { "subsystem": "assets", "event": "import_scale_confirmed" },
+      "condition": { "field": "scaled_max_extent_m", "op": "gt", "ref": "WorldSettings.import_oversized_extent_m" }
+    },
+    {
+      "diagnostic_code": "physics.collider_stale_after_transform",
+      "severity": "warning",
+      "match": { "subsystem": "scene", "event": "transform_changed" },
+      "correlate_missing_within_ms": 500,
+      "missing_event": { "subsystem": "physics", "event": "collider_world_synced" },
+      "max_findings_per_entity": 1,
+      "finding_note": "One advisory per entity — repeated transform_changed lines collapse to entity-level signal."
+    },
+    {
+      "diagnostic_code": "scene.mutation.triage_failed",
+      "severity": "warning",
+      "match": { "subsystem": "scene", "event": "scene_mutation_triage_failed" }
+    },
+    {
+      "diagnostic_code": "scene.mutation.triage_passed",
+      "severity": "info",
+      "match": { "subsystem": "scene", "event": "scene_mutation_triage_passed" }
+    }
+  ],
+  "triage_to_expansion_strategy": {
+    "editor.gizmo_drag_step_rejected": "scene_load_interrupt",
+    "scene.transform_tools.display_drift": "transform_authority_ui",
+    "editor.gizmo_topology_barrier_applied": "scene_load_interrupt"
+  },
+  "runtime_signal_rules": [
+    {
+      "diagnostic_code": "editor.gizmo_topology_barrier_applied",
+      "severity": "info",
+      "confidence": 0.95,
+      "match": { "subsystem": "editor", "event": "gizmo_topology_barrier_applied" },
+      "recommendation": "Gizmo topology barrier applied (scene-load interrupt class); use for scene_load_interrupt observed evidence when paired with B-GUI verify."
+    },
+    {
+      "diagnostic_code": "editor.gizmo_drag_step_rejected",
+      "severity": "warning",
+      "confidence": 0.9,
+      "match": { "subsystem": "editor", "event": "gizmo_drag_step_rejected" },
+      "field_condition": { "field": "reason", "op": "eq", "value": "empty_drag_targets" },
+      "burst_window_ms": 2000,
+      "burst_min_count": 3,
+      "recommendation": "Burst empty_drag_targets while drag inactive — stale session after scene I/O."
+    },
+    {
+      "diagnostic_code": "scene.transform_tools.display_drift",
+      "severity": "warning",
+      "confidence": 0.85,
+      "match": { "subsystem": "scene", "event": "transform_tools_display_drift" },
+      "recommendation": "Transform Tools display authority drift versus entity state."
+    }
+  ],
+  "b5_automated_gate": {
+    "editor_verify_arg": "--verify-gizmo-scene-load-interrupt",
+    "editor_exe_relative_from_lab": "engine/build/qt-mingw-editor-feel/ailab_editor.exe",
+    "incident_evidence_dir": "logs/debug/incidents/gizmo_scene_load_b5",
+    "runtime_slice_tail_lines": 120,
+    "required_expansion_observed_strategy": "scene_load_interrupt",
+    "required_runtime_diagnostic_codes": ["editor.gizmo_topology_barrier_applied"]
+  },
+  "triage_session_report_ref": "config/engine_triage_session_report.json",
+  "stale_artifact_checks": [
+    { "path_glob": "engine/build/*/ailab_editor.exe", "max_age_hours": 168 }
+  ]
+}

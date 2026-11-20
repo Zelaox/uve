@@ -1,0 +1,46 @@
+{
+  "schema_version": "lab_uve_classification_map.v1",
+  "mappings": [
+    {
+      "lab_finding_code": "DISPATCH_INTENT_CONTRADICTION",
+      "uve_failure_class": "dispatch_intent_contradiction",
+      "registry_probe_hint": "inspect_contract_timeline",
+      "next_step_id": "triage_debug_first"
+    },
+    {
+      "lab_finding_code": "PLAN_CONTRACT_POISONED",
+      "uve_failure_class": "plan_contract_poison",
+      "next_step_id": "triage_plan_contract_poison"
+    },
+    {
+      "lab_finding_code": "BREAKDOWN_LLM_REGEN_FAILED",
+      "uve_failure_class": "breakdown_regen_exhausted",
+      "next_step_id": "triage_breakdown_regen"
+    },
+    {
+      "lab_finding_code": "CODEGEN_STALL",
+      "uve_failure_class": "codegen_stall",
+      "next_step_id": "triage_codegen_stall"
+    },
+    {
+      "lab_finding_code": "UNCLASSIFIED",
+      "uve_failure_class": "not_verified",
+      "next_step_id": "triage_debug_first"
+    },
+    {
+      "lab_finding_code": "CATACOMBS_CONTRACT_FAIL",
+      "uve_failure_class": "catacombs_contract_fail",
+      "next_step_id": "triage_ruined_catacombs"
+    },
+    {
+      "lab_finding_code": "ENGINE_CONTRACT_FAIL",
+      "uve_failure_class": "engine_contract_fail",
+      "next_step_id": "triage_ailab_engine"
+    },
+    {
+      "lab_finding_code": "ENGINE_RUNTIME_TRIAGE_FAIL",
+      "uve_failure_class": "engine_runtime_triage_fail",
+      "next_step_id": "triage_ailab_engine"
+    }
+  ]
+}

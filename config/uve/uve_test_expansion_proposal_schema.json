@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "schema_version": "ailab.uve.test_expansion_proposal.v1",
+  "title": "UVE Test Expansion Proposal",
+  "type": "object",
+  "required": [
+    "proposal_id",
+    "parent_scenario",
+    "status",
+    "proposal_outcome",
+    "gap_confidence",
+    "evidence_strength",
+    "static_analysis_only",
+    "strategy_id",
+    "project_id",
+    "priority",
+    "rationale"
+  ],
+  "properties": {
+    "proposal_id": {
+      "type": "string",
+      "minLength": 8
+    },
+    "parent_scenario": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "proposed",
+        "accepted",
+        "rejected",
+        "implemented",
+        "verified"
+      ]
+    },
+    "proposal_outcome": {
+      "type": "string"
+    },
+    "gap_confidence": {
+      "type": "string",
+      "enum": [
+        "observed",
+        "suspected"
+      ]
+    },
+    "evidence_strength": {
+      "type": "string",
+      "enum": [
+        "runtime",
+        "triage",
+        "static",
+        "none"
+      ]
+    },
+    "static_analysis_only": {
+      "type": "boolean"
+    },
+    "strategy_id": {
+      "type": "string"
+    },
+    "project_id": {
+      "type": "string"
+    },
+    "priority": {
+      "type": "number"
+    },
+    "rationale": {
+      "type": "string"
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "missing_coverage": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "proposed_procedure": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "expected_assertions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": true
+}

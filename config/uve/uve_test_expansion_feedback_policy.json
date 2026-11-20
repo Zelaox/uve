@@ -1,0 +1,36 @@
+{
+  "schema_version": "ailab.uve.expansion_feedback_policy.v1",
+  "gate_id": "command_check",
+  "probe_id": "command_check",
+  "output_marker": "UVE_EXPANSION_RESULT",
+  "timeout_seconds": 120,
+  "lifecycle_script_relative": "scripts/uve/expansion_proposal_lifecycle.py",
+  "run_directory_relative": "expansion-evaluations",
+  "watch_globs": [
+    "scripts/uve/expansion_proposal_lifecycle.py",
+    "mcp_server/diagnostics/uve_expansion_feedback.py"
+  ],
+  "critical_guard_requirements_relative_from_engine": "config/uve/expansion/critical_guard_requirements.json",
+  "scenario_bindings": [
+    {
+      "parent_scenario": "editor_gizmo_contract",
+      "strategy_id": "scene_load_interrupt",
+      "coverage": [
+        "headless_missing_scene_commit_barrier"
+      ],
+      "scenario_id": "gizmo_scene_load_interrupt_interactive"
+    }
+  ],
+  "positive_outcomes": {
+    "critical_guard": "verified_preventive_guard",
+    "scenario_pass": "verified_no_defect_found"
+  },
+  "rejection_outcomes": [
+    "rejected_duplicate_coverage",
+    "rejected_too_costly",
+    "rejected_deprioritized",
+    "rejected_true_false_alarm"
+  ],
+  "default_rejection_outcome": "rejected_deprioritized",
+  "scenario_success_token": "VERIFY_OK:"
+}
