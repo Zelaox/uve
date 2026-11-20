@@ -28,11 +28,6 @@
       "next_step_id": "triage_debug_first"
     },
     {
-      "lab_finding_code": "CATACOMBS_CONTRACT_FAIL",
-      "uve_failure_class": "catacombs_contract_fail",
-      "next_step_id": "triage_ruined_catacombs"
-    },
-    {
       "lab_finding_code": "ENGINE_CONTRACT_FAIL",
       "uve_failure_class": "engine_contract_fail",
       "next_step_id": "triage_ailab_engine"

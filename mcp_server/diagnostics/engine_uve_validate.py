@@ -9,12 +9,6 @@ import sys
 from pathlib import Path
 from typing import Any, Optional
 
-from mcp_server.diagnostics.ruined_catacombs_uve_validate import (
-    _resolve_binary,
-    _run,
-)
-
-
 def _repo_root() -> Path:
     return Path(__file__).resolve().parents[2]
 
@@ -23,6 +17,31 @@ def _load_json(path: Path) -> dict[str, Any]:
     if not path.is_file():
         raise FileNotFoundError(f"missing manifest: {path}")
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _resolve_binary(
+    *, env_key: str, relative_candidates: list[str], base: Path
+) -> Path:
+    override = os.environ.get(env_key, "").strip()
+    if override:
+        path = Path(override).resolve()
+        if path.is_file():
+            return path
+        raise FileNotFoundError(f"{env_key} does not point to a file: {path}")
+    for relative in relative_candidates:
+        path = (base / relative).resolve()
+        if path.is_file():
+            return path
+    raise FileNotFoundError(
+        f"no binary found for {env_key}; tried: {relative_candidates}"
+    )
+
+
+def _run(argv: list[str], *, cwd: Path, timeout: int) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        argv, cwd=str(cwd), capture_output=True, text=True,
+        timeout=timeout, check=False,
+    )
 
 
 def load_engine_binding(lab_root: Path) -> dict[str, Any]:

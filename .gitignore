@@ -1,6 +1,8 @@
 /logs/
 /artifacts/
 /config/uve/uve_engine_state.json
+/config/uve/profiles/*
+!/config/uve/profiles/.gitkeep
 /training_gui_ui/
 /.venv/
 /.pytest_cache/

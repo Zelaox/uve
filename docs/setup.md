@@ -4,6 +4,8 @@
 
 Use Git and Python 3.11 or newer. Clone the public repository:
 
+The public `config/uve/profiles/` folder contains only `.gitkeep`. Supply local profiles and update the engine's default/witness references and the selected integration bindings before running checks. The regression suite also expects its declared local profiles. Without that configuration, default-profile verification and witness acceptance remain `not_verified`; the removed profiles are not included elsewhere.
+
 ~~~sh
 git clone https://github.com/Zelaox/uve.git
 cd uve
@@ -22,7 +24,7 @@ The [sample profile](../examples/project/profile.json) binds to a separate works
 $env:UVE_PROJECT_ROOT = (Resolve-Path 'examples/project/fixture').Path
 $uveProfile = 'examples/project/profile.json'
 $uveActor = 'ACTUAL_IMPLEMENTING_ACTOR'
-python -B -m agent_training.uve.cli probe run --profile config/uve/profiles/emulator_workstation_smoke.json --probe engine_self_check
+python -B -m agent_training.uve.cli probe run --profile "$uveProfile" --probe engine_self_check
 python -B -m agent_training.uve.cli probe run --profile "$uveProfile" --probe command_check --repair-actor-ref "$uveActor"
 ~~~
 
@@ -80,3 +82,7 @@ node scripts/uve-error-registry-lookup.mjs --from-receipt FAILED_PROBE_RUN_ID
 - [`uve-error-registry-lookup.mjs`](../scripts/uve-error-registry-lookup.mjs) reads a probe receipt and matches observed fields against the [sample registry](../examples/project/error-registry.json). Pass `--registry PATH` for a project registry in the same format, or query observed fields with `--probe-id`, `--failure-class`, and `--fault-rule`. A match exits `0`, no match exits `2`, and invalid input exits `1`. Lookup provides diagnostic guidance. The receipt still determines the probe result.
 
 The portable helpers use the checked-out engine and sample registry. Existing app-specific wrappers and registries belong with the projects that own their contracts, selectors, and recovery policies.
+
+## Sync maintained sources
+
+`scripts/sync-from-candidate.ps1` exports engine and TRIAGE changes from configured source checkouts. Profile files are never exported. Existing public target files, Lab binding manifests, gates and catalog entries form its integration allowlist. Add an integration to the public checkout deliberately before syncing it. Product-specific host wrappers and the portable documentation are maintained in this repository; syncing does not replace them with host-only variants.

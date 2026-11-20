@@ -12,11 +12,6 @@
       "purpose": "Emit lab_uve_incident_bundle.v1 for UVE handoff"
     },
     {
-      "reducer_id": "triage_ruined_catacombs_session",
-      "script_relative": "scripts/debug/triage_ruined_catacombs_session.py",
-      "purpose": "Catacombs read-only triage + optional UVE contract preflight + incident bundle"
-    },
-    {
       "reducer_id": "triage_engine_session",
       "script_relative": "scripts/debug/triage_engine_session.py",
       "purpose": "AI Lab engine read-only triage + optional UVE contract preflight + incident bundle"

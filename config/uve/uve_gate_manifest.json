@@ -87,13 +87,6 @@
       "require_identity_stable": true,
       "evaluator_role": "uve_gate"
     },
-    "ruined_catacombs_contract_gate": {
-      "required_probe_ids": [
-        "command_check"
-      ],
-      "require_identity_stable": true,
-      "evaluator_role": "uve_gate"
-    },
     "ailab_engine_contract_gate": {
       "required_probe_ids": [
         "command_check"

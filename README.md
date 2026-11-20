@@ -31,9 +31,13 @@ UVE is **not locked to one app or stack**. The same engine fits **other mobile a
 
 This repository is **public**. Anyone can clone, fork, and wire it to their own work.
 
+Project profiles are supplied by the operator. `config/uve/profiles/` is intentionally empty apart from `.gitkeep`; profile files are excluded from Git and the source exporter. References in engine, witness and host-binding manifests describe configuration that must be supplied locally. Default-profile checks and the witness are `not_verified` until those bindings exist. Removed project profiles are not relocated elsewhere in this repository.
+
 ---
 
 ## Quick start
+
+Supply the local profile bindings described in [setup](docs/setup.md) before running checks; the public profiles folder contains no runtime configuration.
 
 ~~~sh
 git clone https://github.com/Zelaox/uve.git
@@ -47,7 +51,7 @@ Install for development and run the contract suite. See [docs/setup.md](docs/set
 
 ~~~sh
 python -m pip install -e ".[dev]"
-python -B -m agent_training.uve.cli probe run --profile config/uve/profiles/emulator_workstation_smoke.json --probe engine_self_check
+python -B -m agent_training.uve.cli probe run --profile PATH_TO_LOCAL_PROFILE.json --probe engine_self_check
 python -B -m pytest -q
 python -B -m agent_training.uve.cli witness run
 ~~~
@@ -104,7 +108,7 @@ The shipped **application** gate currently requires code, bundle, health, and `a
 
 Failure classes include `navigation_recovery_exhausted` and `uiautomator_unavailable` (see `config/uve/uve_failure_class_catalog.json`). UI flows are guarded by `config/uve/application_fault_policy.json`.
 
-Sample wiring: [`config/uve/profiles/android_example_development.json`](config/uve/profiles/android_example_development.json) and targets under [`config/uve/targets/android_example/`](config/uve/targets/android_example/). Set `UVE_ANDROID_EXAMPLE_ROOT` to your checkout for inventory and command probes.
+Generic targets remain under [`config/uve/targets/android_example/`](config/uve/targets/android_example/). Supply a local profile that binds them, and set `UVE_ANDROID_EXAMPLE_ROOT` to your checkout for inventory and command probes.
 
 ### Metro, leases, and recovery
 
@@ -169,7 +173,7 @@ Repeat `--probe-run-id` for each required probe when a gate needs more than one 
 ## Bind your own project
 
 1. **Command-only (no device)** — copy and edit [`examples/project/`](examples/project/) (`profile.json`, `root.json`, `command.json`); set `UVE_PROJECT_ROOT`. See [examples/README.md](examples/README.md).
-2. **Android / Metro** — copy [`android_example`](config/uve/profiles/android_example_development.json) profile and targets; bind ADB serial, package, port, and UI flow manifests.
+2. **Android / Metro** — create a local profile and bind the generic Android targets, ADB serial, package, port, and UI flow manifests.
 3. **Full app acceptance** — add `application.json` in **your app repo**; host worker discovers it and materializes generated profiles under `logs/uve/runtime/.../application/`.
 
 Agent integration: [docs/setup.md](docs/setup.md) and [`.agents/skills/uve-verification/SKILL.md`](.agents/skills/uve-verification/SKILL.md).

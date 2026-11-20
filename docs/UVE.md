@@ -76,9 +76,8 @@ fixture commands. File replacement stays inside the created fixture directory.
 Process termination applies to the runner's own subprocess handle after the
 declared acknowledgement arrives.
 
-The public reference profiles are `deep_engine_regression.json` and
-`deep_workstation_state.json` under `config/uve/profiles/`. The Workstation
-fixture requires a separate host source checkout and compiles its real state
+Deep-flow profiles are local configuration; none are published under
+`config/uve/profiles/`. The Workstation fixture requires a separate host source checkout and compiles its real state
 store with the compiler selected by the fixture build manifest. Its cases verify
 a round trip, backup recovery and state after an owned process is stopped.
 Application-specific deep flows remain in the application repository. Live UI,
@@ -90,9 +89,9 @@ Run the build profile when testing native state. The flow profiles watch the
 resulting source snapshots and driver together with the engine and policies.
 
 ```powershell
-python -B -m agent_training.uve.cli probe run --profile config/uve/profiles/deep_reference_prepare.json --probe command_check --repair-actor-ref <actor>
-python -B -m agent_training.uve.cli probe run --profile config/uve/profiles/deep_workstation_build.json --probe command_check --repair-actor-ref <actor>
-python -B -m agent_training.uve.cli probe run --profile config/uve/profiles/deep_workstation_state.json --probe deep_flow_v6 --repair-actor-ref <actor>
+python -B -m agent_training.uve.cli probe run --profile <local-prepare-profile.json> --probe command_check --repair-actor-ref <actor>
+python -B -m agent_training.uve.cli probe run --profile <local-build-profile.json> --probe command_check --repair-actor-ref <actor>
+python -B -m agent_training.uve.cli probe run --profile <local-deep-profile.json> --probe deep_flow_v6 --repair-actor-ref <actor>
 python -B -m agent_training.uve.cli flow triage --probe-run-id <probe-id>
 python -B -m agent_training.uve.cli flow replay --probe-run-id <probe-id>
 python -B -m agent_training.uve.cli flow compare --probe-run-id <probe-id> --with-probe-run-id <other-probe-id>
@@ -118,16 +117,16 @@ resource locks through the host's approved configuration.
 From `training_pipeline/`, with Python 3.11+ and pytest installed:
 
 ```powershell
-python -m agent_training.uve.cli probe run --profile config/uve/profiles/emulator_workstation_smoke.json --probe dry_echo
+python -m agent_training.uve.cli probe run --profile <local-profile.json> --probe dry_echo
 python -m agent_training.uve.cli gate evaluate --gate smoke_close_issue --probe-run-id <probe_run_id> --evaluator-ref <independent-evaluator>
 python -m agent_training.uve.cli status
 ```
 
 Probe exit codes are `0` for passed, `1` for failed and `2` for not verified. Gate exit codes use the same mapping for approved, rejected and not verified. `dry_echo` checks engine plumbing; it does not establish application correctness.
 
-From this repository root, run `python -B -m pytest -q` and `python -B -m agent_training.uve.cli witness run` for the standalone suite and witness contract. The Workstation host supplies its separate GUI/native smoke runner. Live local HTTP tests require loopback-network access.
+After supplying the local profiles declared by the engine and tests, run `python -B -m pytest -q` and `python -B -m agent_training.uve.cli witness run` from this repository root for the standalone suite and witness contract. Missing profile bindings remain `not_verified`. The Workstation host supplies its separate GUI/native smoke runner. Live local HTTP tests require loopback-network access.
 
-The scoped `workstation_binding_acceptance.json` profile also covers native sources, tests, build/configuration and the runtime diagnostics documentation. From the source repository root, set `UVE_WORKSTATION_ROOT` to that root for the process, then run `probe run --profile config/uve/profiles/workstation_binding_acceptance.json --probe command_check --repair-actor-ref <actual-repair-actor>` from `training_pipeline/`. Its declared command configures/builds with CMake, runs CTest and runs the UVE/Training GUI regression selection. The configured build directory uses its existing CMake cache, or CMake's environment/toolchain selection on first configuration. A passed command receipt requires a separately assigned independent gate evaluator before claiming application acceptance.
+The host's local workstation binding profile also covers native sources, tests, build/configuration and runtime diagnostics documentation. From the source repository root, set `UVE_WORKSTATION_ROOT` to that root for the process, then run `probe run --profile <local-binding-profile.json> --probe command_check --repair-actor-ref <actual-repair-actor>` from `training_pipeline/`. Its declared command configures/builds with CMake, runs CTest and runs the UVE/Training GUI regression selection. The configured build directory uses its existing CMake cache, or CMake's environment/toolchain selection on first configuration. A passed command receipt requires a separately assigned independent gate evaluator before claiming application acceptance.
 
 ## Profiles and commands
 
@@ -168,7 +167,7 @@ Set `screenshot: true` in a flow to capture a supplementary PNG. Artifacts are s
 ## Recovery and isolation
 
 ```powershell
-python -m agent_training.uve.cli recovery --profile config/uve/profiles/android_example_development.json --action restart_metro
+python -m agent_training.uve.cli recovery --profile <local-android-profile.json> --action restart_metro
 ```
 
 Both profile recovery policy and the recovery manifest must allow the action. `recovery_action_refs` points to a command manifest with `start_argv`, optional `environment`, `stop_timeout_seconds`, `retest_attempts`, `retest_interval_seconds` and `log_filename`. Commands start hidden on Windows. UVE terminates only processes it owns in the current recovery process; it does not kill an unrelated pre-existing server. A CLI run can restart a server that has already stopped. Completion requires a nonempty reverification chain with passing final receipts. Recovery does not itself authorize issue closure.

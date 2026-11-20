@@ -22,7 +22,7 @@ Contract coverage lives in `tests/test_uve_deep_flow.py` and is part of the witn
 
 ## AI Lab incident bundle profile (external workspace)
 
-The profile `config/uve/profiles/lab_incident_bundle_validate.json` watches AI Lab bridge manifests and runs:
+A locally supplied incident-bundle profile watches AI Lab bridge manifests and runs:
 
 ~~~text
 python scripts/debug/validate_lab_uve_incident_bundle.py
@@ -30,7 +30,7 @@ python scripts/debug/validate_lab_uve_incident_bundle.py
 
 inside the project bound by `UVE_AI_LAB_ROOT`. The probe succeeds when the validator prints `BUNDLE_VALID`. Gate id: `lab_incident_bundle_gate`.
 
-This checkout ships the standalone validator, bundle reducer, manifests and TRIAGE index as well as the profile and gate. Set `UVE_AI_LAB_ROOT` to this checkout to use its configured report catalog and pipeline binding, or to an external AI Lab checkout with its own bindings and source reports. The two roots need not share runtime data.
+This checkout ships the standalone validator, bundle reducer, manifests, TRIAGE index and gate. Supply the profile locally and update its path in `config/lab_uve_uve_binding.json`. Set `UVE_AI_LAB_ROOT` to this checkout to use its configured report catalog and pipeline binding, or to an external AI Lab checkout with its own bindings and source reports. The two roots need not share runtime data.
 
 ```powershell
 python -B scripts/debug/triage_incident_bundle.py --probe-run-id ACTUAL_PROBE_ID --write-bundle
@@ -42,13 +42,6 @@ For history queries, ingestion and comparisons, see [TRIAGE observability](triag
 
 Related rule metadata: `config/manifests/triage_rules_manifest.json` (`lab_incident_bundle` category for training-pipeline observability in AI Lab).
 
-## Engine and editor contract profiles
+## Engine contract profile
 
-Manifest-only examples for bound monorepos (no application data in this repository):
-
-| Profile | Env anchor | Gate |
-| --- | --- | --- |
-| `config/uve/profiles/ailab_engine_development.json` | `UVE_AI_LAB_ROOT` + optional `UVE_ENGINE_ROOT` | `ailab_engine_contract_gate` |
-| `config/uve/profiles/ruined_catacombs_development.json` | `UVE_AI_LAB_ROOT` + catacombs root via manifest | `ruined_catacombs_contract_gate` |
-
-Each profile delegates to a project-owned `command_check` manifest under `config/uve/targets/<project>/`.
+For a bound native engine, supply a local profile using `UVE_AI_LAB_ROOT` and optional `UVE_ENGINE_ROOT`, then update `config/lab_uve_engine_binding.json`. Its `command_check` can delegate to the target under `config/uve/targets/ailab_engine/` and the `ailab_engine_contract_gate`. The application and its local profile are external configuration.

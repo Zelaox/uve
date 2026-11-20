@@ -5,7 +5,6 @@ import argparse
 import json
 from pathlib import Path
 import shutil
-import subprocess
 
 PRIVATE_PARTS = {'protrainer', 'deep_protrainer_comments', 'deep_protrainer_video'}
 EXCLUDED_DIRS = {'logs', 'artifacts', '__pycache__', '.git', '.pytest_cache'}
@@ -43,15 +42,49 @@ def excluded(path: Path) -> bool:
 
 def export(candidate: Path, lab: Path, destination: Path) -> dict:
     copied = []
+    # Published integrations are an allowlist. Host-only products require an
+    # explicit public configuration change before a sync may include them.
+    published = {
+        path.relative_to(destination).as_posix(): json.loads(path.read_text(encoding='utf-8-sig'))
+        for path in (destination / 'config').rglob('*.json')
+        if path.name != 'uve_engine_state.json'
+    }
+    catalog_keys = {
+        'config/lab_uve_classification_map.json': ('mappings', 'lab_finding_code'),
+        'config/lab_uve_next_step_catalog.json': ('steps', 'step_id'),
+        'config/lab_uve_reducer_catalog.json': ('reducers', 'reducer_id'),
+        'config/uve_triage_adapter_manifest.json': ('uve_receipt_project_ids', None),
+    }
     def copy(source: Path, relative: str | Path):
         relative = Path(relative)
         if excluded(relative):
+            return
+        ref = relative.as_posix()
+        if ref.startswith('config/uve/profiles/'):
+            return
+        if (ref.startswith('config/uve/targets/') or (ref.startswith('config/lab_uve_') and relative.suffix == '.json')) and ref not in published:
             return
         target = (destination / relative).resolve()
         if not target.is_relative_to(destination):
             raise ValueError('Export target escapes destination')
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(source, target)
+        if ref in published:
+            baseline = published[ref]
+            if ref in catalog_keys:
+                field, identity = catalog_keys[ref]
+                data = json.loads(target.read_text(encoding='utf-8-sig'))
+                allowed = {row[identity] if identity else row for row in baseline[field]}
+                data[field] = [row for row in data[field] if (row[identity] if identity else row) in allowed]
+                target.write_text(json.dumps(data, indent=2) + '\n', encoding='utf-8')
+            elif ref == 'config/lab_uve_uve_binding.json':
+                data = json.loads(target.read_text(encoding='utf-8-sig'))
+                data = {key: value for key, value in data.items() if not key.endswith('_binding_ref') or key in baseline}
+                target.write_text(json.dumps(data, indent=2) + '\n', encoding='utf-8')
+            elif ref == 'config/uve/uve_gate_manifest.json':
+                data = json.loads(target.read_text(encoding='utf-8-sig'))
+                data['gates'] = {key: value for key, value in data['gates'].items() if key in baseline['gates']}
+                target.write_text(json.dumps(data, indent=2) + '\n', encoding='utf-8')
         copied.append(relative.as_posix())
     for directory in ('agent_training/uve', 'agent_training/lab', 'config/uve'):
         for source in sorted((candidate / directory).rglob('*')):
@@ -75,7 +108,8 @@ def export(candidate: Path, lab: Path, destination: Path) -> dict:
     if source.is_file():
         copy(source, 'fixtures/prepare_reference_sources.py')
 
-    for pattern in ('uve_*.py', 'lab_uve_*.py', 'incident_triage.py', 'engine_uve_validate.py', 'ruined_catacombs_uve_validate.py'):
+    # Portable native-engine wrappers are maintained here, independently of host products.
+    for pattern in ('uve_*.py', 'lab_uve_*.py', 'incident_triage.py'):
         for source in sorted((lab / 'mcp_server/diagnostics').glob(pattern)):
             copy(source, source.relative_to(lab))
     # Importing the full AI Lab server is not required by these standalone modules.
@@ -84,7 +118,7 @@ def export(candidate: Path, lab: Path, destination: Path) -> dict:
         target.parent.mkdir(parents=True, exist_ok=True)
         if not target.exists():
             target.write_text('"""Standalone UVE/TRIAGE support namespace."""\n', encoding='utf-8')
-    for name in ('triage_incident_bundle.py', 'triage_turn.py', 'triage_engine_session.py', 'triage_ruined_catacombs_session.py', 'validate_lab_uve_incident_bundle.py', 'validate_engine_uve.py', 'validate_ruined_catacombs_uve.py', 'inventory_uve_triage_sources.py'):
+    for name in ('triage_incident_bundle.py', 'triage_turn.py', 'triage_engine_session.py', 'validate_lab_uve_incident_bundle.py', 'validate_engine_uve.py', 'inventory_uve_triage_sources.py'):
         source = lab / 'scripts/debug' / name
         copy(source, source.relative_to(lab))
     for pattern in ('lab_uve_*.json', 'uve_triage*.json', 'uve_storage*.json'):
@@ -115,14 +149,14 @@ def export(candidate: Path, lab: Path, destination: Path) -> dict:
                         source = lab / child
                         if source.is_file() and not (destination / child).exists():
                             copy(source, child)
-                            if child.endswith('.json'):
+                            if child.endswith('.json') and (destination / child).exists():
                                 pending.append(destination / child)
                     walk(child)
             elif isinstance(value, list):
                 for child in value:
                     walk(child)
         walk(document)
-    for name in ('lab_uve_uve_binding.json', 'lab_uve_engine_binding.json', 'lab_uve_catacombs_binding.json'):
+    for name in ('lab_uve_uve_binding.json', 'lab_uve_engine_binding.json'):
         path = destination / 'config' / name
         data = json.loads(path.read_text(encoding='utf-8'))
         for key in ('training_pipeline_relative_from_repo', 'uve_training_pipeline_relative_from_lab'):
@@ -131,16 +165,10 @@ def export(candidate: Path, lab: Path, destination: Path) -> dict:
         path.write_text(json.dumps(data, indent=2) + '\n', encoding='utf-8')
     for path in sorted((destination / 'config/uve').rglob('*.json')):
         relative = path.relative_to(destination).as_posix()
-        previous = subprocess.run(['git', '-C', str(destination), 'show', 'HEAD:' + relative], capture_output=True, text=True, encoding='utf-8')
-        baseline = json.loads(previous.stdout) if previous.returncode == 0 else None
+        baseline = published.get(relative)
         cleaned = public_manifest(json.loads(path.read_text(encoding='utf-8')), baseline)
         if cleaned is not DROP:
             path.write_text(json.dumps(cleaned, indent=2) + '\n', encoding='utf-8')
-    # Product wrappers stay bound to their external application; no product data ships.
-    catalog = destination / 'config/lab_uve_reducer_catalog.json'
-    document = json.loads(catalog.read_text(encoding='utf-8'))
-    document['reducers'] = [row for row in document['reducers'] if row['reducer_id'] in ('triage_turn', 'triage_incident_bundle', 'triage_engine_session', 'triage_ruined_catacombs_session')]
-    catalog.write_text(json.dumps(document, indent=2) + '\n', encoding='utf-8')
     for relative in ('tests/debug/test_lab_uve_incident_bundle.py', 'tests/debug/test_lab_uve_bridge_manifest.py', 'tests/debug/test_incident_triage_contract.py', 'tests/debug/test_uve_triage_observability.py'):
         if not (destination / relative).exists():
             copy(lab / relative, relative)

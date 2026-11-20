@@ -33,19 +33,6 @@
       "advisory_only": false
     },
     {
-      "step_id": "triage_ruined_catacombs",
-      "kind": "lab_reducer",
-      "reducer_id": "triage_ruined_catacombs_session",
-      "advisory_only": true
-    },
-    {
-      "step_id": "uve_ruined_catacombs_validate",
-      "kind": "uve_probe",
-      "profile_env_key": "LAB_UVE_CATACOMBS_PROFILE_REL",
-      "probe_id": "command_check",
-      "advisory_only": false
-    },
-    {
       "step_id": "triage_ailab_engine",
       "kind": "lab_reducer",
       "reducer_id": "triage_engine_session",

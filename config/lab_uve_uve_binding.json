@@ -7,7 +7,6 @@
   "validate_gate_id": "lab_incident_bundle_gate",
   "default_repair_actor_ref": "lab-bridge-reducer",
   "default_gate_evaluator_ref": "independent-contract",
-  "catacombs_binding_ref": "config/lab_uve_catacombs_binding.json",
   "engine_binding_ref": "config/lab_uve_engine_binding.json",
   "training_inspection": {
     "project_id": "ai_lab_training",
